@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 from .forms import UserRegisterForm, CharacterForm
 from .models import Character
 
@@ -226,3 +229,61 @@ def character_levelup(request, pk):
         return redirect('character_detail', pk=character.pk)
         
     return render(request, 'characters/character_levelup.html', {'character': character})
+
+@login_required
+@require_POST
+def update_character_stat(request, pk):
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+    try:
+        data = json.loads(request.body)
+        stat = data.get('stat')
+        action = data.get('action')
+        
+        valid_stats = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
+        if stat not in valid_stats:
+            return JsonResponse({'success': False, 'error': 'Invalid stat'}, status=400)
+            
+        current_val = getattr(character, stat)
+        
+        # Keep old modifiers
+        old_con_mod = character.constitution_mod
+        old_dex_mod = character.dexterity_mod
+        
+        if action == 'increase':
+            if current_val < 30:
+                setattr(character, stat, current_val + 1)
+        elif action == 'decrease':
+            if current_val > 1:
+                setattr(character, stat, current_val - 1)
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid action'}, status=400)
+            
+        # Check if modifiers changed and update dependent stats
+        new_con_mod = getattr(character, 'constitution_mod') if stat != 'constitution' else (getattr(character, stat) - 10) // 2
+        new_dex_mod = getattr(character, 'dexterity_mod') if stat != 'dexterity' else (getattr(character, stat) - 10) // 2
+        
+        if old_con_mod != new_con_mod:
+            diff = new_con_mod - old_con_mod
+            character.max_hp += (diff * character.level)
+            character.current_hp += (diff * character.level)
+            
+        if old_dex_mod != new_dex_mod:
+            diff = new_dex_mod - old_dex_mod
+            character.armor_class += diff
+            
+        character.save()
+        
+        # Determine the sign of the modifier for display
+        new_mod_val = getattr(character, f"{stat}_mod")
+        new_mod_str = f"+{new_mod_val}" if new_mod_val >= 0 else str(new_mod_val)
+        
+        return JsonResponse({
+            'success': True, 
+            'new_value': getattr(character, stat),
+            'new_mod': new_mod_str,
+            'new_max_hp': character.max_hp,
+            'new_current_hp': character.current_hp,
+            'new_ac': character.armor_class
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
