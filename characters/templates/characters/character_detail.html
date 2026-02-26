@@ -1,107 +1,579 @@
-{% extends 'characters/base.html' %}
+<!DOCTYPE html>
 
-{% block title %}{{ character.name }} - DiceDock{% endblock %}
-
-{% block content %}
-<div style="display: flex; justify-content: space-between; align-items: flex-start;">
-    <div>
-        <h1 style="margin: 0; color: #bb86fc;">{{ character.name }}</h1>
-        <h3 style="margin: 0.5rem 0 0 0; color: #aaa; font-weight: normal;">
-            Level {{ character.level }} {{ character.race }} {{ character.character_class }}
-            {% if character.subclass %}({{ character.subclass }}){% endif %}
-        </h3>
-        <p style="margin: 0.5rem 0 0 0; color: #888;">Hintergrund: {{ character.background }} | Gesinnung: {{
-            character.alignment }}</p>
-    </div>
-    {% if character.image %}
-    <img src="{{ character.image.url }}" alt="{{ character.name }}"
-        style="width: 150px; height: 150px; border-radius: 8px; object-fit: cover; border: 2px solid #333;">
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DiceDock - Character Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a855f7",
+                        "primary-glow": "#c084fc",
+                        "background-dark": "#050608",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(15, 17, 21, 0.35)",
+                        "neon-purple": "#a855f7",
+                        "neon-pink": "#ec4899",
+                        "neon-blue": "#3b82f6",
+                        "neon-cyan": "#06b6d4",
+                        "neon-green": "#22c55e",
+                    },
+                    fontFamily: {
+                        sans: ["Outfit", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        xl: "1rem",
+                        '2xl': "1.5rem",
+                        '3xl': "2rem",
+                    },
+                    boxShadow: {
+                        'neon-purple': '0 0 10px rgba(168, 85, 247, 0.3), 0 0 20px rgba(168, 85, 247, 0.1)',
+                        'neon-blue': '0 0 10px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.1)',
+                        'neon-green': '0 0 10px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.1)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 9s ease-in-out 1s infinite',
+                        'orb-move': 'orb-move 20s infinite alternate',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                        'glass-pulse': 'glass-pulse 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        'orb-move': {
+                            '0%': { transform: 'translate(0, 0) scale(1)' },
+                            '33%': { transform: 'translate(50px, -30px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 40px) scale(0.95)' },
+                            '100%': { transform: 'translate(20px, -20px) scale(1.05)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        },
+                        'glass-pulse': {
+                            '0%, 100%': { boxShadow: '0 -4px 20px rgba(168, 85, 247, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)' },
+                            '50%': { boxShadow: '0 -4px 30px rgba(168, 85, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3)' }
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            background-color: #050608;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }.bg-obsidian {
+            background-color: #050608;
+            background-image:
+                radial-gradient(at 10% 10%, rgba(88, 28, 135, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(30, 64, 175, 0.15) 0px, transparent 50%);
+        }.glass-panel {
+            background: rgba(20, 22, 28, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-panel:hover {
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .glass-highlight {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }.text-glow-purple { text-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
+        .text-glow-blue { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+        .text-glow-green { text-shadow: 0 0 15px rgba(34, 197, 94, 0.6); }
+        .text-glow-cyan { text-shadow: 0 0 15px rgba(6, 182, 212, 0.6); }.orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        .stat-bar-bg {
+            background: rgba(0,0,0,0.5);
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }.refraction-edge {
+            position: relative;
+            overflow: hidden;
+        }
+        .refraction-edge::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%; width: 200%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: 0.5s;
+        }
+        .refraction-edge:hover::before {
+            transform: skewX(-25deg) translateX(50%);
+        }
+        .expandable-panel {
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .liquid-edge {
+            background: linear-gradient(to bottom, rgba(168, 85, 247, 0.4), transparent);
+            filter: blur(8px);
+            height: 20px;
+            width: 100%;
+            position: absolute;
+            top: -10px;
+            left: 0;
+            opacity: 0.5;
+            pointer-events: none;
+        }.neon-checkbox {
+          appearance: none;
+          background-color: rgba(255,255,255,0.05);
+          margin: 0;
+          font: inherit;
+          color: currentColor;
+          width: 1.15em;
+          height: 1.15em;
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 0.15em;
+          display: grid;
+          place-content: center;
+          cursor: pointer;
+        }
+        .neon-checkbox::before {
+          content: "";
+          width: 0.65em;
+          height: 0.65em;
+          transform: scale(0);
+          transition: 120ms transform ease-in-out;
+          box-shadow: inset 1em 1em white;
+          background-color: white;
+          transform-origin: center;
+          clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .neon-checkbox:checked::before {
+          transform: scale(1);
+        }
+        .neon-checkbox:checked {
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-obsidian min-h-screen flex flex-col font-sans selection:bg-neon-purple selection:text-white">
+<div class="orb w-[600px] h-[600px] bg-purple-600/30 top-[-100px] left-[-100px] animate-orb-move"></div>
+<div class="orb w-[500px] h-[500px] bg-blue-600/30 bottom-[10%] right-[-100px] animate-orb-move" style="animation-delay: -5s;"></div>
+<div class="orb w-[400px] h-[400px] bg-cyan-500/20 top-[40%] left-[30%] animate-pulse-slow"></div>
+<nav class="fixed top-0 w-full z-50 px-6 py-4">
+<div class="glass-panel max-w-7xl mx-auto rounded-xl px-6 py-3 flex justify-between items-center refraction-edge">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-neon-purple text-3xl animate-float">casino</span>
+<span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple">DiceDock</span>
+</div>
+<div class="flex items-center gap-6 text-sm font-medium">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-gray-300 text-xs uppercase tracking-widest">Session Active</span>
+</div>
+<button class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="flex-grow flex flex-col items-center justify-start p-6 pt-28 pb-12 w-full max-w-7xl mx-auto relative z-10 gap-6">
+<header class="w-full relative">
+<div class="absolute -top-8 left-1 z-20">
+<a class="group flex items-center gap-1 text-sm text-gray-400 hover:text-neon-purple transition-colors duration-300" href="{% url 'dashboard' %}">
+<span class="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">chevron_left</span>
+<span class="uppercase tracking-widest font-semibold text-xs">Back to Dashboard</span>
+</a>
+</div>
+<div class="w-full glass-panel rounded-2xl p-6 flex flex-col md:flex-row items-center md:items-end justify-between gap-6 refraction-edge mt-2">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<div class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-white/10 relative z-10 bg-gray-900">
+{% if character.image %}
+<img alt="{{ character.name }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="{{ character.image.url }}"/>
+{% else %}
+<div class="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">
+<span class="material-symbols-outlined">person</span>
+</div>
+{% endif %}
+</div>
+<div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition duration-500"></div>
+</div>
+<div>
+<h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-1">{{ character.name }}</h1>
+<div class="flex items-center gap-3 text-gray-300 text-sm md:text-base font-light">
+<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Level {{ character.level }}</span>
+<span class="text-gray-500">•</span>
+<span>{{ character.race }} {{ character.character_class }}</span>
+<span class="text-gray-500">•</span>
+<span>{{ character.subclass }}</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="text-right">
+<span class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Experience</span>
+<div class="w-32 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-purple-500 to-blue-500" style="width: {% widthratio character.experience character.max_experience 100 %}%"></div>
+</div>
+<span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{ character.max_experience }} XP</span>
+</div>
+</div>
+</div>
+</header>
+<div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-3 space-y-6 order-2 lg:order-1">
+<div class="glass-panel glass-highlight rounded-2xl p-5 space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-sm">bar_chart</span> Attributes
+                    </h3>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+<span class="material-symbols-outlined text-lg">fitness_center</span>
+</div>
+<span class="font-bold text-gray-200">STR</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.strength_mod >= 0 %}+{% endif %}{{ character.strength_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.strength }}</span>
+</div>
+<div class="absolute inset-0 border border-red-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+<span class="material-symbols-outlined text-lg">sprint</span>
+</div>
+<span class="font-bold text-gray-200">DEX</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.dexterity_mod >= 0 %}+{% endif %}{{ character.dexterity_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.dexterity }}</span>
+</div>
+<div class="absolute inset-0 border border-green-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
+<span class="material-symbols-outlined text-lg">shield_with_heart</span>
+</div>
+<span class="font-bold text-gray-200">CON</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.constitution_mod >= 0 %}+{% endif %}{{ character.constitution_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.constitution }}</span>
+</div>
+<div class="absolute inset-0 border border-orange-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+<span class="material-symbols-outlined text-lg">auto_stories</span>
+</div>
+<span class="font-bold text-gray-200">INT</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.intelligence_mod >= 0 %}+{% endif %}{{ character.intelligence_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.intelligence }}</span>
+</div>
+<div class="absolute inset-0 border border-blue-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 border border-teal-500/20 shadow-[0_0_10px_rgba(20,184,166,0.2)]">
+<span class="material-symbols-outlined text-lg">visibility</span>
+</div>
+<span class="font-bold text-gray-200">WIS</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.wisdom_mod >= 0 %}+{% endif %}{{ character.wisdom_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.wisdom }}</span>
+</div>
+<div class="absolute inset-0 border border-teal-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+<div class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-default relative">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+<span class="material-symbols-outlined text-lg">theater_comedy</span>
+</div>
+<span class="font-bold text-gray-200">CHA</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-white">{% if character.charisma_mod >= 0 %}+{% endif %}{{ character.charisma_mod }}</span>
+<span class="text-[10px] text-gray-500 font-mono">SCORE {{ character.charisma }}</span>
+</div>
+<div class="absolute inset-0 border border-purple-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-5">
+<h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">school</span> Proficiencies
+                    </h3>
+<div class="flex flex-wrap gap-2">
+{% for prof in character.proficiencies %}
+<span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300 border border-white/10">{{ prof }}</span>
+{% empty %}
+<span class="text-xs text-gray-500 italic">No proficiencies listed.</span>
+{% endfor %}
+</div>
+</div>
+</div>
+<div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+<div class="glass-panel glass-highlight rounded-3xl p-8 relative overflow-hidden flex flex-col items-center justify-center text-center animate-float" style="animation-duration: 10s;">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50 shadow-[0_0_15px_rgba(34,197,94,0.5)]"></div>
+<div class="grid grid-cols-3 gap-8 w-full items-center relative z-10">
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-2 group-hover:border-blue-500/50 group-hover:shadow-neon-blue transition-all">
+<span class="material-symbols-outlined text-3xl text-blue-400">shield</span>
+</div>
+<span class="text-3xl font-bold text-white text-glow-blue">{{ character.armor_class }}</span>
+<span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Armor Class</span>
+</div>
+<div class="flex flex-col items-center relative">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full rotate-[-90deg]" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="rgba(255,255,255,0.05)" stroke-width="6"></circle>
+<circle class="drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]" cx="50" cy="50" fill="none" r="45" stroke="#22c55e" stroke-dasharray="283" stroke-dashoffset="{% widthratio character.current_hp character.max_hp 283 %}" stroke-linecap="round" stroke-width="6" style="stroke-dashoffset: calc(283 - (283 * {{ character.current_hp }} / {{ character.max_hp }}))"></circle>
+</svg>
+<div class="text-center">
+<div class="text-4xl font-black text-white text-glow-green tracking-tighter">{{ character.current_hp }}</div>
+<div class="text-xs text-gray-400">/ {{ character.max_hp }} HP</div>
+</div>
+</div>
+<span class="text-xs uppercase tracking-widest text-green-400 font-bold mt-2">Current HP</span>
+</div>
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-2 group-hover:border-cyan-500/50 group-hover:shadow-neon-cyan transition-all">
+<span class="material-symbols-outlined text-3xl text-cyan-400">directions_run</span>
+</div>
+<span class="text-3xl font-bold text-white text-glow-cyan">{{ character.speed }}</span>
+<span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Speed (ft)</span>
+</div>
+</div>
+<div class="mt-8 flex gap-4 w-full justify-center">
+<div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-2">
+<span class="text-gray-400 text-xs uppercase">Temp HP</span>
+<span class="text-white font-bold">{{ character.temp_hp }}</span>
+</div>
+<div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-2">
+<span class="text-gray-400 text-xs uppercase">Hit Dice</span>
+<span class="text-white font-bold">{{ character.hit_dice }}</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-6 relative">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-purple-400">swords</span> Actions &amp; Attacks
+                        </h3>
+<button class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">View All</button>
+</div>
+<div class="relative group/add">
+<button class="w-full mb-4 flex items-center justify-center gap-2 text-xs text-primary hover:text-white transition-colors uppercase font-bold tracking-wider border border-primary/30 px-3 py-2 rounded-lg hover:bg-primary/20">+ Add Weapon</button>
+<div class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-2xl border border-white/10">
+<input class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2" placeholder="Search weapons..." type="text"/>
+<div class="space-y-1 max-h-40 overflow-y-auto pr-1">
+<div class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
+<span>Greatsword</span>
+<span class="text-xs text-gray-500">2d6 Slashing</span>
+</div>
+<div class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
+<span>Dagger</span>
+<span class="text-xs text-gray-500">1d4 Piercing</span>
+</div>
+<div class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
+<span>Shortbow</span>
+<span class="text-xs text-gray-500">1d6 Piercing</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-3">
+{% for weapon in character.weapons %}
+<div class="group flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-white">
+<span class="material-symbols-outlined">colorize</span>
+</div>
+<div>
+<div class="font-bold text-white group-hover:text-purple-300 transition-colors">{{ weapon.name }}</div>
+<div class="text-xs text-gray-400">{{ weapon.type }}</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<div class="text-xs text-gray-500 uppercase">Hit</div>
+<div class="font-bold text-neon-purple">{{ weapon.hit }}</div>
+</div>
+<div>
+<div class="text-xs text-gray-500 uppercase">Dmg</div>
+<div class="font-bold text-white">{{ weapon.damage }}</div>
+</div>
+</div>
+</div>
+{% empty %}
+<div class="text-center text-gray-500 italic text-sm">No weapons equipped.</div>
+{% endfor %}
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-400">auto_fix_high</span>
+<span class="font-bold text-white">Spell Slots (Lvl 1)</span>
+</div>
+<div class="flex gap-2">
+    <!-- Quick hack for spell slots visualization based on level 1 slots -->
+    <!-- Assuming character.spell_slots.1.total exists -->
+    {% if character.spell_slots.1 %}
+        {% for i in "x"|ljust:character.spell_slots.1.total %}
+            {% if forloop.counter <= character.spell_slots.1.used %}
+                <div class="w-4 h-4 rounded bg-white/10 border border-white/20"></div>
+            {% else %}
+                <div class="w-4 h-4 rounded bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
+            {% endif %}
+        {% endfor %}
     {% else %}
-    <div
-        style="width: 150px; height: 150px; border-radius: 8px; background-color: #333; display: flex; align-items: center; justify-content: center; color: #666; font-style: italic;">
-        Kein Bild</div>
+        <span class="text-xs text-gray-500">No slots</span>
     {% endif %}
 </div>
-
-<hr style="border-color: #333; margin: 2rem 0;">
-
-<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
-    <!-- Stats Column -->
-    <div>
-        <div
-            style="background-color: #2c2c2c; padding: 1rem; border-radius: 8px; border: 1px solid #444; margin-bottom: 2rem;">
-            <h3 style="margin-top: 0; text-align: center; border-bottom: 1px solid #444; padding-bottom: 0.5rem;">
-                Attribute</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">STR</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.strength }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">GES</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.dexterity }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">KON</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.constitution }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">INT</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.intelligence }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">WEI</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.wisdom }}</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.8em; color: #aaa;">CHA</div>
-                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.charisma }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div
-            style="background-color: #2c2c2c; padding: 1rem; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-around; text-align: center;">
-            <div>
-                <div style="font-size: 0.8em; color: #aaa;">RK</div>
-                <div style="font-size: 1.5em; font-weight: bold;">{{ character.armor_class }}</div>
-            </div>
-            <div>
-                <div style="font-size: 0.8em; color: #aaa;">Bewegung</div>
-                <div style="font-size: 1.5em; font-weight: bold;">{{ character.speed }}</div>
-            </div>
-            <div>
-                <div style="font-size: 0.8em; color: #aaa;">HP</div>
-                <div style="font-size: 1.5em; font-weight: bold; color: #03dac6;">{{ character.current_hp }}/{{
-                    character.max_hp }}</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Info Column -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <h3 style="color: #bb86fc; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Inventar</h3>
-            <p><strong>Gold:</strong> {{ character.gold }} GM</p>
-            <p style="white-space: pre-wrap; color: #ddd; font-size: 0.9em;">{{ character.equipment }}</p>
-        </div>
-
-        <div>
-            <h3 style="color: #bb86fc; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Persönlichkeit</h3>
-            <div style="font-size: 0.9em; color: #ddd;">
-                <p><strong>Merkmale:</strong><br><span style="white-space: pre-wrap;">{{ character.personality_traits
-                        }}</span></p>
-                <p><strong>Ideale:</strong><br><span style="white-space: pre-wrap;">{{ character.ideals }}</span></p>
-                <p><strong>Bindungen:</strong><br><span style="white-space: pre-wrap;">{{ character.bonds }}</span></p>
-                <p><strong>Schwächen:</strong><br><span style="white-space: pre-wrap;">{{ character.flaws }}</span></p>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+<div class="lg:col-span-3 order-3 flex flex-col h-full gap-4">
+<div class="glass-panel rounded-2xl p-5 flex-grow relative overflow-hidden flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">backpack</span> Inventory
+                            </h3>
+<button class="w-5 h-5 rounded flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors group relative" title="Add Custom Item">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<div class="absolute top-8 left-0 w-[200px] z-20 glass-panel rounded-lg p-2 opacity-0 group-focus-within:opacity-100 pointer-events-none group-focus-within:pointer-events-auto transition-opacity shadow-xl">
+<input class="glass-input w-full" placeholder="Add custom item..." type="text"/>
+</div>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between bg-black/20 p-2 rounded-lg mb-4 border border-white/5">
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_8px_rgba(234,179,8,0.4)]">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">monetization_on</span>
+</div>
+<span class="text-xs font-bold text-yellow-400 mt-1">{{ character.gold }}</span>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-slate-400/20 border border-slate-400/50 flex items-center justify-center shadow-[0_0_8px_rgba(148,163,184,0.4)]">
+<span class="material-symbols-outlined text-[14px] text-slate-300">monetization_on</span>
+</div>
+<span class="text-xs font-bold text-slate-300 mt-1">{{ character.silver }}</span>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-orange-700/20 border border-orange-700/50 flex items-center justify-center shadow-[0_0_8px_rgba(194,65,12,0.4)]">
+<span class="material-symbols-outlined text-[14px] text-orange-600">monetization_on</span>
+</div>
+<span class="text-xs font-bold text-orange-600 mt-1">{{ character.copper }}</span>
+</div>
+</div>
+<ul class="space-y-3 overflow-y-auto max-h-[400px]">
+{% for item in character.inventory %}
+<li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 cursor-pointer group">
+<span class="text-gray-300 group-hover:text-white">{{ item.name }}</span>
+<span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">x{{ item.quantity }}</span>
+</li>
+{% empty %}
+    {% if character.equipment %}
+        <li class="text-sm text-gray-400 p-2">{{ character.equipment }}</li>
+    {% else %}
+        <li class="text-sm text-gray-500 italic p-2">Empty inventory</li>
+    {% endif %}
+{% endfor %}
+</ul><div class="pt-4 flex justify-center">
+<button class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">View All Items</button>
 </div>
 
-<div style="margin-top: 3rem; text-align: center;">
-    <a href="{% url 'dashboard' %}"
-        style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #bb86fc; color: #bb86fc; text-decoration: none; border-radius: 4px;">Zurück
-        zum Dashboard</a>
+<div class="absolute bottom-0 left-0 w-full glass-highlight expandable-panel border-t border-white/20 rounded-t-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] h-[60px] group hover:h-[350px] cursor-pointer bg-glass-bg backdrop-blur-xl animate-glass-pulse">
+<div class="liquid-edge transition-opacity duration-300 group-hover:opacity-100 opacity-30"></div>
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl pointer-events-none transition-transform duration-500 group-hover:scale-150"></div>
+<div class="p-4 relative z-10 flex flex-col h-full">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-purple-400">psychology</span>
+<h3 class="text-xs font-bold uppercase tracking-widest text-gray-300 group-hover:text-white transition-colors">Personality</h3>
 </div>
-{% endblock %}
+<span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-all group-hover:rotate-180">keyboard_arrow_up</span>
+</div>
+<div class="space-y-4 pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 flex-grow overflow-y-auto">
+<div>
+<span class="block text-[10px] text-purple-400 uppercase tracking-wide mb-1 font-bold">Trait</span>
+<p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.personality_traits }}"</p>
+</div>
+<div class="w-full h-px bg-white/5"></div>
+<div>
+<span class="block text-[10px] text-blue-400 uppercase tracking-wide mb-1 font-bold">Ideal</span>
+<p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.ideals }}"</p>
+</div>
+<div class="w-full h-px bg-white/5"></div>
+<div>
+<span class="block text-[10px] text-pink-400 uppercase tracking-wide mb-1 font-bold">Bond</span>
+<p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.bonds }}"</p>
+</div>
+<div class="w-full h-px bg-white/5"></div>
+<div>
+<span class="block text-[10px] text-red-400 uppercase tracking-wide mb-1 font-bold">Flaw</span>
+<p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.flaws }}"</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

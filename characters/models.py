@@ -27,10 +27,25 @@ class Character(models.Model):
     speed = models.IntegerField(default=30)
     max_hp = models.IntegerField(default=10)
     current_hp = models.IntegerField(default=10)
+    temp_hp = models.IntegerField(default=0)
+    hit_dice = models.CharField(max_length=20, default="1d10")
+    hit_dice_total = models.IntegerField(default=1)
     
     # Ausrüstung & Gold
     equipment = models.TextField(blank=True, help_text="Inventar")
     gold = models.IntegerField(default=0)
+    silver = models.IntegerField(default=0)
+    copper = models.IntegerField(default=0)
+
+    # New JSON Fields for richer data
+    proficiencies = models.JSONField(default=list, blank=True)
+    weapons = models.JSONField(default=list, blank=True)
+    inventory = models.JSONField(default=list, blank=True)
+    spell_slots = models.JSONField(default=dict, blank=True)
+
+    # Experience
+    experience = models.IntegerField(default=0)
+    max_experience = models.IntegerField(default=10000)
     
     # Hintergrund & Flavor
     personality_traits = models.TextField(blank=True)
@@ -42,3 +57,27 @@ class Character(models.Model):
 
     def __str__(self):
         return f"{self.name} (Level {self.level} {self.race} {self.character_class})"
+
+    @property
+    def strength_mod(self):
+        return (self.strength - 10) // 2
+
+    @property
+    def dexterity_mod(self):
+        return (self.dexterity - 10) // 2
+
+    @property
+    def constitution_mod(self):
+        return (self.constitution - 10) // 2
+
+    @property
+    def intelligence_mod(self):
+        return (self.intelligence - 10) // 2
+
+    @property
+    def wisdom_mod(self):
+        return (self.wisdom - 10) // 2
+
+    @property
+    def charisma_mod(self):
+        return (self.charisma - 10) // 2
