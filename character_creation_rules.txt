@@ -1,0 +1,131 @@
+# D&D Charaktererstellungsregeln - DiceDock
+
+Dieses Dokument enthält eine Zusammenfassung der Regeln für die Charaktererstellung und den Stufenaufstieg, extrahiert aus dem offiziellen Regelwerk.
+
+## 1. Klassen (Kapitel 3)
+
+Jede Klasse bietet spezifische Merkmale, Trefferwürfel und Fähigkeiten beim Stufenaufstieg.
+
+### Barbar (S. 53-56)
+- **Hauptattribut:** Stärke
+- **Trefferwürfel:** 1W12 pro Stufe
+- **Unterklassen (Pfad):** Berserker, Eiferer (Zealot), Weltenbaum (World Tree)
+- **Level 3:** Unterklasse wählen, Kampfrausch-Features
+- **Level 4:** Attributswerterhöhung (ASI) oder Talent
+
+### Barde (S. 58-65)
+- **Hauptattribut:** Charisma
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen (Schule):** Schule des Wagemuts, Schule der Beredsamkeit, Schule des Schlamms (Glamour), Schule des Wissens
+- **Level 3:** Unterklasse wählen, Bardische Inspiration verbessert
+- **Level 4:** ASI oder Talent
+
+### Druide (S. 69-78)
+- **Hauptattribut:** Weisheit
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen (Zirkel):** Zirkel des Landes, Zirkel des Mondes, Zirkel der Sterne, Zirkel des Meeres
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Hexenmeister (Warlock) (S. 79-88)
+- **Hauptattribut:** Charisma
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen (Schutzherr):** Erzfee, Großer Alter, Unhold, Celestischer
+- **Level 3:** Paktgabe wählen (Kette, Klinge, Buch)
+- **Level 4:** ASI oder Talent
+
+### Kämpfer (Fighter) (S. 93-101)
+- **Hauptattribut:** Stärke oder Geschicklichkeit
+- **Trefferwürfel:** 1W10 pro Stufe
+- **Unterklassen:** Mystischer Ritter, Champion, Kampfmeister, Psi-Krieger
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+- **Level 6:** Zusätzliche ASI/Talent (nur Kämpfer)
+
+### Kleriker (Cleric) (S. 102-111)
+- **Hauptattribut:** Weisheit
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen (Domäne):** Leben, Licht, List, Krieg
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Magier (Wizard) (S. 118-127)
+- **Hauptattribut:** Intelligenz
+- **Trefferwürfel:** 1W6 pro Stufe
+- **Unterklassen (Schulen):** Abjuration, Evocation, Divination, Illusion
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Mönch (Monk) (S. 121-131)
+- **Hauptattribut:** Geschicklichkeit & Weisheit
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen:** Krieger der Elemente, Krieger der Gnade, Krieger der Offenen Hand, Krieger der Schatten
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Paladin (S. 134-143)
+- **Hauptattribut:** Stärke & Charisma
+- **Trefferwürfel:** 1W10 pro Stufe
+- **Unterklassen (Eid):** Hingabe (Devotion), Rache (Vengeance), Natur (Ancients), Ruhm (Glory)
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Schurke (Rogue) (S. 144-153)
+- **Hauptattribut:** Geschicklichkeit
+- **Trefferwürfel:** 1W8 pro Stufe
+- **Unterklassen:** Dieb, Assassine, Arkaner Betrüger, Seelenmesser
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+- **Level 10:** Zusätzliche ASI/Talent (nur Schurke)
+
+### Waldläufer (Ranger) (S. 154-163)
+- **Hauptattribut:** Geschicklichkeit & Weisheit
+- **Trefferwürfel:** 1W10 pro Stufe
+- **Unterklassen:** Düsterpirscher, Feenwanderer, Herr der Tiere, Jäger
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+### Zauberer (Sorcerer) (S. 164-173)
+- **Hauptattribut:** Charisma
+- **Trefferwürfel:** 1W6 pro Stufe
+- **Unterklassen:** Drachenblut-Linie, Wilde Magie, Uhrwerk-Spross, Aberrante Übereinkunft
+- **Level 3:** Unterklasse wählen
+- **Level 4:** ASI oder Talent
+
+---
+
+## 2. Spezies (S. 184-198)
+
+| Spezies | Merkmale (Auszug) | Seite |
+| :--- | :--- | :--- |
+| Aasimar | Himmlische Resistenz, Heilende Hände, Lichtbringer | 186 |
+| Drachenblütler | Odemwaffe, Resistenz (Elementar) | 187 |
+| Elf | Dunkelsicht, Trance, Feenblut, Varianten (Drow, Hoch-/Waldelf) | 188 |
+| Gnom | Gnom-Schlauheit, Tüftler-Begabung | 190 |
+| Goliath | Riesen-Erbe, Steinernes Fell | 191 |
+| Halbling | Mutig, Glückspilz, Halbling-Gewandtheit | 192 |
+| Mensch | Vielseitig (Zusatz-Talent), Geschickt | 193 |
+| Ork | Adrenalinrausch, Standhaftigkeit | 194 |
+| Tiefling | Dunkelsicht, Resistenz (Feuer), Magisches Erbe | 195 |
+| Zwerg | Resistenz (Gift), Steingespür, Zähigkeit | 197 |
+
+---
+
+## 3. Hintergründe (S. 177-183)
+
+Jeder Hintergrund gewährt:
+- Erhöhung von zwei Attributen (+2 / +1) oder drei Attributen (+1 / +1 / +1).
+- Ein Herkunftstalent (z.B. Begabt, Wachsam).
+- Übung in zwei Fertigkeiten.
+- Übung in einem Werkzeug.
+- Startausrüstung oder 50 GM.
+
+Wichtige Hintergründe: Adeliger, Akolyth, Bauer, Einsiedler, Händler, Handwerker, Krimineller, Reisender, Scharlatan, Schreiber, Seemann, Soldat, Unterhaltungskünstler, Wache, Wegfinder, Weiser.
+
+---
+
+## 4. Stufenaufstieg (Allgemein)
+
+- **Trefferpunkte:** Erhöhung um (Klassen-Trefferwürfel / 2 + 1) + Konstitutionsmodifikator ODER Wurf.
+- **Attributswerterhöhung (ASI):** In der Regel auf Stufe 4, 8, 12, 16 und 19. Ermöglicht +2 auf einen Wert, +1 auf zwei Werte oder ein Talent.
+- **Übungsbonus:** Steigt auf den Stufen 5, 9, 13 und 17.
