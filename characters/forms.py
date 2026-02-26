@@ -34,7 +34,6 @@ class CharacterForm(forms.ModelForm):
         model = Character
         fields = [
             'name', 'image', 'character_class', 'subclass', 'race', 
-            'background', 'alignment', 'strength', 'dexterity', 
-            'constitution', 'intelligence', 'wisdom', 'charisma',
-            'personality_traits', 'ideals', 'bonds', 'flaws'
+            'background', 'alignment', 'personality_traits', 'ideals', 
+            'bonds', 'flaws'
         ]

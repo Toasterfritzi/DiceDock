@@ -38,35 +38,113 @@ def create_character(request):
             else:
                 character.gold = 0
                 character.equipment = "Standard-Ausrüstung für " + character.character_class
-                
-                # Populate new fields with dummy data for the prototype visualization
-                character.inventory = [
-                    {"name": "Potion of Healing", "quantity": 2},
-                    {"name": "Rations (1 day)", "quantity": 5},
-                    {"name": "Hempen Rope (50ft)", "quantity": 1},
-                    {"name": "Torch", "quantity": 10},
-                    {"name": "Waterskin", "quantity": 1},
-                    {"name": "Tinderbox", "quantity": 1}
-                ]
-                character.weapons = [
-                    {"name": "Longsword +1", "type": "Melee • Slashing", "hit": "+6", "damage": "1d8+4"},
-                    {"name": "Javelin", "type": "Thrown (30/120) • Piercing", "hit": "+5", "damage": "1d6+3"}
-                ]
-                character.proficiencies = ["Athletics", "Intimidation", "Persuasion", "Heavy Armor"]
-                character.spell_slots = {
-                    "1": {"total": 4, "used": 2}
-                }
-                # Set some default values for new fields
-                character.experience = 6500
-                character.max_experience = 10000
-                character.current_hp = 42
-                character.max_hp = 54
-                character.hit_dice = "5d10"
-                character.armor_class = 18
-                character.speed = 30
-                character.silver = 42
-                character.copper = 12
-                character.gold = 154 # Override gold for the demo look
+            
+            # 1. Automatisierte Werte (Standard Array: 15, 14, 13, 12, 10, 8)
+            # Zuweisung basierend auf der Klasse (Primärattribute zuerst)
+            stand_array = [15, 14, 13, 12, 10, 8]
+            
+            c_class = form.cleaned_data.get('character_class').lower()
+            if 'barbar' in c_class:
+                character.strength, character.constitution, character.dexterity, character.wisdom, character.charisma, character.intelligence = stand_array
+                character.hit_dice = "1d12"
+            elif 'bard' in c_class:
+                character.charisma, character.dexterity, character.constitution, character.wisdom, character.intelligence, character.strength = stand_array
+                character.hit_dice = "1d8"
+            elif 'kleriker' in c_class or 'cleric' in c_class:
+                character.wisdom, character.constitution, character.strength, character.charisma, character.intelligence, character.dexterity = stand_array
+                character.hit_dice = "1d8"
+            elif 'druid' in c_class:
+                character.wisdom, character.constitution, character.dexterity, character.intelligence, character.charisma, character.strength = stand_array
+                character.hit_dice = "1d8"
+            elif 'kämpfer' in c_class or 'fighter' in c_class:
+                character.strength, character.constitution, character.dexterity, character.wisdom, character.intelligence, character.charisma = stand_array
+                character.hit_dice = "1d10"
+            elif 'mönch' in c_class or 'monk' in c_class:
+                character.dexterity, character.wisdom, character.constitution, character.strength, character.intelligence, character.charisma = stand_array
+                character.hit_dice = "1d8"
+            elif 'paladin' in c_class:
+                character.strength, character.charisma, character.constitution, character.wisdom, character.dexterity, character.intelligence = stand_array
+                character.hit_dice = "1d10"
+            elif 'waldläufer' in c_class or 'ranger' in c_class:
+                character.dexterity, character.wisdom, character.constitution, character.strength, character.intelligence, character.charisma = stand_array
+                character.hit_dice = "1d10"
+            elif 'schurke' in c_class or 'rogue' in c_class:
+                character.dexterity, character.intelligence, character.constitution, character.charisma, character.wisdom, character.strength = stand_array
+                character.hit_dice = "1d8"
+            elif 'zauberer' in c_class or 'sorcerer' in c_class:
+                character.charisma, character.constitution, character.dexterity, character.wisdom, character.intelligence, character.strength = stand_array
+                character.hit_dice = "1d6"
+            elif 'hexenmeister' in c_class or 'warlock' in c_class:
+                character.charisma, character.constitution, character.dexterity, character.wisdom, character.intelligence, character.strength = stand_array
+                character.hit_dice = "1d8"
+            elif 'magier' in c_class or 'wizard' in c_class:
+                character.intelligence, character.constitution, character.dexterity, character.wisdom, character.charisma, character.strength = stand_array
+                character.hit_dice = "1d6"
+            else:
+                # Fallback
+                character.strength, character.dexterity, character.constitution, character.intelligence, character.wisdom, character.charisma = stand_array
+                character.hit_dice = "1d8"
+
+            # 3. Hintergrund-Boni (Background Bonuses)
+            # based on typical 2024 D&D backgrounds (+2 / +1 or +1/+1/+1)
+            b_ground = form.cleaned_data.get('background', '').lower()
+            
+            if 'adeliger' in b_ground or 'noble' in b_ground:
+                character.strength += 2
+                character.charisma += 1
+            elif 'akolyth' in b_ground or 'acolyte' in b_ground:
+                character.wisdom += 2
+                character.intelligence += 1
+            elif 'bauer' in b_ground or 'farmer' in b_ground or 'peasant' in b_ground:
+                character.constitution += 2
+                character.wisdom += 1
+            elif 'einsiedler' in b_ground or 'hermit' in b_ground:
+                character.wisdom += 2
+                character.constitution += 1
+            elif 'händler' in b_ground or 'merchant' in b_ground:
+                character.charisma += 2
+                character.intelligence += 1
+            elif 'krimineller' in b_ground or 'criminal' in b_ground:
+                character.dexterity += 2
+                character.intelligence += 1
+            elif 'scharlatan' in b_ground or 'charlatan' in b_ground:
+                character.charisma += 2
+                character.dexterity += 1
+            elif 'soldat' in b_ground or 'soldier' in b_ground:
+                character.strength += 2
+                character.constitution += 1
+            elif 'weiser' in b_ground or 'sage' in b_ground:
+                character.intelligence += 2
+                character.wisdom += 1
+            else:
+                # Fallback bonus (freely assigned if not matched, here we just buff top stats)
+                if character.character_class.lower() in ['barbar', 'kämpfer', 'paladin']:
+                    character.strength += 2
+                    character.constitution += 1
+                elif character.character_class.lower() in ['schurke', 'mönch', 'waldläufer']:
+                    character.dexterity += 2
+                    character.wisdom += 1
+                else:
+                    character.charisma += 2
+                    character.intelligence += 1
+
+            # 4. Level 1 Base Stats Calculation
+            character.level = 1
+            character.experience = 0
+            character.max_experience = 300 # XP for level 2
+
+            # Calculate Max HP on Level 1: Max of hit dice + CON modifier
+            hit_dice_val = int(character.hit_dice.split('d')[1])
+            con_mod = (character.constitution - 10) // 2
+            character.max_hp = hit_dice_val + con_mod
+            character.current_hp = character.max_hp
+            
+            # Base AC (unarmored) = 10 + DEX mod
+            dex_mod = (character.dexterity - 10) // 2
+            character.armor_class = 10 + dex_mod
+            
+            # Speed default (can be updated later by race)
+            character.speed = 30
 
             character.save()
             return redirect('character_detail', pk=character.pk)
@@ -78,3 +156,36 @@ def create_character(request):
 def character_detail(request, pk):
     character = get_object_or_404(Character, pk=pk, user=request.user)
     return render(request, 'characters/character_detail.html', {'character': character})
+
+@login_required
+def character_levelup(request, pk):
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        # Apply standard Level-Up logic
+        character.level += 1
+        
+        # Calculate HP increase (Average of hit dice + CON modifier)
+        try:
+            hit_dice_type = int(character.hit_dice.split('d')[1])
+            hp_increase = (hit_dice_type // 2) + 1 + character.constitution_mod
+            character.max_hp += hp_increase
+            character.current_hp = character.max_hp
+        except (ValueError, IndexError):
+            pass # fallback if hit_dice is malformed
+            
+        # Update PB if necessary
+        pb = 2
+        if character.level >= 17:
+            pb = 6
+        elif character.level >= 13:
+            pb = 5
+        elif character.level >= 9:
+            pb = 4
+        elif character.level >= 5:
+            pb = 3
+        
+        character.save()
+        return redirect('character_detail', pk=character.pk)
+        
+    return render(request, 'characters/character_levelup.html', {'character': character})

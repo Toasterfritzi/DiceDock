@@ -27,8 +27,9 @@
         {% endif %}
         <div>
             <h3 style="margin: 0; color: #fff;">{{ char.name }}</h3>
-            <p style="margin: 0.25rem 0 0 0; color: #aaa; font-size: 0.9em;">Level {{ char.level }} {{ char.race }} {{
-                char.character_class }}</p>
+            <p style="margin: 0.25rem 0 0 0; color: #aaa; font-size: 0.9em;">
+                Level {{ char.level }} {{ char.race }} {{ char.character_class }}
+            </p>
         </div>
         <div style="margin-left: auto;">
             <a href="{% url 'character_detail' char.pk %}" style="color: #bb86fc; text-decoration: none;">View Sheet</a>

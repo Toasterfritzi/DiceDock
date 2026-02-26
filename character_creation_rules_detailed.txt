@@ -1,0 +1,460 @@
+# D&D 5.5e (2024) - Detaillierte Charaktererstellungsregeln für DiceDock
+
+Dieses Dokument enthält alle notwendigen Daten für die Automatisierung der Charaktererstellung und des Stufenaufstiegs.
+
+## 1. Klassen (Kapitel 3)
+
+### BARBAR (Barbarian)
+**Rolle:** Nahkampf-Krieger mit Kampfrausch.
+- **Trefferwürfel:** 1W12 pro Stufe.
+- **Trefferpunkte (Stufe 1):** 12 + Konstitutionsmodifikator.
+- **Trefferpunkte (Aufstieg):** 1W12 (oder 7) + Konstitutionsmodifikator.
+- **Rüstungen:** Leichte Rüstung, Mittelschwere Rüstung, Schilde.
+- **Waffen:** Einfache Waffen, Kriegswaffen.
+- **Rettungswürfe:** Stärke, Konstitution.
+- **Fertigkeiten:** Wähle 2 aus: Athletik, Mit Tieren umgehen, Einschüchtern, Naturkunde, Überlebenskunst, Wahrnehmung.
+
+**Klassenmerkmale:**
+- **Stufe 1: Kampfrausch (Rage):** Bonusaktion. Vorteil auf Stärkewürfe/Rettungswürfe. Schadensbonus (+2 bis +4). Resistenz gegen Hieb-, Stich-, Wuchtschaden. Hält 10 Min. oder bis KO/Schwere Rüstung. (Anzahl: 2 bis 6 pro Langer Rast).
+- **Stufe 1: Rüstungslose Verteidigung:** RK = 10 + Geschick-Mod + Konst-Mod (ohne Rüstung).
+- **Stufe 1: Waffenmeisterung:** Beherrsche 2 Waffenarten (z.B. Beil: Graze, Großschwert: Cleave).
+- **Stufe 2: Achtloses Angreifen (Reckless Attack):** Vorteil auf eigene Angriffe, aber Gegner haben auch Vorteil auf dich.
+- **Stufe 2: Gefahrensinn:** Vorteil auf Geschicklichkeitsrettungswürfe gegen sichtbare Effekte.
+- **Stufe 3: Barbarische Unterklasse:** Wähle einen Pfad.
+- **Stufe 3: Urinstinkt:** Du kannst Kampfrausch nutzen, um Wahrnehmung o.ä. zu stärken? (Check printed page 54).
+- **Stufe 5: Zusätzlicher Angriff:** Zwei Angriffe pro Angriffsaktion.
+- **Stufe 5: Schnelle Bewegung:** +3 Meter Bewegungsrate (ohne Schwere Rüstung).
+- **Stufe 7: Instinktive Pounce (Check printed name):** Bewegung bei Kampfrausch-Aktivierung?
+- **Stufe 9: Brutaler Schlag (Brutal Strike):** Tausche Vorteil gegen Spezialeffekte (Stoßen, Reduzierung der Bewegungsrate etc.) + Extra Schaden.
+- **Stufe 11: Unbändiger Zorn (Relentless Rage):** Bei 0 TP: Rettungswurf (SG 10) um auf 1 TP zu bleiben.
+- **Stufe 15: Anhaltender Zorn:** Kampfrausch endet nur bei KO oder wenn du ihn beendest.
+- **Stufe 20: Urgewalt:** Stärke und Konstitution steigen um +4 (Max 24).
+
+**Unterklassen (Pfad des...):**
+- **Berserker:** Level 3: Frenzy (Extra Schaden beim ersten Treffer). Level 6: Mindless Rage (Furcht/Charm-Resistenz). Level 10: Retaliation (Reaktion-Angriff).
+- **Wildes Herz (Wild Heart):** Wähle Tiergeist (Bär, Adler, Wolf) für verschiedene Boni während des Kampfrauschs.
+- **Weltenbaum (World Tree):** Level 3: Vitality of the Tree (Temp HP). Level 6: Branches of the Tree (Ziele heranziehen). Level 10: Battering Roots (Reichweite erhöhen).
+- **Eiferer (Zealot):** Level 3: Divine Fury (Extra Strahlender/Nekrotischer Schaden). Level 6: Fanatic Focus (Reroll Save).
+
+---
+
+### BARDE (Bard)
+**Rolle:** Vielseitiger Zauberwirker und Unterstützer.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Trefferpunkte (Stufe 1):** 8 + Konstitutionsmodifikator.
+- **Rüstungen:** Leichte Rüstung.
+- **Waffen:** Einfache Waffen.
+- **Rettungswürfe:** Geschicklichkeit, Charisma.
+- **Fertigkeiten:** Beliebige 3.
+
+**Klassenmerkmale:**
+- **Stufe 1: Bardische Inspiration:** Bonusaktion. Gib Verbündetem 1W6 (später bis 1W12). Kann auf Attributswürfe, Angriffe oder Rettungswürfe addiert werden. (Anzahl = PB, später SR-Regeneration).
+- **Stufe 1: Zauberwirken:** Attribut: Charisma. Fokus: Musikinstrument.
+- **Stufe 2: Multitalent (Jack of All Trades):** Halber Übungsbonus auf alle Fertigkeitswürfe ohne Übung.
+- **Stufe 3: Bardische Unterklasse:** Wähle eine Schule.
+- **Stufe 3: Expertisen:** Wähle 2 Fertigkeiten für doppelten Übungsbonus.
+- **Stufe 5: Quell der Inspiration:** Inspiration regeneriert bei Kurzer Rast. Würfel wird d8.
+- **Stufe 6: Gegenzauber (Countercharm):** Reaktion. Vorteil gegen Zauber mit Furcht/Charm-Effekt für dich und Gefährten.
+- **Stufe 10: Magische Entdeckungen (Magical Secrets):** Wähle 2 Zauber von IRGENDEINER Liste (Druide, Kleriker, Magier). Sie zählen als Bardenzauber.
+- **Stufe 18: Überlegene Inspiration:** Bei Kampfbeginn ohne Inspiration: Erhalte 1 zurück.
+- **Stufe 20: Epische Gabe (Epic Boon):** Wähle ein Talent der Stufe 20.
+
+**Unterklassen (Schule des...):**
+- **Wissens (Lore):** Level 3: Schneidende Worte (Cutting Words) - Inspiration nutzen, um gegnerische Würfe zu senken. Level 6: Zusätzliche Magische Entdeckungen.
+- **Tanzes (Dance):** Level 3: Blendende Beinarbeit (Dazzling Footwork) - RK = 10 + Ges + Cha. Unbewaffneter Schlag als BA. Level 6: Tandem-Beinarbeit (Inspiration auf Initiative).
+- **Wagemuts (Valor):** Level 3: Kampf-Inspiration (Inspiration auf Schaden/RK). Level 6: Zusätzlicher Angriff (kann Angriff durch Cantrip ersetzen).
+- **Zauberbanns (Glamour):** Level 3: Mantel der Inspiration (Temp HP + Bewegung für Gefährten). Level 6: Mantel der Erhabenheit (Befehl als BA ohne Zauberplatz).
+
+---
+
+### KLERIKER (Cleric)
+**Rolle:** Göttlicher Zauberwirker und Heiler.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Rettungswürfe:** Weisheit, Charisma.
+- **Waffen:** Einfache Waffen.
+- **Rüstungen:** Leichte Rüstung, Mittelschwere Rüstung, Schilde.
+- **Fertigkeiten:** Wähle 2: Geschichte, Motiv erkennen, Heilkunde, Überzeugen, Religion.
+
+**Klassenmerkmale:**
+- **Stufe 1: Zauberwirken:** Attribut: Weisheit. Fokus: Heiliges Symbol.
+- **Stufe 1: Göttlicher Orden (Divine Order):** Wähle (A) Beschützer (Schwere Rüstung & Kriegswaffen) oder (B) Gelehrter (Zusatz-Übung in 2 Wissen-Fertigkeiten).
+- **Stufe 2: Göttliche Macht kanalisieren (Channel Divinity):** 2 Nutzungen (später bis 4). Effekte: Göttliches Scheitern (Heilen/Schaden) oder Untote vertreiben.
+- **Stufe 3: Kleriker-Unterklasse:** Wähle eine Domäne.
+- **Stufe 5: Zerschlagen von Untoten:** Vertreibt Untote nicht nur, sondern fügt Schaden zu.
+- **Stufe 6: Gesegnetes Schlagen:** Bonus auf Zauber-Cantrips oder Waffenangriffe (je nach Domäne).
+- **Stufe 10: Göttliche Intervention:** Rufe deine Gottheit um Hilfe an (Spezialeffekt ohne Kosten).
+
+**Unterklassen (Domäne des...):**
+- **Lebens (Life):** Level 3: Jünger des Lebens (Extra Heilung). Level 6: Bewahrung des Lebens (CD-Heilung).
+- **Lichts (Light):** Level 3: Schützendes Aufflammen (Nachteil für Gegner). Level 6: Glanz der Morgendämmerung (CD-Lichtschaden).
+- **List (Trickery):** Level 3: Segen des Listigen. Level 6: Duplikat beschwören (CD).
+- **Krieges (War):** Level 3: Kriegspriester (BA-Angriff). Level 6: Geführter Schlag (CD-Bonus auf Trefferwurf).
+
+---
+
+### DRUIDE (Druide)
+**Rolle:** Natur-Zauberwirker und Gestaltwandler.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Rettungswürfe:** Intelligenz, Weisheit.
+- **Waffen:** Einfache Waffen.
+- **Rüstungen:** Leichte Rüstung, Mittelschwere Rüstung, Schilde. (Regel für Metall entfällt oft in 2024, aber Druidischer Fokus ist Pflicht).
+- **Fertigkeiten:** Wähle 2: Arkane Kunde, Mit Tieren umgehen, Naturkunde, Überlebenskunst, Wahrnehmung, Religion, Medizin.
+
+**Klassenmerkmale:**
+- **Stufe 1: Zauberwirken:** Attribut: Weisheit. Fokus: Mistelzweig o.ä.
+- **Stufe 1: Druidisch:** Geheimsprache der Druiden.
+- **Stufe 1: Urgestalt (Wild Shape):** Bonusaktion. Verwandle dich in ein Tier (NS 1/4, später höher). Hält PB Stunden.
+- **Stufe 2: Wild Companion:** Nutze Wild Shape, um "Vertrauten finden" zu wirken.
+- **Stufe 3: Druiden-Unterklasse:** Wähle einen Zirkel.
+- **Stufe 5: Urschlag (Primal Strike):** Schaden in Tierform zählt als magisch.
+- **Stufe 10: Elementarer Zorn:** Füge Kälte/Feuer/Blitz-Schaden zu Angriffen hinzu.
+
+**Unterklassen (Zirkel des...):**
+- **Landes (Land):** Level 3: Land-Region wählen (Arktis, Wüste etc.) für Zusatz-Zauber. Wild Shape nutzen, um Zauberplätze zu regenerieren.
+- **Mondes (Moon):** Level 3: Kampf-Wild Shape (Bonusaktion-Verwandlung, Erhöhte RK, Heilung mit Zauberplätzen).
+- **Meeres (Sea):** Level 3: Zorn des Meeres (Aura, die Gegner wegstößt/schädigt).
+- **Sterne (Stars):** Level 3: Sternenform (Sternbild wählen für verschiedene Boni: Angriff, Heilung oder Konzentration).
+
+---
+
+### KÄMPFER (Fighter)
+**Rolle:** Meister der Waffen und Rüstungen.
+- **Trefferwürfel:** 1W10 pro Stufe.
+- **Rettungswürfe:** Stärke, Konstitution.
+- **Waffen:** Einfache Waffen, Kriegswaffen.
+- **Rüstungen:** Alle Rüstungen, Schilde.
+- **Fertigkeiten:** Wähle 2: Akrobatik, Athletik, Geschichte, Motiv erkennen, Einschüchtern, Überlebenskunst, Wahrnehmung, Tierkunde.
+
+**Klassenmerkmale:**
+- **Stufe 1: Kampfstil:** Wähle ein Talent (z.B. Bogenschießen, Verteidigung, Duellieren).
+- **Stufe 1: Durchschnaufen (Second Wind):** Bonusaktion. Heile 1W10 + Stufe. (PB Nutzungen pro SR/LR).
+- **Stufe 1: Waffenmeisterung:** Beherrsche 3 Waffenarten gleichzeitig.
+- **Stufe 2: Aktionsschub (Action Surge):** Eine zusätzliche Aktion in diesem Zug. (1 Nutzung pro SR/LR).
+- **Stufe 2: Taktischer Verstand:** Nutze Second Wind, um Bonus auf Fertigkeitswürfe zu erhalten.
+- **Stufe 3: Kämpfer-Unterklasse:** Wähle eine Spezialisierung.
+- **Stufe 4: ASI/Talent.**
+- **Stufe 5: Zusätzlicher Angriff.** (Später bis zu 4).
+- **Stufe 6: Zusätzliches Talent.** (Spezialmerkmal des Kämpfers).
+- **Stufe 9: Indomitable:** Reroll einer Rettungswurfes mit Bonus = Stufe.
+
+**Unterklassen:**
+- **Champion:** Level 3: Verbesserter Kritischer Treffer (19-20). Level 6: Bemerkenswerter Athlet (Heldentat-Rerolls).
+- **Kampfmeister (Battle Master):** Level 3: Überlegenheitswürfel (d8) und Manöver (z.B. Entwaffnen, Parieren). Level 6: Schüler des Krieges.
+- **Psi-Krieger (Psi Warrior):** Level 3: Psionische Kraft (Würfel für Schutz/Schaden/Bewegung).
+- **Eldritch Knight (Mystischer Ritter):** Level 3: Zauberwirken (Intelligenz). Level 6: Waffenbindung.
+
+---
+
+### MÖNCH (Monk)
+**Rolle:** Flinker Kämpfer mit spiritueller Kraft.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Rettungswürfe:** Stärke, Geschicklichkeit.
+- **Waffen:** Einfache Waffen, Kampfstab etc.
+- **Rüstungen:** Keine.
+- **Fertigkeiten:** Wähle 2: Akrobatik, Athletik, Geschichte, Motiv erkennen, Religion, Heimlichkeit.
+
+**Klassenmerkmale:**
+- **Stufe 1: Kampfkünste:** Würfel (d6, später bis d12) für unbewaffnete Schläge. Nutze Geschick statt Stärke. Bonus-Aktion-Schlag.
+- **Stufe 1: Rüstungslose Verteidigung:** RK = 10 + Ges-Mod + Wei-Mod.
+- **Stufe 2: Fokus (Ki):** Erhalte Fokuspunkte (= Stufe). Nutze für: Patient Defense (BA Ausweichen), Step of the Wind (BA Rückzug/Spurt), Flurry of Blows (2 BA Schläge).
+- **Stufe 2: Unarmored Movement:** +3m Bewegungsrate (ohne Rüstung).
+- **Stufe 3: Mönchs-Unterklasse.**
+- **Stufe 3: Geschosse abwehren:** Reaktion. Reduziere Schaden von Fernkampfangriffen.
+- **Stufe 5: Zusätzlicher Angriff.**
+- **Stufe 5: Betäubender Schlag (Stunning Strike):** Nutze Fokus, um Gegner zu betäuben.
+- **Stufe 14: Diamantene Seele:** Übung in ALLEN Rettungswürfen.
+
+**Unterklassen:**
+- **Offene Hand (Open Hand):** Level 3: Flurry of Blows-Zusatzeffekte (Umwerfen, Wegstoßen, Reaktion unterbinden). Level 6: Ganzheit des Körpers (Heilung).
+- **Elemente (Elements):** Level 3: Elementare Reichweite (Angriffe auf Distanz + Schadenstyp wählen). Level 6: Elementarer Ausbruch.
+- **Gnade (Mercy):** Level 3: Hände der Heilung/Hände des Leids.
+- **Schatten (Shadow):** Level 3: Schattengestalt (Dunkelsicht, Zauber: Dunkelheit etc.). Level 6: Schattenschritt (Teleportation).
+
+---
+
+### PALADIN (Paladin)
+**Rolle:** Heiliger Krieger mit Eid.
+- **Trefferwürfel:** 1W10 pro Stufe.
+- **Rettungswürfe:** Weisheit, Charisma.
+- **Waffen:** Einfache Waffen, Kriegswaffen.
+- **Rüstungen:** Alle Rüstungen, Schilde.
+- **Fertigkeiten:** Wähle 2: Athletik, Motiv erkennen, Einschüchtern, Überzeugen, Religion, Heilkunde.
+
+**Klassenmerkmale:**
+- **Stufe 1: Handauflegen (Lay on Hands):** Heile Trefferpunkte (Pool = 5 * Stufe).
+- **Stufe 1: Zauberwirken:** Attribut: Charisma. Fokus: Heiliges Symbol. (In 2024 ab Stufe 1!).
+- **Stufe 1: Waffenmeisterung:** Beherrsche 2 Waffenarten.
+- **Stufe 2: Göttliches Niederstrecken (Divine Smite):** Nutze Zauberplatz, um zusätzlichem Strahlenschaden (2W8 + 1W8 pro Grad) zu verursachen.
+- **Stufe 2: Kampfstil.**
+- **Stufe 3: Paladin-Unterklasse (Eid).**
+- **Stufe 3: Untote vertreiben (CD).**
+- **Stufe 5: Zusätzlicher Angriff.**
+- **Stufe 6: Aura des Schutzes:** Bonus auf Rettungswürfe für dich und Gefährten (Radius 3m) in Höhe deines Charisma-Modifikators.
+
+**Unterklassen (Eid der...):**
+- **Hingabe (Devotion):** Level 3: Heilige Waffe (CD-Bonus auf Trefferwurf). Level 6: Aura der Hingabe (Furcht-Resistenz).
+- **Rache (Vengeance):** Level 3: Gelöbnis der Feindschaft (Vorteil gegen ein Ziel). Level 6: Unnachgiebige Verfolgung.
+- **Uralten (Ancients):** Level 3: Zorn der Natur. Level 6: Aura der Behütung (Resistenz gegen Zauberschaden).
+- **Ruhm (Glory):** Level 3: Peerless Athlete. Level 6: Aura of Alacrity (+3m Speed).
+
+---
+
+### WALDLÄUFER (Ranger)
+**Rolle:** Jäger und Natur-Experte.
+- **Trefferwürfel:** 1W10 pro Stufe.
+- **Rettungswürfe:** Stärke, Geschicklichkeit.
+- **Waffen:** Einfache Waffen, Kriegswaffen.
+- **Rüstungen:** Leichte/Mittelschwere Rüstung, Schilde.
+- **Fertigkeiten:** Wähle 3: Athletik, Heimlichkeit, Mit Tieren umgehen, Motiv erkennen, Nachforschungen, Naturkunde, Überlebenskunst, Wahrnehmung.
+
+**Klassenmerkmale:**
+- **Stufe 1: Zauberwirken:** Attribut: Weisheit. Fokus: Druidischer Fokus. (In 2024 ab Stufe 1!).
+- **Stufe 1: Erzfeind (Favored Enemy):** Du hast "Zeichen des Jägers" (Hunter's Mark) stets vorbereitet. PB-mal kostenlos wirken.
+- **Stufe 1: Waffenmeisterung:** Beherrsche 2 Waffenarten.
+- **Stufe 2: Geschickte Erkundung (Deft Explorer):** Expertisen in 1 Fertigkeit + Zusatzsprachen.
+- **Stufe 2: Kampfstil.**
+- **Stufe 3: Waldläufer-Unterklasse.**
+- **Stufe 5: Zusätzlicher Angriff.**
+- **Stufe 6: Vagabund:** +3m Speed + Kletter-/Schwimmrate.
+- **Stufe 14: Naturschleier:** Bonusaktion Unsichtbarkeit bis zum Ende deines nächsten Zugs.
+
+**Unterklassen:**
+- **Jäger (Hunter):** Level 3: Beute des Jägers (Hordenbrecher oder Koloss-Schlächter). Level 6: Defensive Taktiken.
+- **Herr der Tiere (Beast Master):** Level 3: Urbegleiter (Tier des Landes/Flug/Meeres). Level 7: Außergewöhnliches Training.
+- **Düsterpirscher (Gloom Stalker):** Level 3: Furchterregender Lauerjäger (Bonus auf Initiative + Zusatzschaden/Bewegung im 1. Zug). Level 3: Schattensicht (Dunkelsicht 18m).
+- **Feenwanderer (Fey Wanderer):** Level 3: Außerweltlicher Glanz (Wei-Mod auf Cha-Würfe). Level 3: Grässliche Schläge (Extra Psychischer Schaden).
+
+---
+
+### SCHURKE (Rogue)
+**Rolle:** Experte für Heimlichkeit und Präzisionsschläge.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Rettungswürfe:** Geschicklichkeit, Intelligenz.
+- **Waffen:** Einfache Waffen, Kriegswaffen mit Eigenschaft Finesse, Kampfstab etc. (In 2024: Einfache Waffen + Martial Weapons with Finesse).
+- **Rüstungen:** Leichte Rüstung.
+- **Fertigkeiten:** Wähle 4: Akrobatik, Athletik, Täuschung, Motiv erkennen, Einschüchtern, Nachforschungen, Wahrnehmung, Auftreten, Überzeugen, Heimlichkeit, Fingerfertigkeit.
+
+**Klassenmerkmale:**
+- **Stufe 1: Hinterhältiger Angriff (Sneak Attack):** +1W6 (bis +10W6) Schaden bei Vorteil oder Verbündetem am Ziel. Nur mit Finesse- oder Fernkampfwaffen.
+- **Stufe 1: Diebessprache (Thieves' Cant).**
+- **Stufe 1: Expertisen:** Wähle 2 Fertigkeiten für doppelten Übungsbonus.
+- **Stufe 1: Waffenmeisterung:** Beherrsche 2 Waffenarten.
+- **Stufe 2: Listige Aktion (Cunning Action):** Bonusaktion für Spurt, Rückzug oder Verstecken.
+- **Stufe 3: Schurken-Unterklasse.**
+- **Stufe 5: Unheimliches Ausweichen (Uncanny Dodge):** Reaktion. Halbiere Schaden eines Angriffs.
+- **Stufe 7: Entrinnen (Evasion):** Kein Schaden bei bestandenem Geschick-RW, halber bei nicht bestandenem.
+- **Stufe 11: Zuverlässiges Talent (Reliable Talent):** Würfel von 9 oder niedriger zählen als 10 bei Fertigkeiten mit Übung.
+
+**Unterklassen:**
+- **Dieb (Thief):** Level 3: Flinke Finger (Bonusaktion für Fingerfertigkeit/Gegenstand nutzen). Level 3: Kletteraffe (Kletterrate = Speed). Level 13: Magischen Gegenstand verwenden.
+- **Assassine (Assassin):** Level 3: Meuchelmörder (Vorteil gegen Gegner, die noch nicht dran waren). Level 3: Tödlicher Schlag.
+- **Arkaner Betrüger (Arcane Trickster):** Level 3: Zauberwirken (Intelligenz). Level 3: Magierhand-Legende.
+- **Seelenmesser (Soulknife):** Level 3: Psionische Kraft (Psi-Würfel). Level 3: Psychische Klingen (Manifestiere Klingen aus Energie).
+
+---
+
+### ZAUBERER (Sorcerer)
+**Rolle:** Angeborener Zauberwirker mit Metamagie.
+- **Trefferwürfel:** 1W6 pro Stufe.
+- **Rettungswürfe:** Konstitution, Charisma.
+- **Waffen:** Einfache Waffen.
+- **Rüstungen:** Keine.
+- **Fertigkeiten:** Wähle 2: Arkane Kunde, Täuschung, Motiv erkennen, Einschüchtern, Überzeugen, Religion.
+
+**Klassenmerkmale:**
+- **Stufe 1: Zauberwirken:** Attribut: Charisma. Fokus: Arkaner Fokus.
+- **Stufe 1: Angeborener Zauber:** Bonusaktion. Erhöhe Zauber-SG und Trefferchance für 1 Minute. (PB Nutzungen pro LR).
+- **Stufe 2: Metamagie:** Wähle 2 Optionen (z.B. Beschleunigter Zauber, Distanz-Zauber, Sorgfältiger Zauber).
+- **Stufe 2: Magie anzapfen (Font of Magic):** Erhalte Zauberpunkte (= Stufe). Nutze für Metamagie oder Erstellung von Zauberplätzen.
+- **Stufe 3: Zauberer-Unterklasse.**
+- **Stufe 5: Sorcerous Restoration:** Regeneriere Zauberpunkte bei Kurzer Rast.
+
+**Unterklassen:**
+- **Drachenblut-Linie (Draconic Bloodline):** Level 3: Drachen-Resistenz (RK = 13 + Ges, Extra TP). Level 6: Elementare Affinität.
+- **Wilde Magie (Wild Magic):** Level 3: Woge Wilder Magie (Zufallseffekte). Level 3: Die Gezeiten des Chaos (Vorteil erzwingen).
+- **Aberrante Übereinkunft (Aberrant Sorcery):** Level 3: Psionisches Zaubern. Level 6: Psychische Abwehr.
+- **Uhrwerk-Spross (Clockwork Sorcery):** Level 3: Ordnung regenerieren.
+
+---
+
+### HEXENMEISTER (Warlock)
+**Rolle:** Zauberwirker mit Pakt und Infiltration.
+- **Trefferwürfel:** 1W8 pro Stufe.
+- **Rettungswürfe:** Weisheit, Charisma.
+- **Waffen:** Einfache Waffen.
+- **Rüstungen:** Leichte Rüstung.
+- **Fertigkeiten:** Wähle 2: Arkane Kunde, Täuschung, Geschichte, Einschüchtern, Motiv erkennen, Naturkunde, Religion.
+
+**Klassenmerkmale:**
+- **Stufe 1: Paktmagie:** Attribut: Charisma. Fokus: Arkaner Fokus. Zauberplätze regenerieren bei Kurzer Rast.
+- **Stufe 1: Eldritch Invocations (Geheimnisvolle Anrufungen):** Wähle 2 (später bis 8). z.B. Agonizing Blast (+Cha auf Eldritch Blast), Armor of Shadows (Mage Armor ohne Kosten).
+- **Stufe 1: Paktgabe (Pact Boon):** Wähle (A) Klinge (Waffe beschwören), (B) Kette (Besonderer Vertrauter) oder (C) Buch (Zusatz-Cantrips/Rituale).
+- **Stufe 3: Hexenmeister-Unterklasse (Schutzherr).**
+- **Stufe 11: Mystisches Arkanum:** Wähle einen Zauber des 6. Grads (später bis 9.), den du einmal pro LR ohne Zauberplatz wirken kannst.
+
+**Unterklassen (Schutzherr...):**
+- **Unhold (Fiend):** Level 3: Segen des Dunklen (Temp HP bei Kill). Level 6: Eigenes Glück erzwingen.
+- **Großer Alter (Great Old One):** Level 3: Erwachte Telepathie. Level 6: Psychischer Schutz.
+- **Erzfee (Archfey):** Level 3: Nebeliger Entzug (BA Teleportation nach Zauber). Level 6: Beguiling Defenses.
+- **Celestischer (Celestial):** Level 3: Heilendes Licht (Heilung als BA). Level 6: Strahlende Seele.
+
+---
+
+### MAGIER (Wizard)
+**Rolle:** Gebildeter Meister der arkanischen Magie.
+- **Trefferwürfel:** 1W6 pro Stufe.
+- **Rettungswürfe:** Intelligenz, Weisheit.
+- **Waffen:** Dolche, Kampfstäbe, leichte Armbrüste etc. (Einfache Waffen).
+- **Rüstungen:** Keine.
+- **Fertigkeiten:** Wähle 2: Arkane Kunde, Geschichte, Motiv erkennen, Naturkunde, Religion, Medizin.
+
+**Klassenmerkmale:**
+- **Stufe 1: Zauberwirken:** Attribut: Intelligenz. Fokus: Arkaner Fokus. Nutzt Zauberbuch.
+- **Stufe 1: Arkane Erholung:** Regeneriere Zauberplätze (Summe der Grade = halbe Stufe) während einer Kurzen Rast (einmal pro LR).
+- **Stufe 1: Ritualwirken:** Kann Zauber als Rituale wirken, wenn sie im Buch stehen.
+- **Stufe 2: Gelehrter (Scholar):** Expertise in einer Wissens-Fertigkeit (z.B. Arkane Kunde).
+- **Stufe 3: Magier-Unterklasse (Schule).**
+- **Stufe 18: Zaubermeisterschaft:** Wähle einen Zauber des 1. und 2. Grads, den du beliebig oft ohne Zauberplatz wirken kannst.
+
+**Unterklassen (Schule der...):**
+- **Hervorrufung (Evocation):** Level 3: Zauber formen (Gefährten vor Schaden schützen). Level 6: Mächtige Cantrips (Halber Schaden bei Misserfolg).
+- **Abjuration (Abwehr):** Level 3: Arkane Station (Schild, der Schaden absorbiert). Level 6: Projektion der Station.
+- **Divination (Erkenntnis):** Level 3: Portent (Würfelergebnisse "speichert" und später einsetzen). Level 6: Experten-Seher.
+- **Illusion:** Level 3: Verbesserte Illusion. Level 6: Formbare Illusionen.
+
+---
+
+## 2. Spezies (Rassen)
+
+### Aasimar
+- **Größe:** Mittel oder Klein. **Geschwindigkeit:** 9m.
+- **Dunkelsicht:** 18m.
+- **Himmlische Resistenz:** Resistenz gegen Nekrotischen und Strahlenschaden.
+- **Heilende Hände:** Aktion. Heile (Übungswürfel d4 * PB) TP. (1/LR).
+- **Lichtbringer:** Kenne den Zaubertrick "Licht".
+- **Himmlische Offenbarung:** Ab Stufe 3: Bonusaktion Transformation (Flügel, Strahlen o.ä.) für 1 Min.
+
+### Drachenblütler (Dragonborn)
+- **Größe:** Mittel. **Geschwindigkeit:** 9m.
+- **Drachensippe:** Wähle Elementtyp (Feuer, Kälte etc.) für Odemwaffe und Resistenz.
+- **Odemwaffe:** Aktion (ersetzt einen Angriff). 15ft Kegel oder 30ft Linie. Schaden skaliert mit Stufe. (PB Nutzungen pro LR).
+- **Resistenz:** Gegen den gewählten Elementtyp.
+- **Flug (Stufe 5):** Kann für 10 Min. fliegen (1/LR).
+
+### Elf
+- **Größe:** Mittel. **Geschwindigkeit:** 9m (Waldelf 10,5m).
+- **Dunkelsicht:** 18m.
+- **Feenblut:** Vorteil gegen Charm, Immun gegen Schlafmagie.
+- **Trance:** 4 Stunden Schlaf reichen.
+- **Geschärfte Sinne:** Übung in Wahrnehmung.
+- **Abstammung:**
+    - **Drow:** Zauber: Tanzende Lichter, Dunkelheit (ab Stufe 5).
+    - **Hochelf:** Zusätzlicher Magier-Cantrip, Zauber wechseln nach LR.
+    - **Waldelf:** +1,5m Speed, Zauber: Langstricher, Pass Without Trace (Stufe 5).
+
+### Gnom
+- **Größe:** Klein. **Geschwindigkeit:** 9m.
+- **Gnom-Schlauheit:** Vorteil auf Intelligenz-, Weisheits- und Charisma-Rettungswürfe gegen Magie.
+- **Abstammung:**
+    - **Felsgnom:** Werkzeugbau-Begabung (Gegenstände wie Feuerstein, Musikdose basteln).
+    - **Waldgnom:** Kenne "Minor Illusion", spreche mit kleinen Tieren.
+
+### Goliath
+- **Größe:** Mittel. **Geschwindigkeit:** 10,5m.
+- **Riesen-Erbe:** Wähle Vorfahre (z.B. Steingigant für RK, Feuergigant für Extraschaden). (PB Nutzungen pro LR).
+- **Große Statur:** Zählt als eine Kategorie größer für Tragekapazität.
+- **Steinernes Fell:** Reaktion. Reduziere Schaden um 1W12 + Konst-Mod.
+
+### Halbling
+- **Größe:** Klein. **Geschwindigkeit:** 9m.
+- **Glückspilz:** Bei einer 1 auf dem W20: Reroll (muss neuem Ergebnis folgen).
+- **Mutig:** Vorteil auf Rettungswürfe gegen Furcht.
+- **Halbling-Gewandtheit:** Kann durch Felder von Kreaturen ziehen, die größer sind.
+- **Natürliche Verborgenheit:** Kann sich hinter größeren Kreaturen verstecken.
+
+### Mensch (Human)
+- **Größe:** Mittel. **Geschwindigkeit:** 9m.
+- **Vielseitig:** Erhalte ein ZUSÄTZLICHES Herkunftstalent (z.B. Skilled oder Tough).
+- **Geschickt:** Übung in einer zusätzlichen Fertigkeit deiner Wahl.
+- **Inspirierende Gegenwart:** Erhalte Inspiration nach jeder Langen Rast.
+
+### Ork
+- **Größe:** Mittel. **Geschwindigkeit:** 9m.
+- **Dunkelsicht:** 18m.
+- **Adrenalinrausch:** Bonusaktion Spurt + Temp HP erhalten. (PB Nutzungen pro LR).
+- **Standhaftigkeit:** Wenn du auf 0 TP fällst: Einmalig auf 1 TP bleiben. (1/LR).
+- **Tragekapazität:** Zählt als eine Kategorie größer.
+
+### Tiefling
+- **Größe:** Mittel oder Klein. **Geschwindigkeit:** 9m.
+- **Dunkelsicht:** 18m.
+- **Andauernde Resistenz:** Resistenz gegen Feuerschaden.
+- **Magisches Erbe:**
+    - **Infernal (Hölle):** Zauber: Feuerbolzen, Höllischer Tadel.
+    - **Abyssal (Abgrund):** Zauber: Gift versprühen, Strahl des Siechtums.
+    - **Chthonic:** Zauber: Chill Touch, False Life.
+
+### Zwerg (Dwarf)
+- **Größe:** Mittel. **Geschwindigkeit:** 9m.
+- **Dunkelsicht:** 36m (in 2024 verbessert!).
+- **Zwergen-Zähigkeit:** +1 TP pro Stufe.
+- **Zwergen-Resistenz:** Vorteil gegen Gift, Resistenz gegen Giftschaden.
+- **Steingespür:** Bonusaktion. Erhalte "Erschütterungssinn" (Tremorsense) auf Steinböden für 10 Min.
+
+---
+
+## 3. Hintergründe (Backgrounds)
+
+Jeder Hintergrund gewährt spezifische Boni bei der Charaktererstellung.
+
+### Allgemeine Boni:
+- **Attribute:** +2/+1 auf zwei Werte ODER +1/+1/+1 auf drei Werte (Werte sind im PDF meist vorgegeben, z.B. Soldat: Stärke & Konstitution).
+- **Herkunftstalent (Origin Feat):** Ein Talent der Stufe 1.
+- **Fertigkeiten:** Übung in 2 vorgegebenen Fertigkeiten.
+- **Werkzeuge:** Übung in 1 Werkzeug.
+- **Ausrüstung:** Ein Startpaket (Waffen, Kleidung, Gold) oder pauschal 50 GM.
+
+### Beispiel-Hintergründe:
+- **Adeliger (Noble):** Attribute: Stärke, Charisma. Talent: Skilled. Fertigkeiten: Geschichte, Überzeugen. Werkzeug: Spieleset.
+- **Akolyth (Acolyte):** Attribute: Weisheit, Intelligenz. Talent: Magic Initiate (Cleric). Fertigkeiten: Motiv erkennen, Religion. Werkzeug: Kalligraphiewerkzeug.
+- **Krimineller (Criminal):** Attribute: Geschick, Intelligenz. Talent: Alert. Fertigkeiten: Heimlichkeit, Täuschung. Werkzeug: Diebeswerkzeug.
+- **Soldat (Soldier):** Attribute: Stärke, Konstitution. Talent: Tough. Fertigkeiten: Athletik, Einschüchtern. Werkzeug: Spieleset.
+- **Weiser (Sage):** Attribute: Intelligenz, Weisheit. Talent: Magic Initiate (Wizard). Fertigkeiten: Arkane Kunde, Geschichte. Werkzeug: Kalligraphiewerkzeug.
+
+---
+
+## 4. Stufenaufstieg (Level-Up)
+
+Das System muss den Aufstieg automatisieren.
+
+### Trefferpunkte (TP):
+- Bei jedem Level: Addiere (Klassen-Trefferwürfel Durchschnitt + Konstitutionsmodifikator) zu den maximalen TP.
+- Beispiel Barbar: 7 + Konst-Mod.
+
+### Übungsbonus (PB):
+- Stufe 1-4: +2
+- Stufe 5-8: +3
+- Stufe 9-12: +4
+- Stufe 13-16: +5
+- Stufe 17-20: +6
+
+### Attributswert-Verbesserung (ASI) & Talente:
+- In der Regel auf Stufen 4, 8, 12, 16 und 19.
+- Kämpfer erhalten zusätzlich auf Stufe 6.
+- Schurken erhalten zusätzlich auf Stufe 10.
+- Wahl zwischen: +2 auf ein Attribut, +1 auf zwei Attribute oder ein Talent (viele Talente geben zusätzlich +1 auf einen Wert).
+
+### Multiclassing (Optional):
+- Benötigt Mindestwerte (meist 13 im Hauptattribut beider Klassen).
+
+---
+
+## 5. Charakterwerte & Formeln für die App
+
+- **Rüstungsklasse (RK):** 10 + Ges-Mod (ohne Rüstung). Mit Rüstung: Wert der Rüstung + Modifikator (je nach Typ limitiert).
+- **Initiative:** W20 + Ges-Mod.
+- **Passive Wahrnehmung:** 10 + Wahrnehmungs-Bonus.
+- **Nahkampf-Angriff:** W20 + Stärke-Mod + PB (wenn geübt).
+- **Fernkampf-Angriff:** W20 + Geschick-Mod + PB (wenn geübt).
+- **Zauber-SG:** 8 + PB + Zauberattribut-Mod.
+- **Zauber-Angriff:** PB + Zauberattribut-Mod.
