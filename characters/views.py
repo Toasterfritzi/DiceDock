@@ -86,7 +86,7 @@ def create_character(request):
                 character.hit_dice = "1d8"
 
             # 3. Hintergrund-Boni (Background Bonuses)
-            # based on typical 2024 D&D backgrounds (+2 / +1 or +1/+1/+1)
+            # Comprehensive list of all 16 typical 2024 D&D backgrounds
             b_ground = form.cleaned_data.get('background', '').lower()
             
             if 'adeliger' in b_ground or 'noble' in b_ground:
@@ -95,29 +95,50 @@ def create_character(request):
             elif 'akolyth' in b_ground or 'acolyte' in b_ground:
                 character.wisdom += 2
                 character.intelligence += 1
+            elif 'handwerker' in b_ground or 'artisan' in b_ground:
+                character.strength += 2
+                character.dexterity += 1
+            elif 'scharlatan' in b_ground or 'charlatan' in b_ground:
+                character.charisma += 2
+                character.dexterity += 1
+            elif 'krimineller' in b_ground or 'criminal' in b_ground:
+                character.dexterity += 2
+                character.intelligence += 1
+            elif 'unterhalter' in b_ground or 'entertainer' in b_ground:
+                character.charisma += 2
+                character.dexterity += 1
             elif 'bauer' in b_ground or 'farmer' in b_ground or 'peasant' in b_ground:
                 character.constitution += 2
                 character.wisdom += 1
+            elif 'wache' in b_ground or 'guard' in b_ground:
+                character.strength += 2
+                character.wisdom += 1
+            elif 'fremder' in b_ground or 'guide' in b_ground or 'outlander' in b_ground:
+                character.wisdom += 2
+                character.dexterity += 1
             elif 'einsiedler' in b_ground or 'hermit' in b_ground:
                 character.wisdom += 2
                 character.constitution += 1
             elif 'händler' in b_ground or 'merchant' in b_ground:
                 character.charisma += 2
                 character.intelligence += 1
-            elif 'krimineller' in b_ground or 'criminal' in b_ground:
-                character.dexterity += 2
-                character.intelligence += 1
-            elif 'scharlatan' in b_ground or 'charlatan' in b_ground:
-                character.charisma += 2
-                character.dexterity += 1
-            elif 'soldat' in b_ground or 'soldier' in b_ground:
-                character.strength += 2
-                character.constitution += 1
             elif 'weiser' in b_ground or 'sage' in b_ground:
                 character.intelligence += 2
                 character.wisdom += 1
+            elif 'seefahrer' in b_ground or 'sailor' in b_ground:
+                character.dexterity += 2
+                character.wisdom += 1
+            elif 'gelehrter' in b_ground or 'scribe' in b_ground:
+                character.intelligence += 2
+                character.wisdom += 1
+            elif 'soldat' in b_ground or 'soldier' in b_ground:
+                character.strength += 2
+                character.constitution += 1
+            elif 'straßenkind' in b_ground or 'urchin' in b_ground or 'wayfarer' in b_ground:
+                character.dexterity += 2
+                character.wisdom += 1
             else:
-                # Fallback bonus (freely assigned if not matched, here we just buff top stats)
+                # Fallback bonus
                 if character.character_class.lower() in ['barbar', 'kämpfer', 'paladin']:
                     character.strength += 2
                     character.constitution += 1
@@ -137,14 +158,24 @@ def create_character(request):
             hit_dice_val = int(character.hit_dice.split('d')[1])
             con_mod = (character.constitution - 10) // 2
             character.max_hp = hit_dice_val + con_mod
+            
+            # Race-specific HP modifications
+            c_race = form.cleaned_data.get('race', '').lower()
+            if 'zwerg' in c_race or 'dwarf' in c_race:
+                character.max_hp += 1
+                
             character.current_hp = character.max_hp
             
             # Base AC (unarmored) = 10 + DEX mod
             dex_mod = (character.dexterity - 10) // 2
             character.armor_class = 10 + dex_mod
             
-            # Speed default (can be updated later by race)
+            # Speed default (updated later by race)
             character.speed = 30
+            if 'waldelf' in c_race or 'wood elf' in c_race:
+                character.speed = 35
+            elif 'goliath' in c_race:
+                character.speed = 35
 
             character.save()
             return redirect('character_detail', pk=character.pk)
@@ -169,6 +200,12 @@ def character_levelup(request, pk):
         try:
             hit_dice_type = int(character.hit_dice.split('d')[1])
             hp_increase = (hit_dice_type // 2) + 1 + character.constitution_mod
+            
+            # Race-specific HP modifications
+            c_race = character.race.lower()
+            if 'zwerg' in c_race or 'dwarf' in c_race:
+                hp_increase += 1
+                
             character.max_hp += hp_increase
             character.current_hp = character.max_hp
         except (ValueError, IndexError):
