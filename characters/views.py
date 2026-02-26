@@ -224,6 +224,19 @@ def character_levelup(request, pk):
             pb = 4
         elif character.level >= 5:
             pb = 3
+            
+        # Check for Ability Score Improvement (ASI)
+        c_class = character.character_class.lower()
+        if 'kämpfer' in c_class or 'fighter' in c_class:
+            asi_levels = [4, 6, 8, 12, 14, 16, 19]
+        elif 'schurke' in c_class or 'rogue' in c_class:
+            asi_levels = [4, 8, 10, 12, 16, 19]
+        else:
+            asi_levels = [4, 8, 12, 16, 19]
+            
+        if character.level in asi_levels:
+            character.available_stat_points += 2
+        
         
         character.save()
         return redirect('character_detail', pk=character.pk)
@@ -251,10 +264,15 @@ def update_character_stat(request, pk):
         
         if action == 'increase':
             if current_val < 30:
-                setattr(character, stat, current_val + 1)
+                if character.available_stat_points > 0:
+                    setattr(character, stat, current_val + 1)
+                    character.available_stat_points -= 1
+                else:
+                    return JsonResponse({'success': False, 'error': 'Keine verfügbaren Attributspunkte vorhanden.'}, status=400)
         elif action == 'decrease':
             if current_val > 1:
                 setattr(character, stat, current_val - 1)
+                character.available_stat_points += 1
         else:
             return JsonResponse({'success': False, 'error': 'Invalid action'}, status=400)
             
@@ -283,7 +301,8 @@ def update_character_stat(request, pk):
             'new_mod': new_mod_str,
             'new_max_hp': character.max_hp,
             'new_current_hp': character.current_hp,
-            'new_ac': character.armor_class
+            'new_ac': character.armor_class,
+            'new_available_points': character.available_stat_points
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)

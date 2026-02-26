@@ -350,9 +350,15 @@
         <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div class="lg:col-span-3 space-y-6 order-2 lg:order-1">
                 <div class="glass-panel glass-highlight rounded-2xl p-5 space-y-4">
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2 mb-4">
-                        <span class="material-symbols-outlined text-sm">bar_chart</span> Attributes
-                    </h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">bar_chart</span> Attributes
+                        </h3>
+                        <span id="available-stat-points"
+                            class="px-2 py-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-wider border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                            Available Points: {{ character.available_stat_points }}
+                        </span>
+                    </div>
                     <div id="stat-row-strength" onclick="openStatModal('strength', {{ character.strength }})"
                         class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
                         <div class="flex items-center gap-3">
@@ -845,6 +851,10 @@
                         if (data.new_ac !== undefined) {
                             const acEl = document.getElementById('base-ac');
                             if (acEl) acEl.innerText = data.new_ac;
+                        }
+                        if (data.new_available_points !== undefined) {
+                            const ptsEl = document.getElementById('available-stat-points');
+                            if (ptsEl) ptsEl.innerText = `Available Points: ${data.new_available_points}`;
                         }
                     } else {
                         alert('Error updating stat: ' + data.error);

@@ -21,6 +21,7 @@ class Character(models.Model):
     intelligence = models.IntegerField(default=10)
     wisdom = models.IntegerField(default=10)
     charisma = models.IntegerField(default=10)
+    available_stat_points = models.IntegerField(default=0)
     
     # Kampf & Leben
     armor_class = models.IntegerField(default=10)
