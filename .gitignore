@@ -22,3 +22,7 @@ pdf2txt.py
 # OS
 .DS_Store
 Thumbs.db
+
+# Rulebook Extraction
+page_*.png
+extract_pages.py
