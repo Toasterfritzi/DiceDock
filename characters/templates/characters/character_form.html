@@ -1,52 +1,370 @@
-{% extends 'characters/base.html' %}
-
-{% block title %}Create Character - DiceDock{% endblock %}
-
-{% block content %}
-<h2>Erstelle einen neuen Charakter</h2>
-<p>Fülle die folgenden Felder aus, um deinen Charakter zu erstellen.</p>
-
-<form method="POST" enctype="multipart/form-data" style="margin-top: 1rem;">
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DiceDock - Character Creation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a855f7", // Vivid Purple/Violet
+                        "primary-glow": "#c084fc",
+                        "background-light": "#f3f4f6", // Cool Gray 100
+                        "background-dark": "#0f1115", // Very dark blue-gray
+                        "surface-dark": "#181b21", // Slightly lighter dark for cards
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(24, 27, 33, 0.65)",
+                        "neon-purple": "#a855f7",
+                        "neon-pink": "#ec4899",
+                        "neon-blue": "#3b82f6",
+                    },
+                    fontFamily: {
+                        display: ["Outfit", "sans-serif"],
+                        body: ["Outfit", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        xl: "1rem",
+                        '2xl': "1.5rem",
+                        '3xl': "2rem",
+                    },
+                    backgroundImage: {
+                        'neon-gradient': 'radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15) 0%, rgba(15, 17, 21, 0) 70%)',
+                        'liquid-blob': 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+                        'glass-sheen': 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 9s ease-in-out 1s infinite',
+                        'blob-spin': 'blob-spin 20s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'blob-spin': {
+                            '0%': { transform: 'rotate(0deg) scale(1)' },
+                            '33%': { transform: 'rotate(120deg) scale(1.1)' },
+                            '66%': { transform: 'rotate(240deg) scale(0.9)' },
+                            '100%': { transform: 'rotate(360deg) scale(1)' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #050608;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(56, 11, 89, 0.3) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(22, 5, 48, 0.3) 0px, transparent 50%);
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 21, 0.35);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 4px 30px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
+        }
+        .glass-panel-heavy {
+            background: rgba(20, 20, 30, 0.5);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #a855f7;
+            box-shadow:
+                0 0 0 1px rgba(168, 85, 247, 0.5),
+                0 0 15px rgba(168, 85, 247, 0.2);
+            outline: none;
+        }
+        .text-neon {
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        }
+        .text-neon-pink {
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+        }
+        .liquid-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative text-gray-100 selection:bg-primary selection:text-white">
+<div class="liquid-orb top-[-10%] left-[-10%] w-[800px] h-[800px] bg-purple-600 animate-pulse-slow"></div>
+<div class="liquid-orb top-[20%] right-[-15%] w-[600px] h-[600px] bg-blue-600 animate-float" style="animation-delay: 1s;"></div>
+<div class="liquid-orb bottom-[-20%] left-[20%] w-[700px] h-[700px] bg-pink-600 animate-float-delayed" style="animation-delay: 2s;"></div>
+<nav class="fixed top-0 w-full z-50 px-6 py-4">
+<div class="glass-panel max-w-7xl mx-auto rounded-2xl px-6 py-3 flex justify-between items-center">
+<a href="{% url 'dashboard' %}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary text-3xl animate-float" style="font-variation-settings: 'FILL' 1;">casino</span>
+<span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-500 tracking-tight text-neon">DiceDock</span>
+</a>
+<div class="flex items-center gap-6 text-sm font-medium">
+{% if user.is_authenticated %}
+<span class="text-gray-400">Welcome, {{ user.username }}!</span>
+<form action="{% url 'logout' %}" method="post" class="inline">
     {% csrf_token %}
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div>
-            <h3>Grunddaten</h3>
-            <p>{{ form.name.label_tag }}<br>{{ form.name }}</p>
-            <p>{{ form.image.label_tag }}<br>{{ form.image }}</p>
-            <p>{{ form.character_class.label_tag }}<br>{{ form.character_class }}</p>
-            <p>{{ form.subclass.label_tag }}<br>{{ form.subclass }}</p>
-            <p>{{ form.race.label_tag }}<br>{{ form.race }}</p>
-            <p>{{ form.background.label_tag }}<br>{{ form.background }}</p>
-            <p>{{ form.alignment.label_tag }}<br>{{ form.alignment }}</p>
-        </div>
-
-        <div>
-            <h3>Attribute</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <p>{{ form.strength.label_tag }}<br>{{ form.strength }}</p>
-                <p>{{ form.dexterity.label_tag }}<br>{{ form.dexterity }}</p>
-                <p>{{ form.constitution.label_tag }}<br>{{ form.constitution }}</p>
-                <p>{{ form.intelligence.label_tag }}<br>{{ form.intelligence }}</p>
-                <p>{{ form.wisdom.label_tag }}<br>{{ form.wisdom }}</p>
-                <p>{{ form.charisma.label_tag }}<br>{{ form.charisma }}</p>
-            </div>
-
-            <div
-                style="margin-top: 2rem; background-color: #2c2c2c; padding: 1rem; border-radius: 4px; border: 1px solid #444;">
-                <h3 style="margin-top: 0; color: #bb86fc;">Ausrüstung oder Gold?</h3>
-                <p style="font-size: 0.9em; color: #aaa;">{{ form.equipment_preference.help_text }}</p>
-                {{ form.equipment_preference }}
-            </div>
-        </div>
-    </div>
-
-    <h3 style="margin-top: 2rem;">Persönlichkeit & Hintergrund</h3>
-    <p>{{ form.personality_traits.label_tag }}<br>{{ form.personality_traits }}</p>
-    <p>{{ form.ideals.label_tag }}<br>{{ form.ideals }}</p>
-    <p>{{ form.bonds.label_tag }}<br>{{ form.bonds }}</p>
-    <p>{{ form.flaws.label_tag }}<br>{{ form.flaws }}</p>
-
-    <button type="submit" style="margin-top: 2rem; font-size: 1.1rem; width: 100%;">Charakter erstellen</button>
+    <button type="submit" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider">
+        Logout
+    </button>
 </form>
-{% endblock %}
+{% else %}
+<a href="{% url 'login' %}" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider">Login</a>
+{% endif %}
+</div>
+</div>
+</nav>
+<main class="flex-grow flex items-start justify-center p-4 pt-28 pb-12 relative z-10">
+<div class="glass-panel-heavy w-full max-w-5xl rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+<div class="mb-10 text-center md:text-left relative">
+<h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight text-neon">
+                    Erstelle einen neuen Charakter
+                </h1>
+<p class="text-gray-400 text-lg font-light max-w-2xl">
+                    Schmiede dein Schicksal. Fülle die folgenden Felder aus, um deinen Legende zu beginnen.
+                </p>
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+</div>
+
+{% if form.errors %}
+<div class="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-xl mb-8">
+    <p class="font-bold">Please correct the errors below:</p>
+    <ul class="list-disc list-inside">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form action="" class="space-y-12" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<div class="lg:col-span-7 space-y-10">
+<section>
+<h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">badge</span>
+                                Grunddaten
+                            </h2>
+<div class="space-y-5">
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.name.id_for_label }}">Name</label>
+<input class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 text-base focus:ring-0" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" value="{{ form.name.value|default_if_none:'' }}" placeholder="z.B. Valerius der Kühne" type="text" required/>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1">Character Image</label>
+<div class="glass-input p-2 rounded-xl flex items-center gap-3 group hover:border-primary/50 cursor-pointer transition-colors relative overflow-hidden">
+<input class="absolute inset-0 opacity-0 cursor-pointer z-10" type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}"/>
+<div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">image</span>
+</div>
+<span class="text-sm text-gray-400 group-hover:text-gray-200">Datei auswählen...</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.character_class.id_for_label }}">Character Class</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">swords</span>
+<input class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0" id="{{ form.character_class.id_for_label }}" name="{{ form.character_class.html_name }}" value="{{ form.character_class.value|default_if_none:'' }}" placeholder="Rogue, Wizard..." type="text" required/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.subclass.id_for_label }}">Subclass</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">mediation</span>
+<input class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0" id="{{ form.subclass.id_for_label }}" name="{{ form.subclass.html_name }}" value="{{ form.subclass.value|default_if_none:'' }}" placeholder="Arcane Trickster..." type="text"/>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.race.id_for_label }}">Race</label>
+<input class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0" id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}" value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Dwarf, Human..." type="text" required/>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.background.id_for_label }}">Background</label>
+<input class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0" id="{{ form.background.id_for_label }}" name="{{ form.background.html_name }}" value="{{ form.background.value|default_if_none:'' }}" placeholder="Criminal, Noble..." type="text" required/>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.alignment.id_for_label }}">Alignment</label>
+<input class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0" id="{{ form.alignment.id_for_label }}" name="{{ form.alignment.html_name }}" value="{{ form.alignment.value|default_if_none:'' }}" placeholder="Chaotic Good..." type="text" required/>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">psychology</span>
+                                Persönlichkeit &amp; Hintergrund
+                            </h2>
+<div class="space-y-5">
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.personality_traits.id_for_label }}">Personality Traits</label>
+<textarea class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none" id="{{ form.personality_traits.id_for_label }}" name="{{ form.personality_traits.html_name }}" rows="3">{{ form.personality_traits.value|default_if_none:'' }}</textarea>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.ideals.id_for_label }}">Ideals</label>
+<textarea class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none" id="{{ form.ideals.id_for_label }}" name="{{ form.ideals.html_name }}" rows="3">{{ form.ideals.value|default_if_none:'' }}</textarea>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.bonds.id_for_label }}">Bonds</label>
+<textarea class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none" id="{{ form.bonds.id_for_label }}" name="{{ form.bonds.html_name }}" rows="3">{{ form.bonds.value|default_if_none:'' }}</textarea>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300 ml-1" for="{{ form.flaws.id_for_label }}">Flaws</label>
+<textarea class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none" id="{{ form.flaws.id_for_label }}" name="{{ form.flaws.html_name }}" rows="3">{{ form.flaws.value|default_if_none:'' }}</textarea>
+</div>
+</div>
+</section>
+</div>
+<div class="lg:col-span-5 space-y-10">
+<section class="bg-white/5 rounded-2xl p-6 border border-white/5 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+<h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2 relative z-10">
+<span class="material-symbols-outlined">bar_chart</span>
+                                Attribute
+                            </h2>
+<div class="grid grid-cols-2 gap-4 relative z-10">
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-red-400 mb-2" for="{{ form.strength.id_for_label }}">
+<span class="material-symbols-outlined text-base">fitness_center</span> STR
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-red-500/50 focus:ring-red-500/20" type="number" id="{{ form.strength.id_for_label }}" name="{{ form.strength.html_name }}" value="{{ form.strength.value|default_if_none:'10' }}" required/>
+</div>
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-green-400 mb-2" for="{{ form.dexterity.id_for_label }}">
+<span class="material-symbols-outlined text-base">sprint</span> DEX
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-green-500/50 focus:ring-green-500/20" type="number" id="{{ form.dexterity.id_for_label }}" name="{{ form.dexterity.html_name }}" value="{{ form.dexterity.value|default_if_none:'10' }}" required/>
+</div>
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400 mb-2" for="{{ form.constitution.id_for_label }}">
+<span class="material-symbols-outlined text-base">shield_with_heart</span> CON
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-orange-500/50 focus:ring-orange-500/20" type="number" id="{{ form.constitution.id_for_label }}" name="{{ form.constitution.html_name }}" value="{{ form.constitution.value|default_if_none:'10' }}" required/>
+</div>
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2" for="{{ form.intelligence.id_for_label }}">
+<span class="material-symbols-outlined text-base">auto_stories</span> INT
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-blue-500/50 focus:ring-blue-500/20" type="number" id="{{ form.intelligence.id_for_label }}" name="{{ form.intelligence.html_name }}" value="{{ form.intelligence.value|default_if_none:'10' }}" required/>
+</div>
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal-400 mb-2" for="{{ form.wisdom.id_for_label }}">
+<span class="material-symbols-outlined text-base">visibility</span> WIS
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-teal-500/50 focus:ring-teal-500/20" type="number" id="{{ form.wisdom.id_for_label }}" name="{{ form.wisdom.html_name }}" value="{{ form.wisdom.value|default_if_none:'10' }}" required/>
+</div>
+<div class="stat-card p-3 rounded-xl">
+<label class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-purple-400 mb-2" for="{{ form.charisma.id_for_label }}">
+<span class="material-symbols-outlined text-base">theater_comedy</span> CHA
+                                    </label>
+<input class="glass-input w-full text-center text-xl font-bold py-2 rounded-lg text-white border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20" type="number" id="{{ form.charisma.id_for_label }}" name="{{ form.charisma.html_name }}" value="{{ form.charisma.value|default_if_none:'10' }}" required/>
+</div>
+</div>
+</section>
+<section class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+<div class="relative glass-panel p-6 rounded-2xl border border-primary/20">
+<h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-glow to-pink-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-glow">payments</span>
+                                    Ausrüstung oder Gold?
+                                </h2>
+<p class="text-sm text-gray-400 mb-4">Wähle für den Start zwischen Ausrüstung oder Gold.</p>
+<div class="space-y-3">
+<label class="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer transition-all">
+<div class="flex items-center h-5 mt-0.5">
+<input class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900" name="{{ form.equipment_preference.html_name }}" type="radio" value="equipment" {% if form.equipment_preference.value == 'equipment' or not form.equipment_preference.value %}checked{% endif %}/>
+</div>
+<div class="text-sm">
+<span class="font-medium text-white block mb-0.5">Startausrüstung</span>
+<span class="text-gray-500 text-xs">Standard items for your class</span>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer transition-all">
+<div class="flex items-center h-5 mt-0.5">
+<input class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900" name="{{ form.equipment_preference.html_name }}" type="radio" value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %}/>
+</div>
+<div class="text-sm">
+<span class="font-medium text-white block mb-0.5">Startgold</span>
+<span class="text-gray-500 text-xs">Buy your own items</span>
+</div>
+</label>
+</div>
+</div>
+</section>
+</div>
+</div>
+<div class="pt-8 border-t border-white/5 flex justify-end">
+<button class="w-full md:w-auto md:min-w-[300px] flex justify-center items-center gap-2 py-4 px-8 border border-transparent rounded-2xl shadow-[0_0_20px_rgba(168,85,247,0.4)] text-base font-bold text-white bg-gradient-to-r from-primary to-purple-700 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-gray-900 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] relative overflow-hidden group" type="submit">
+<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_infinite]"></span>
+<span class="material-symbols-outlined">magic_button</span>
+                        Charakter erstellen
+                    </button>
+</div>
+</form>
+</div>
+</main>
+<div class="fixed bottom-0 w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-20"></div>
+
+</body></html>
