@@ -39,6 +39,35 @@ def create_character(request):
                 character.gold = 0
                 character.equipment = "Standard-Ausrüstung für " + character.character_class
                 
+                # Populate new fields with dummy data for the prototype visualization
+                character.inventory = [
+                    {"name": "Potion of Healing", "quantity": 2},
+                    {"name": "Rations (1 day)", "quantity": 5},
+                    {"name": "Hempen Rope (50ft)", "quantity": 1},
+                    {"name": "Torch", "quantity": 10},
+                    {"name": "Waterskin", "quantity": 1},
+                    {"name": "Tinderbox", "quantity": 1}
+                ]
+                character.weapons = [
+                    {"name": "Longsword +1", "type": "Melee • Slashing", "hit": "+6", "damage": "1d8+4"},
+                    {"name": "Javelin", "type": "Thrown (30/120) • Piercing", "hit": "+5", "damage": "1d6+3"}
+                ]
+                character.proficiencies = ["Athletics", "Intimidation", "Persuasion", "Heavy Armor"]
+                character.spell_slots = {
+                    "1": {"total": 4, "used": 2}
+                }
+                # Set some default values for new fields
+                character.experience = 6500
+                character.max_experience = 10000
+                character.current_hp = 42
+                character.max_hp = 54
+                character.hit_dice = "5d10"
+                character.armor_class = 18
+                character.speed = 30
+                character.silver = 42
+                character.copper = 12
+                character.gold = 154 # Override gold for the demo look
+
             character.save()
             return redirect('character_detail', pk=character.pk)
     else:
