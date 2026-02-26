@@ -1,0 +1,107 @@
+{% extends 'characters/base.html' %}
+
+{% block title %}{{ character.name }} - DiceDock{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+        <h1 style="margin: 0; color: #bb86fc;">{{ character.name }}</h1>
+        <h3 style="margin: 0.5rem 0 0 0; color: #aaa; font-weight: normal;">
+            Level {{ character.level }} {{ character.race }} {{ character.character_class }}
+            {% if character.subclass %}({{ character.subclass }}){% endif %}
+        </h3>
+        <p style="margin: 0.5rem 0 0 0; color: #888;">Hintergrund: {{ character.background }} | Gesinnung: {{
+            character.alignment }}</p>
+    </div>
+    {% if character.image %}
+    <img src="{{ character.image.url }}" alt="{{ character.name }}"
+        style="width: 150px; height: 150px; border-radius: 8px; object-fit: cover; border: 2px solid #333;">
+    {% else %}
+    <div
+        style="width: 150px; height: 150px; border-radius: 8px; background-color: #333; display: flex; align-items: center; justify-content: center; color: #666; font-style: italic;">
+        Kein Bild</div>
+    {% endif %}
+</div>
+
+<hr style="border-color: #333; margin: 2rem 0;">
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Stats Column -->
+    <div>
+        <div
+            style="background-color: #2c2c2c; padding: 1rem; border-radius: 8px; border: 1px solid #444; margin-bottom: 2rem;">
+            <h3 style="margin-top: 0; text-align: center; border-bottom: 1px solid #444; padding-bottom: 0.5rem;">
+                Attribute</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">STR</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.strength }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">GES</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.dexterity }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">KON</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.constitution }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">INT</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.intelligence }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">WEI</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.wisdom }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.8em; color: #aaa;">CHA</div>
+                    <div style="font-size: 1.5em; font-weight: bold;">{{ character.charisma }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="background-color: #2c2c2c; padding: 1rem; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-around; text-align: center;">
+            <div>
+                <div style="font-size: 0.8em; color: #aaa;">RK</div>
+                <div style="font-size: 1.5em; font-weight: bold;">{{ character.armor_class }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.8em; color: #aaa;">Bewegung</div>
+                <div style="font-size: 1.5em; font-weight: bold;">{{ character.speed }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.8em; color: #aaa;">HP</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #03dac6;">{{ character.current_hp }}/{{
+                    character.max_hp }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Column -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div>
+            <h3 style="color: #bb86fc; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Inventar</h3>
+            <p><strong>Gold:</strong> {{ character.gold }} GM</p>
+            <p style="white-space: pre-wrap; color: #ddd; font-size: 0.9em;">{{ character.equipment }}</p>
+        </div>
+
+        <div>
+            <h3 style="color: #bb86fc; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Persönlichkeit</h3>
+            <div style="font-size: 0.9em; color: #ddd;">
+                <p><strong>Merkmale:</strong><br><span style="white-space: pre-wrap;">{{ character.personality_traits
+                        }}</span></p>
+                <p><strong>Ideale:</strong><br><span style="white-space: pre-wrap;">{{ character.ideals }}</span></p>
+                <p><strong>Bindungen:</strong><br><span style="white-space: pre-wrap;">{{ character.bonds }}</span></p>
+                <p><strong>Schwächen:</strong><br><span style="white-space: pre-wrap;">{{ character.flaws }}</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 3rem; text-align: center;">
+    <a href="{% url 'dashboard' %}"
+        style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #bb86fc; color: #bb86fc; text-decoration: none; border-radius: 4px;">Zurück
+        zum Dashboard</a>
+</div>
+{% endblock %}

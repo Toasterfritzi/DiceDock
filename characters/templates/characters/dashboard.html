@@ -1,0 +1,42 @@
+{% extends 'characters/base.html' %}
+
+{% block title %}Dashboard - DiceDock{% endblock %}
+
+{% block content %}
+<h2>Your Characters</h2>
+<p>Welcome to your DiceDock dashboard. Here you can manage all your characters.</p>
+
+<div style="margin-top: 2rem; margin-bottom: 2rem;">
+    <a href="{% url 'create_character' %}"
+        style="background-color: #03dac6; color: #000; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px; font-weight: bold;">+
+        Create New Character</a>
+</div>
+
+{% if characters %}
+<ul style="list-style-type: none; padding: 0;">
+    {% for char in characters %}
+    <li
+        style="background-color: #2c2c2c; padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border-left: 4px solid #bb86fc; display: flex; align-items: center;">
+        {% if char.image %}
+        <img src="{{ char.image.url }}" alt="{{ char.name }}"
+            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 1rem;">
+        {% else %}
+        <div
+            style="width: 50px; height: 50px; border-radius: 50%; background-color: #444; margin-right: 1rem; display: flex; align-items: center; justify-content: center;">
+            ?</div>
+        {% endif %}
+        <div>
+            <h3 style="margin: 0; color: #fff;">{{ char.name }}</h3>
+            <p style="margin: 0.25rem 0 0 0; color: #aaa; font-size: 0.9em;">Level {{ char.level }} {{ char.race }} {{
+                char.character_class }}</p>
+        </div>
+        <div style="margin-left: auto;">
+            <a href="{% url 'character_detail' char.pk %}" style="color: #bb86fc; text-decoration: none;">View Sheet</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p style="color: #aaa; font-style: italic;">You haven't created any characters yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'characters/base.html' %}
+
+{% block title %}Register - DiceDock{% endblock %}
+
+{% block content %}
+<h2>Create an Account</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+<p style="margin-top: 1rem;">Already have an account? <a href="{% url 'login' %}" style="color: #bb86fc;">Login
+        here</a>.</p>
+{% endblock %}
