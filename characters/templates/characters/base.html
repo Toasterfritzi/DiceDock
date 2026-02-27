@@ -1,99 +1,234 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>{% block title %}DiceDock{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a855f7",
+                        "primary-glow": "#c084fc",
+                        "background-dark": "#050608",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(15, 17, 21, 0.35)",
+                        "neon-purple": "#a855f7",
+                        "neon-pink": "#ec4899",
+                        "neon-blue": "#3b82f6",
+                        "neon-cyan": "#06b6d4",
+                        "neon-green": "#22c55e",
+                    },
+                    fontFamily: {
+                        sans: ["Outfit", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        xl: "1rem",
+                        '2xl': "1.5rem",
+                        '3xl': "2rem",
+                    },
+                    boxShadow: {
+                        'neon-purple': '0 0 10px rgba(168, 85, 247, 0.3), 0 0 20px rgba(168, 85, 247, 0.1)',
+                        'neon-blue': '0 0 10px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.1)',
+                        'neon-green': '0 0 10px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.1)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 9s ease-in-out 1s infinite',
+                        'orb-move': 'orb-move 20s infinite alternate',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        'orb-move': {
+                            '0%': { transform: 'translate(0, 0) scale(1)' },
+                            '33%': { transform: 'translate(50px, -30px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 40px) scale(0.95)' },
+                            '100%': { transform: 'translate(20px, -20px) scale(1.05)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        }
+                    }
+                },
+            },
+        };
+    </script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 0;
+            background-color: #050608;
+            color: #e2e8f0;
+            overflow-x: hidden;
         }
-        header {
-            background-color: #1e1e1e;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
+
+        .bg-obsidian {
+            background-color: #050608;
+            background-image:
+                radial-gradient(at 10% 10%, rgba(88, 28, 135, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(30, 64, 175, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
         }
-        header a {
-            color: #bb86fc;
-            text-decoration: none;
-            font-weight: bold;
+
+        .glass-panel {
+            background: rgba(20, 22, 28, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #1e1e1e;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+        .glass-panel:hover {
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
-        h1, h2 {
-            color: #ffffff;
+
+        .glass-highlight {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
         }
-        form {
-            display: flex;
-            flex-direction: column;
+
+        .text-glow-purple {
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
         }
-        form p {
-            margin-bottom: 1rem;
+
+        .text-glow-blue {
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
         }
-        input[type="text"], input[type="password"], input[type="email"], select, textarea {
+
+        .text-glow-green {
+            text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+        }
+
+        .text-glow-cyan {
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .refraction-edge {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .refraction-edge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .refraction-edge:hover::before {
+            transform: skewX(-25deg) translateX(50%);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
             width: 100%;
-            padding: 0.5rem;
-            margin-top: 0.25rem;
-            background-color: #2c2c2c;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px;
         }
-        button {
-            padding: 0.75rem 1.5rem;
-            background-color: #bb86fc;
-            color: #000;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-        button:hover {
-            background-color: #9965f4;
-        }
-        .errorlist {
-            color: #cf6679;
-            list-style-type: none;
-            padding: 0;
+
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+            background: rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
-<body>
-    <header>
-        <div class="logo">
-            <a href="{% url 'dashboard' %}" style="font-size: 1.5rem;">DiceDock</a>
-        </div>
-        <nav>
-            {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }}!</span>
-                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+
+<body class="bg-obsidian min-h-screen flex flex-col font-sans selection:bg-neon-purple selection:text-white">
+    <!-- Liquid Orbs Background -->
+    <div class="orb w-[600px] h-[600px] bg-purple-600/30 top-[-100px] left-[-100px] animate-orb-move"></div>
+    <div class="orb w-[500px] h-[500px] bg-blue-600/30 bottom-[10%] right-[-100px] animate-orb-move"
+        style="animation-delay: -5s;"></div>
+    <div class="orb w-[400px] h-[400px] bg-cyan-500/20 top-[40%] left-[30%] animate-pulse-slow"></div>
+
+    <nav class="fixed top-0 w-full z-50 px-6 py-4">
+        <div
+            class="glass-panel max-w-7xl mx-auto rounded-xl px-6 py-3 flex justify-between items-center refraction-edge">
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <span class="material-symbols-outlined text-neon-purple text-3xl animate-float">casino</span>
+                <span
+                    class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple">DiceDock</span>
+            </a>
+            <div class="flex items-center gap-6 text-sm font-medium">
+                {% if user.is_authenticated %}
+                <span class="text-gray-300 hidden md:inline">Welcome, {{ user.username }}!</span>
+                <form action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" style="padding: 0.25rem 0.5rem; margin-left: 1rem;">Logout</button>
+                    <button type="submit"
+                        class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">logout</span> Logout
+                    </button>
                 </form>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a> | 
-                <a href="{% url 'register' %}">Register</a>
-            {% endif %}
-        </nav>
-    </header>
-    
-    <div class="container">
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider">Login</a>
+                <a href="{% url 'register' %}"
+                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)]">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col justify-start p-6 pt-32 pb-12 w-full max-w-7xl mx-auto relative z-10 gap-6">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 </body>
+
 </html>

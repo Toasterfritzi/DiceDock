@@ -3,41 +3,81 @@
 {% block title %}Dashboard - DiceDock{% endblock %}
 
 {% block content %}
-<h2>Your Characters</h2>
-<p>Welcome to your DiceDock dashboard. Here you can manage all your characters.</p>
-
-<div style="margin-top: 2rem; margin-bottom: 2rem;">
-    <a href="{% url 'create_character' %}"
-        style="background-color: #03dac6; color: #000; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px; font-weight: bold;">+
-        Create New Character</a>
-</div>
-
-{% if characters %}
-<ul style="list-style-type: none; padding: 0;">
-    {% for char in characters %}
-    <li
-        style="background-color: #2c2c2c; padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border-left: 4px solid #bb86fc; display: flex; align-items: center;">
-        {% if char.image %}
-        <img src="{{ char.image.url }}" alt="{{ char.name }}"
-            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 1rem;">
-        {% else %}
-        <div
-            style="width: 50px; height: 50px; border-radius: 50%; background-color: #444; margin-right: 1rem; display: flex; align-items: center; justify-content: center;">
-            ?</div>
-        {% endif %}
+<div class="w-full max-w-5xl mx-auto space-y-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-            <h3 style="margin: 0; color: #fff;">{{ char.name }}</h3>
-            <p style="margin: 0.25rem 0 0 0; color: #aaa; font-size: 0.9em;">
-                Level {{ char.level }} {{ char.race }} {{ char.character_class }}
-            </p>
+            <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-2">Your Legacy</h1>
+            <p class="text-gray-400 text-lg">Manage all your heroes and legendary companions in the DiceDock.</p>
         </div>
-        <div style="margin-left: auto;">
-            <a href="{% url 'character_detail' char.pk %}" style="color: #bb86fc; text-decoration: none;">View Sheet</a>
+        <a href="{% url 'create_character' %}"
+            class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
+            <span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
+            Create New Character
+        </a>
+    </div>
+
+    {% if characters %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for char in characters %}
+        <div
+            class="glass-panel glass-highlight rounded-2xl p-6 relative group hover:-translate-y-2 transition-transform duration-300">
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+
+            <div class="flex items-start gap-4 relative z-10">
+                <div
+                    class="w-16 h-16 rounded-xl overflow-hidden border border-white/20 shadow-lg bg-gray-900 flex-shrink-0">
+                    {% if char.image %}
+                    <img src="{{ char.image.url }}" alt="{{ char.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">
+                        <span class="material-symbols-outlined text-2xl">person</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="flex-grow">
+                    <h3
+                        class="text-xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors line-clamp-1">
+                        {{ char.name }}</h3>
+                    <div class="text-xs text-gray-400 flex flex-wrap gap-1 mb-2">
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Level {{
+                            char.level }}</span>
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">{{ char.race }}</span>
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">{{ char.character_class
+                            }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-green-400 mt-2">
+                        <span class="material-symbols-outlined text-[14px]">favorite</span>
+                        {{ char.current_hp }} / {{ char.max_hp }} HP
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 relative z-10">
+                <a href="{% url 'character_detail' char.pk %}"
+                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">visibility</span> View Sheet
+                </a>
+            </div>
         </div>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p style="color: #aaa; font-style: italic;">You haven't created any characters yet.</p>
-{% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-panel rounded-3xl p-12 text-center flex flex-col items-center">
+        <div
+            class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/10 shadow-lg">
+            <span class="material-symbols-outlined text-5xl text-gray-500">sentiment_dissatisfied</span>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">No Characters Yet</h3>
+        <p class="text-gray-400 text-lg max-w-md mx-auto mb-8">You haven't created any characters to start your
+            adventure. Forge your first legend now!</p>
+        <a href="{% url 'create_character' %}"
+            class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105">
+            Begin Your Journey
+        </a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
