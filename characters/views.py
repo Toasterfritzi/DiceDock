@@ -22,7 +22,10 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    characters = Character.objects.filter(user=request.user)
+        # Optimize by fetching only required fields for the dashboard listing
+    characters = Character.objects.filter(user=request.user).only(
+        'id', 'name', 'level', 'image', 'race', 'character_class', 'current_hp', 'max_hp'
+    )
     return render(request, 'characters/dashboard.html', {'characters': characters})
 
 @login_required
