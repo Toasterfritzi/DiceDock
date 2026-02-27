@@ -68,3 +68,27 @@ class CharacterCreationTest(TestCase):
         char = Character.objects.get(name='Gold Character')
         self.assertEqual(char.gold, 100)
         self.assertTrue("Startgold gewählt" in char.equipment)
+
+from .forms import UserRegisterForm
+
+class UserRegisterFormTest(TestCase):
+    def test_passwords_match(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123',
+            'password_confirm': 'password123',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_passwords_mismatch(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123',
+            'password_confirm': 'password321',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("Passwords do not match!", form.non_field_errors())
