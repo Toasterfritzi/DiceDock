@@ -76,8 +76,8 @@ class UserRegisterFormTest(TestCase):
         form_data = {
             'username': 'testuser',
             'email': 'test@example.com',
-            'password': 'password123',
-            'password_confirm': 'password123',
+            'password': 'StrongPassword123!',
+            'password_confirm': 'StrongPassword123!',
         }
         form = UserRegisterForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -86,8 +86,8 @@ class UserRegisterFormTest(TestCase):
         form_data = {
             'username': 'testuser',
             'email': 'test@example.com',
-            'password': 'password123',
-            'password_confirm': 'password321',
+            'password': 'StrongPassword123!',
+            'password_confirm': 'StrongPassword321!',
         }
         form = UserRegisterForm(data=form_data)
         self.assertFalse(form.is_valid())
