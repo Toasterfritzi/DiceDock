@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from .models import Character
 
 class UserRegisterForm(forms.ModelForm):
@@ -15,8 +17,17 @@ class UserRegisterForm(forms.ModelForm):
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
 
-        if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError("Passwords do not match!")
+        if password and password_confirm:
+            if password != password_confirm:
+                raise forms.ValidationError("Passwords do not match!")
+
+            # Validate password strength
+            user = User(username=cleaned_data.get('username'), email=cleaned_data.get('email'))
+            try:
+                validate_password(password, user=user)
+            except ValidationError as e:
+                self.add_error('password', e)
+
         return cleaned_data
 
 class CharacterForm(forms.ModelForm):
