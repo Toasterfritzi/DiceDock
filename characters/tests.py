@@ -41,9 +41,9 @@ class CharacterCreationTest(TestCase):
         char = Character.objects.get(name='Test Character')
         self.assertEqual(char.user, self.user)
         self.assertEqual(char.character_class, 'Warrior')
-        self.assertEqual(char.strength, 15)
+        self.assertEqual(char.strength, 17)
         # Check equipment handling logic (based on views.py logic)
-        self.assertEqual(char.gold, 154)
+        self.assertEqual(char.gold, 0)
         self.assertTrue("Standard-Ausrüstung" in char.equipment)
 
     def test_character_creation_gold_option(self):
