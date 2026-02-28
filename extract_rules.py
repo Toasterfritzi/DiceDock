@@ -4,13 +4,12 @@ import sys
 def extract_text(pdf_path, output_txt):
     try:
         doc = fitz.open(pdf_path)
+        pages_text = [
+            f"--- PAGE {page_num + 1} ---\n{page.get_text()}\n"
+            for page_num, page in enumerate(doc)
+        ]
         with open(output_txt, 'w', encoding='utf-8') as f:
-            for page_num in range(len(doc)):
-                page = doc.load_page(page_num)
-                text = page.get_text()
-                f.write(f"--- PAGE {page_num + 1} ---\n")
-                f.write(text)
-                f.write("\n")
+            f.writelines(pages_text)
         print(f"Successfully extracted text to {output_txt}")
     except Exception as e:
         print(f"Error: {e}")
