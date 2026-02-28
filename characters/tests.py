@@ -92,3 +92,52 @@ class UserRegisterFormTest(TestCase):
         form = UserRegisterForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("Passwords do not match!", form.non_field_errors())
+
+    def test_password_too_short(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'short',
+            'password_confirm': 'short',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password', form.errors)
+        # Check that the error message mentions length
+        self.assertTrue(any("too short" in str(err) for err in form.errors['password']))
+
+    def test_password_entirely_numeric(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': '1234567890',
+            'password_confirm': '1234567890',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password', form.errors)
+        self.assertTrue(any("entirely numeric" in str(err) for err in form.errors['password']))
+
+    def test_password_too_common(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'password123',
+            'password_confirm': 'password123',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password', form.errors)
+        self.assertTrue(any("too common" in str(err) for err in form.errors['password']))
+
+    def test_password_too_similar_to_username(self):
+        form_data = {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'testuser123',
+            'password_confirm': 'testuser123',
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password', form.errors)
+        self.assertTrue(any("too similar" in str(err) for err in form.errors['password']))
