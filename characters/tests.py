@@ -141,3 +141,27 @@ class UserRegisterFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('password', form.errors)
         self.assertTrue(any("too similar" in str(err) for err in form.errors['password']))
+
+class CharacterModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='modeltestuser', password='password123')
+
+    def test_ability_score_modifiers(self):
+        # Create a character with mixed stats
+        char = Character(
+            user=self.user,
+            name="Stat Test Character",
+            strength=10,       # (10 - 10) // 2 = 0
+            dexterity=12,      # (12 - 10) // 2 = 1
+            constitution=15,   # (15 - 10) // 2 = 2
+            intelligence=9,    # (9 - 10) // 2 = -1
+            wisdom=8,          # (8 - 10) // 2 = -1
+            charisma=20        # (20 - 10) // 2 = 5
+        )
+
+        self.assertEqual(char.strength_mod, 0)
+        self.assertEqual(char.dexterity_mod, 1)
+        self.assertEqual(char.constitution_mod, 2)
+        self.assertEqual(char.intelligence_mod, -1)
+        self.assertEqual(char.wisdom_mod, -1)
+        self.assertEqual(char.charisma_mod, 5)
