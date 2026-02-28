@@ -17,16 +17,16 @@ class UserRegisterForm(forms.ModelForm):
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
 
-        if password and password_confirm:
-            if password != password_confirm:
-                raise forms.ValidationError("Passwords do not match!")
-
+        if password:
             # Validate password strength
-            user = User(username=cleaned_data.get('username'), email=cleaned_data.get('email'))
+            user = User(username=cleaned_data.get('username') or '', email=cleaned_data.get('email') or '')
             try:
                 validate_password(password, user=user)
             except ValidationError as e:
                 self.add_error('password', e)
+
+        if password and password_confirm and password != password_confirm:
+            self.add_error('password_confirm', "Passwords do not match!")
 
         return cleaned_data
 

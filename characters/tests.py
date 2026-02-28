@@ -91,4 +91,4 @@ class UserRegisterFormTest(TestCase):
         }
         form = UserRegisterForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertIn("Passwords do not match!", form.non_field_errors())
+        self.assertIn("Passwords do not match!", form.errors.get("password_confirm", []))
