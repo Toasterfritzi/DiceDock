@@ -1,11 +1,13 @@
+import json
+from django.urls import reverse
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import Character
+from .forms import UserRegisterForm
 
 class CharacterCreationTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password123')
-        self.client = Client()
         self.client.login(username='testuser', password='password123')
 
     def test_character_creation_form_submission(self):
@@ -68,8 +70,6 @@ class CharacterCreationTest(TestCase):
         char = Character.objects.get(name='Gold Character')
         self.assertEqual(char.gold, 100)
         self.assertTrue("Startgold gewählt" in char.equipment)
-
-from .forms import UserRegisterForm
 
 class UserRegisterFormTest(TestCase):
     def test_passwords_match(self):
@@ -141,3 +141,35 @@ class UserRegisterFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('password', form.errors)
         self.assertTrue(any("too similar" in str(err) for err in form.errors['password']))
+
+class CharacterStatUpdateTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='statuser', password='password123')
+        self.client.login(username='statuser', password='password123')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Stat Test Character',
+            character_class='Warrior',
+            strength=15,
+            dexterity=14,
+            constitution=13,
+            intelligence=12,
+            wisdom=10,
+            charisma=8,
+            level=1,
+            max_hp=10,
+            current_hp=10,
+            armor_class=10,
+            speed=30
+        )
+
+    def test_invalid_stat_update(self):
+        response = self.client.post(
+            reverse('update_character_stat', args=[self.character.pk]),
+            data=json.dumps({'stat': 'invalid_stat', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data.get('success'))
+        self.assertEqual(response_data.get('error'), 'Invalid stat')
