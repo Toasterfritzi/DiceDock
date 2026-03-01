@@ -165,3 +165,40 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.intelligence_mod, -1)
         self.assertEqual(char.wisdom_mod, -1)
         self.assertEqual(char.charisma_mod, 5)
+
+    def test_update_character_stat_no_points(self):
+        # Create a character with 0 available points
+        char = Character.objects.create(
+            user=self.user,
+            name="No Points Character",
+            strength=10,
+            dexterity=10,
+            constitution=10,
+            intelligence=10,
+            wisdom=10,
+            charisma=10,
+            available_stat_points=0
+        )
+
+        # Login
+        self.client = Client()
+        self.client.login(username='modeltestuser', password='password123')
+
+        # Try to increase strength
+        import json
+        response = self.client.post(f'/character/{char.pk}/update_stat/',
+                                    data=json.dumps({'stat': 'strength', 'action': 'increase'}),
+                                    content_type='application/json')
+
+        # Check response
+        self.assertEqual(response.status_code, 400)
+
+        # Check JSON content
+        response_data = json.loads(response.content)
+        self.assertFalse(response_data.get('success'))
+        self.assertEqual(response_data.get('error'), 'Keine verfügbaren Attributspunkte vorhanden.')
+
+        # Check stat did not increase
+        char.refresh_from_db()
+        self.assertEqual(char.strength, 10)
+        self.assertEqual(char.available_stat_points, 0)
