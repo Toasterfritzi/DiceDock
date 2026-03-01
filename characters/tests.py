@@ -165,3 +165,56 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.intelligence_mod, -1)
         self.assertEqual(char.wisdom_mod, -1)
         self.assertEqual(char.charisma_mod, 5)
+
+from django.urls import reverse
+
+class DashboardViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='dashboarduser', password='password123')
+        self.other_user = User.objects.create_user(username='otheruser', password='password123')
+
+        self.char1 = Character.objects.create(
+            user=self.user,
+            name="Hero One",
+            character_class="Warrior",
+            race="Human",
+            level=1,
+            strength=15, dexterity=12, constitution=14, intelligence=10, wisdom=10, charisma=12
+        )
+        self.char2 = Character.objects.create(
+            user=self.user,
+            name="Hero Two",
+            character_class="Mage",
+            race="Elf",
+            level=2,
+            strength=8, dexterity=14, constitution=12, intelligence=16, wisdom=10, charisma=10
+        )
+
+        self.other_char = Character.objects.create(
+            user=self.other_user,
+            name="Villain One",
+            character_class="Rogue",
+            race="Goblin",
+            level=3,
+            strength=10, dexterity=16, constitution=12, intelligence=10, wisdom=8, charisma=14
+        )
+
+    def test_dashboard_access_logged_in(self):
+        self.client.login(username='dashboarduser', password='password123')
+        response = self.client.get(reverse('dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/dashboard.html')
+
+        # Verify characters in context
+        characters_in_context = list(response.context['characters'])
+        self.assertEqual(len(characters_in_context), 2)
+        self.assertIn(self.char1, characters_in_context)
+        self.assertIn(self.char2, characters_in_context)
+        self.assertNotIn(self.other_char, characters_in_context)
+
+    def test_dashboard_access_logged_out(self):
+        response = self.client.get(reverse('dashboard'))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('login')))
