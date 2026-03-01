@@ -165,3 +165,59 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.intelligence_mod, -1)
         self.assertEqual(char.wisdom_mod, -1)
         self.assertEqual(char.charisma_mod, 5)
+
+class CharacterLevelupTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.client = Client()
+        self.client.login(username='testuser', password='password123')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Levelup Test Char',
+            character_class='Fighter',
+            race='Human',
+            level=1,
+            max_hp=12,
+            current_hp=12,
+            constitution=14,  # +2 mod
+            hit_dice='1d10'
+        )
+
+    def test_character_levelup_normal(self):
+        initial_hp = self.character.max_hp
+        response = self.client.post(f'/character/{self.character.pk}/levelup/')
+        self.assertEqual(response.status_code, 302)
+
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.level, 2)
+        # 1d10 // 2 + 1 + 2 = 5 + 1 + 2 = 8
+        self.assertEqual(self.character.max_hp, initial_hp + 8)
+        self.assertEqual(self.character.current_hp, self.character.max_hp)
+
+    def test_character_levelup_malformed_hit_dice_value_error(self):
+        self.character.hit_dice = '1dInvalid'
+        self.character.save()
+
+        initial_hp = self.character.max_hp
+        response = self.client.post(f'/character/{self.character.pk}/levelup/')
+        self.assertEqual(response.status_code, 302)
+
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.level, 2)
+        # Fallback triggers, HP should not increase
+        self.assertEqual(self.character.max_hp, initial_hp)
+        self.assertEqual(self.character.current_hp, initial_hp)
+
+    def test_character_levelup_malformed_hit_dice_index_error(self):
+        self.character.hit_dice = 'Invalid'
+        self.character.save()
+
+        initial_hp = self.character.max_hp
+        response = self.client.post(f'/character/{self.character.pk}/levelup/')
+        self.assertEqual(response.status_code, 302)
+
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.level, 2)
+        # Fallback triggers, HP should not increase
+        self.assertEqual(self.character.max_hp, initial_hp)
+        self.assertEqual(self.character.current_hp, initial_hp)
