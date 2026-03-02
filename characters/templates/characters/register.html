@@ -19,13 +19,13 @@
             </div>
 
             <div>
-                <h1 class="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">Create Account</h1>
-                <p class="text-gray-400 text-sm">Join DiceDock and forge your legend</p>
+                <h1 class="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">Konto erstellen</h1>
+                <p class="text-gray-400 text-sm">Tritt DiceDock bei und schmiede deine Legende</p>
             </div>
 
             {% if form.errors %}
             <div class="bg-red-500/10 border border-red-500/30 text-red-200 p-4 rounded-xl text-left text-sm mb-4">
-                <p class="font-bold mb-2">Please correct the following errors:</p>
+                <p class="font-bold mb-2">Bitte korrigiere die folgenden Fehler:</p>
                 <ul class="list-disc list-inside space-y-1">
                     {% for field in form %}
                     {% for error in field.errors %}
@@ -44,7 +44,7 @@
 
                 <div class="space-y-1 relative">
                     <label for="{{ form.username.id_for_label }}"
-                        class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Username</label>
+                        class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Benutzername</label>
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">person</span>
@@ -55,7 +55,7 @@
 
                 <div class="space-y-1 relative">
                     <label for="{{ form.email.id_for_label }}"
-                        class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Email <span
+                        class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">E-Mail <span
                             class="text-gray-600 font-normal normal-case inline-block ml-1">(Optional)</span></label>
                     <div class="relative">
                         <span
@@ -68,7 +68,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="space-y-1 relative">
                         <label for="{{ form.password.id_for_label }}"
-                            class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Password</label>
+                            class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Passwort</label>
                         <div class="relative">
                             <span
                                 class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">lock</span>
@@ -79,7 +79,7 @@
 
                     <div class="space-y-1 relative">
                         <label for="{{ form.password_confirm.id_for_label }}"
-                            class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Confirm</label>
+                            class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Bestätigen</label>
                         <div class="relative">
                             <span
                                 class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">lock_reset</span>
@@ -93,7 +93,7 @@
                     <button type="submit"
                         class="w-full py-4 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold shadow-[0_0_15px_rgba(236,72,153,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(236,72,153,0.6)] flex items-center justify-center gap-2 text-lg">
                         <span class="material-symbols-outlined text-base">person_add</span>
-                        Register Account
+                        Konto registrieren
                     </button>
                 </div>
             </form>

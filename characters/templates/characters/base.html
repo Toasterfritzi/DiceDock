@@ -207,19 +207,19 @@
             </a>
             <div class="flex items-center gap-6 text-sm font-medium">
                 {% if user.is_authenticated %}
-                <span class="text-gray-300 hidden md:inline">Welcome, {{ user.username }}!</span>
+                <span class="text-gray-300 hidden md:inline">Willkommen, {{ user.username }}!</span>
                 <form action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
                     <button type="submit"
                         class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">logout</span> Logout
+                        <span class="material-symbols-outlined text-sm">logout</span> Abmelden
                     </button>
                 </form>
                 {% else %}
                 <a href="{% url 'login' %}"
-                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider">Login</a>
+                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all text-xs font-semibold uppercase tracking-wider">Anmelden</a>
                 <a href="{% url 'register' %}"
-                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)]">Register</a>
+                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)]">Registrieren</a>
                 {% endif %}
             </div>
         </div>
@@ -229,6 +229,7 @@
         {% block content %}
         {% endblock %}
     </main>
+    {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>

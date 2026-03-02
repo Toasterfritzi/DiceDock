@@ -10,17 +10,17 @@
     </div>
     <div class="mb-10 text-center md:text-left relative">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight text-neon">
-            Create a New Character
+            Einen neuen Charakter erstellen
         </h1>
         <p class="text-gray-400 text-lg font-light max-w-2xl">
-            Forge your destiny. Fill out the fields below to start your legend.
+            Schmiede dein Schicksal. Fülle die folgenden Felder aus, um deine Legende zu beginnen.
         </p>
         <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
     </div>
 
     {% if form.errors %}
     <div class="bg-red-500/10 border border-red-500/50 text-red-200 p-4 rounded-xl mb-8">
-        <p class="font-bold">Please correct the errors below:</p>
+        <p class="font-bold">Bitte korrigiere die folgenden Fehler:</p>
         <ul class="list-disc list-inside">
             {% for field in form %}
             {% for error in field.errors %}
@@ -54,7 +54,7 @@
                                 type="text" required />
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-sm font-medium text-gray-300 ml-1">Character Image</label>
+                            <label class="block text-sm font-medium text-gray-300 ml-1">Charakterbild</label>
                             <div
                                 class="glass-input p-2 rounded-xl flex items-center gap-3 group hover:border-primary/50 cursor-pointer transition-colors relative overflow-hidden">
                                 <input class="absolute inset-0 opacity-0 cursor-pointer z-10" type="file"
@@ -69,7 +69,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.character_class.id_for_label }}">Character Class</label>
+                                    for="{{ form.character_class.id_for_label }}">Klasse</label>
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">swords</span>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.subclass.id_for_label }}">Subclass</label>
+                                    for="{{ form.subclass.id_for_label }}">Unterklasse</label>
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">mediation</span>
@@ -98,7 +98,7 @@
                         <div class="space-y-5">
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.race.id_for_label }}">Race</label>
+                                    for="{{ form.race.id_for_label }}">Volk</label>
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}"
@@ -107,7 +107,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.background.id_for_label }}">Background</label>
+                                    for="{{ form.background.id_for_label }}">Hintergrund</label>
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.background.id_for_label }}" name="{{ form.background.html_name }}"
@@ -116,7 +116,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.alignment.id_for_label }}">Alignment</label>
+                                    for="{{ form.alignment.id_for_label }}">Gesinnung</label>
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.alignment.id_for_label }}" name="{{ form.alignment.html_name }}"
@@ -134,7 +134,7 @@
                     <div class="space-y-5">
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300 ml-1"
-                                for="{{ form.personality_traits.id_for_label }}">Personality Traits</label>
+                                for="{{ form.personality_traits.id_for_label }}">Persönlichkeitsmerkmale</label>
                             <textarea
                                 class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
                                 id="{{ form.personality_traits.id_for_label }}"
@@ -143,7 +143,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300 ml-1"
-                                for="{{ form.ideals.id_for_label }}">Ideals</label>
+                                for="{{ form.ideals.id_for_label }}">Ideale</label>
                             <textarea
                                 class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
                                 id="{{ form.ideals.id_for_label }}" name="{{ form.ideals.html_name }}"
@@ -151,7 +151,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300 ml-1"
-                                for="{{ form.bonds.id_for_label }}">Bonds</label>
+                                for="{{ form.bonds.id_for_label }}">Bindungen</label>
                             <textarea
                                 class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
                                 id="{{ form.bonds.id_for_label }}" name="{{ form.bonds.html_name }}"
@@ -159,7 +159,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-medium text-gray-300 ml-1"
-                                for="{{ form.flaws.id_for_label }}">Flaws</label>
+                                for="{{ form.flaws.id_for_label }}">Makel</label>
                             <textarea
                                 class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
                                 id="{{ form.flaws.id_for_label }}" name="{{ form.flaws.html_name }}"
@@ -276,7 +276,7 @@
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startausrüstung</span>
-                                    <span class="text-gray-500 text-xs">Standard items for your class</span>
+                                    <span class="text-gray-500 text-xs">Standardausrüstung für deine Klasse</span>
                                 </div>
                             </label>
                             <label
@@ -287,7 +287,7 @@
                                         name="{{ form.equipment_preference.html_name }}" type="radio" value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %} />
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startgold</span>
-                                    <span class="text-gray-500 text-xs">Buy your own items</span>
+                                    <span class="text-gray-500 text-xs">Kaufe deine eigene Ausrüstung</span>
                                 </div>
                             </label>
                         </div>

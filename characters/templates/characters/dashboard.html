@@ -6,13 +6,13 @@
 <div class="w-full max-w-5xl mx-auto space-y-8">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-            <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-2">Your Legacy</h1>
-            <p class="text-gray-400 text-lg">Manage all your heroes and legendary companions in the DiceDock.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-2">Dein Vermächtnis</h1>
+            <p class="text-gray-400 text-lg">Verwalte all deine Helden und legendären Begleiter im DiceDock.</p>
         </div>
         <a href="{% url 'create_character' %}"
             class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
             <span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
-            Create New Character
+            Neuen Charakter erstellen
         </a>
     </div>
 
@@ -42,15 +42,13 @@
                         class="text-xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors line-clamp-1">
                         {{ char.name }}</h3>
                     <div class="text-xs text-gray-400 flex flex-wrap gap-1 mb-2">
-                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Level {{
-                            char.level }}</span>
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Stufe {{ char.level }}</span>
                         <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">{{ char.race }}</span>
-                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">{{ char.character_class
-                            }}</span>
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">{{ char.character_class }}</span>
                     </div>
                     <div class="flex items-center gap-2 text-xs font-bold text-green-400 mt-2">
                         <span class="material-symbols-outlined text-[14px]">favorite</span>
-                        {{ char.current_hp }} / {{ char.max_hp }} HP
+                        {{ char.current_hp }} / {{ char.max_hp }} TP
                     </div>
                 </div>
             </div>
@@ -58,7 +56,7 @@
             <div class="mt-6 flex justify-end gap-3 relative z-10">
                 <a href="{% url 'character_detail' char.pk %}"
                     class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">visibility</span> View Sheet
+                    <span class="material-symbols-outlined text-sm">visibility</span> Bogen ansehen
                 </a>
             </div>
         </div>
@@ -70,12 +68,12 @@
             class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/10 shadow-lg">
             <span class="material-symbols-outlined text-5xl text-gray-500">sentiment_dissatisfied</span>
         </div>
-        <h3 class="text-2xl font-bold text-white mb-2">No Characters Yet</h3>
+        <h3 class="text-2xl font-bold text-white mb-2">Noch keine Charaktere</h3>
         <p class="text-gray-400 text-lg max-w-md mx-auto mb-8">You haven't created any characters to start your
             adventure. Forge your first legend now!</p>
         <a href="{% url 'create_character' %}"
             class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105">
-            Begin Your Journey
+            Beginne dein Abenteuer
         </a>
     </div>
     {% endif %}

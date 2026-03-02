@@ -10,7 +10,7 @@
                 href="{% url 'dashboard' %}">
                 <span
                     class="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">chevron_left</span>
-                <span class="uppercase tracking-widest font-semibold text-xs">Back to Dashboard</span>
+                <span class="uppercase tracking-widest font-semibold text-xs">Zurück zur Übersicht</span>
             </a>
         </div>
         <div
@@ -34,11 +34,9 @@
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-1">{{
-                        character.name }}</h1>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight text-glow-purple mb-1">{{ character.name }}</h1>
                     <div class="flex items-center gap-3 text-gray-300 text-sm md:text-base font-light">
-                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Level {{
-                            character.level }}</span>
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300">Stufe {{ character.level }}</span>
                         <span class="text-gray-500">•</span>
                         <span>{{ character.race }} {{ character.character_class }}</span>
                         <span class="text-gray-500">•</span>
@@ -48,19 +46,18 @@
             </div>
             <div class="flex gap-4">
                 <div class="text-right">
-                    <span class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Experience</span>
+                    <span class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Erfahrung</span>
                     <div class="w-32 h-1.5 bg-gray-800 rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-purple-500 to-blue-500"
                             style="width: {% widthratio character.experience character.max_experience 100 %}%">
                         </div>
                     </div>
-                    <span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{
-                        character.max_experience }} XP</span>
+                    <span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{ character.max_experience }} EP</span>
                 </div>
                 <a href="{% url 'character_levelup' character.pk %}"
                     class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg font-bold shadow-[0_0_15px_#a855f766] transition-all hover:scale-105 hover:shadow-[0_0_25px_#a855f799]">
                     <span class="material-symbols-outlined">upgrade</span>
-                    <span>Level Up</span>
+                    <span>Stufenaufstieg</span>
                 </a>
             </div>
         </div>
@@ -70,11 +67,11 @@
             <div class="glass-panel glass-highlight rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">bar_chart</span> Attributes
+                        <span class="material-symbols-outlined text-sm">bar_chart</span> Attribute
                     </h3>
                     <span id="available-stat-points"
                         class="px-2 py-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-wider border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
-                        Available Points: {{ character.available_stat_points }}
+                        Verfügbare Punkte: {{ character.available_stat_points }}
                     </span>
                 </div>
                 <div id="stat-row-strength" onclick="openStatModal('strength', {{ character.strength }})"
@@ -90,8 +87,7 @@
                         <span id="stat-mod-strength" class="text-lg font-bold text-white">
                             {% if character.strength_mod >= 0 %}+{% endif %}{{ character.strength_mod }}
                         </span>
-                        <span id="stat-score-strength" class="text-[10px] text-gray-500 font-mono block">SCORE {{
-                            character.strength }}</span>
+                        <span id="stat-score-strength" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.strength }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-red-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -111,8 +107,7 @@
                         <span id="stat-mod-dexterity" class="text-lg font-bold text-white">
                             {% if character.dexterity_mod >= 0 %}+{% endif %}{{ character.dexterity_mod }}
                         </span>
-                        <span id="stat-score-dexterity" class="text-[10px] text-gray-500 font-mono block">SCORE {{
-                            character.dexterity }}</span>
+                        <span id="stat-score-dexterity" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.dexterity }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-green-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -132,8 +127,7 @@
                         <span id="stat-mod-constitution" class="text-lg font-bold text-white">
                             {% if character.constitution_mod >= 0 %}+{% endif %}{{ character.constitution_mod }}
                         </span>
-                        <span id="stat-score-constitution" class="text-[10px] text-gray-500 font-mono block">SCORE
-                            {{ character.constitution }}</span>
+                        <span id="stat-score-constitution" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.constitution }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-orange-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -153,8 +147,7 @@
                         <span id="stat-mod-intelligence" class="text-lg font-bold text-white">
                             {% if character.intelligence_mod >= 0 %}+{% endif %}{{ character.intelligence_mod }}
                         </span>
-                        <span id="stat-score-intelligence" class="text-[10px] text-gray-500 font-mono block">SCORE
-                            {{ character.intelligence }}</span>
+                        <span id="stat-score-intelligence" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.intelligence }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-blue-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -174,8 +167,7 @@
                         <span id="stat-mod-wisdom" class="text-lg font-bold text-white">
                             {% if character.wisdom_mod >= 0 %}+{% endif %}{{ character.wisdom_mod }}
                         </span>
-                        <span id="stat-score-wisdom" class="text-[10px] text-gray-500 font-mono block">SCORE {{
-                            character.wisdom }}</span>
+                        <span id="stat-score-wisdom" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.wisdom }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-teal-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -195,8 +187,7 @@
                         <span id="stat-mod-charisma" class="text-lg font-bold text-white">
                             {% if character.charisma_mod >= 0 %}+{% endif %}{{ character.charisma_mod }}
                         </span>
-                        <span id="stat-score-charisma" class="text-[10px] text-gray-500 font-mono block">SCORE {{
-                            character.charisma }}</span>
+                        <span id="stat-score-charisma" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.charisma }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-purple-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -205,14 +196,13 @@
             </div>
             <div class="glass-panel rounded-2xl p-5">
                 <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">school</span> Proficiencies
+                    <span class="material-symbols-outlined text-sm">school</span> Übungen
                 </h3>
                 <div class="flex flex-wrap gap-2">
                     {% for prof in character.proficiencies %}
-                    <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300 border border-white/10">{{ prof
-                        }}</span>
+                    <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300 border border-white/10">{{ prof }}</span>
                     {% empty %}
-                    <span class="text-xs text-gray-500 italic">No proficiencies listed.</span>
+                    <span class="text-xs text-gray-500 italic">Keine Übungen vorhanden.</span>
                     {% endfor %}
                 </div>
             </div>
@@ -229,9 +219,8 @@
                             class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-2 group-hover:border-blue-500/50 group-hover:shadow-neon-blue transition-all">
                             <span class="material-symbols-outlined text-3xl text-blue-400">shield</span>
                         </div>
-                        <span id="base-ac" class="text-3xl font-bold text-white text-glow-blue">{{
-                            character.armor_class }}</span>
-                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Armor Class</span>
+                        <span id="base-ac" class="text-3xl font-bold text-white text-glow-blue">{{ character.armor_class }}</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Rüstungsklasse</span>
                     </div>
                     <div class="flex flex-col items-center relative">
                         <div class="relative w-32 h-32 flex items-center justify-center">
@@ -248,14 +237,11 @@
                             </svg>
                             <div class="text-center">
                                 <div id="base-current-hp"
-                                    class="text-4xl font-black text-white text-glow-green tracking-tighter">{{
-                                    character.current_hp }}</div>
-                                <div id="base-max-hp" class="text-xs text-gray-400">/ {{ character.max_hp }} HP
-                                </div>
+                                    class="text-4xl font-black text-white text-glow-green tracking-tighter">{{ character.current_hp }}</div>
+                                <div id="base-max-hp" class="text-xs text-gray-400">/ {{ character.max_hp }} TP</div>
                             </div>
                         </div>
-                        <span class="text-xs uppercase tracking-widest text-green-400 font-bold mt-2">Current
-                            HP</span>
+                        <span class="text-xs uppercase tracking-widest text-green-400 font-bold mt-2">Aktuelle TP</span>
                     </div>
                     <div class="flex flex-col items-center group cursor-pointer">
                         <div
@@ -263,16 +249,16 @@
                             <span class="material-symbols-outlined text-3xl text-cyan-400">directions_run</span>
                         </div>
                         <span class="text-3xl font-bold text-white text-glow-cyan">{{ character.speed }}</span>
-                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Speed (ft)</span>
+                        <span class="text-xs uppercase tracking-widest text-gray-500 font-bold">Bewegung (ft)</span>
                     </div>
                 </div>
                 <div class="mt-8 flex gap-4 w-full justify-center">
                     <div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-2">
-                        <span class="text-gray-400 text-xs uppercase">Temp HP</span>
+                        <span class="text-gray-400 text-xs uppercase">Temp. TP</span>
                         <span class="text-white font-bold">{{ character.temp_hp }}</span>
                     </div>
                     <div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-2">
-                        <span class="text-gray-400 text-xs uppercase">Hit Dice</span>
+                        <span class="text-gray-400 text-xs uppercase">Trefferwürfel</span>
                         <span class="text-white font-bold">{{ character.hit_dice }}</span>
                     </div>
                 </div>
@@ -280,36 +266,36 @@
             <div class="glass-panel rounded-2xl p-6 relative">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-purple-400">swords</span> Actions &amp; Attacks
+                        <span class="material-symbols-outlined text-purple-400">swords</span> Aktionen &amp; Angriffe
                     </h3>
                     <button
-                        class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">View
-                        All</button>
+                        class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">Alle
+                        ansehen</button>
                 </div>
                 <div class="relative group/add">
                     <button
                         class="w-full mb-4 flex items-center justify-center gap-2 text-xs text-primary hover:text-white transition-colors uppercase font-bold tracking-wider border border-primary/30 px-3 py-2 rounded-lg hover:bg-primary/20">+
-                        Add Weapon</button>
+                        Waffe hinzufügen</button>
                     <div
                         class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-2xl border border-white/10">
                         <input
                             class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2"
-                            placeholder="Search weapons..." type="text" />
+                            placeholder="Waffen suchen..." type="text" />
                         <div class="space-y-1 max-h-40 overflow-y-auto pr-1">
                             <div
                                 class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Greatsword</span>
-                                <span class="text-xs text-gray-500">2d6 Slashing</span>
+                                <span>Großschwert</span>
+                                <span class="text-xs text-gray-500">2d6 Hieb</span>
                             </div>
                             <div
                                 class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Dagger</span>
-                                <span class="text-xs text-gray-500">1d4 Piercing</span>
+                                <span>Dolch</span>
+                                <span class="text-xs text-gray-500">1d4 Stich</span>
                             </div>
                             <div
                                 class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Shortbow</span>
-                                <span class="text-xs text-gray-500">1d6 Piercing</span>
+                                <span>Kurzbogen</span>
+                                <span class="text-xs text-gray-500">1d6 Stich</span>
                             </div>
                         </div>
                     </div>
@@ -323,31 +309,30 @@
                                 <span class="material-symbols-outlined">colorize</span>
                             </div>
                             <div>
-                                <div class="font-bold text-white group-hover:text-purple-300 transition-colors">{{
-                                    weapon.name }}</div>
+                                <div class="font-bold text-white group-hover:text-purple-300 transition-colors">{{ weapon.name }}</div>
                                 <div class="text-xs text-gray-400">{{ weapon.type }}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-4 text-right">
                             <div>
-                                <div class="text-xs text-gray-500 uppercase">Hit</div>
+                                <div class="text-xs text-gray-500 uppercase">Treffer</div>
                                 <div class="font-bold text-neon-purple">{{ weapon.hit }}</div>
                             </div>
                             <div>
-                                <div class="text-xs text-gray-500 uppercase">Dmg</div>
+                                <div class="text-xs text-gray-500 uppercase">Schaden</div>
                                 <div class="font-bold text-white">{{ weapon.damage }}</div>
                             </div>
                         </div>
                     </div>
                     {% empty %}
-                    <div class="text-center text-gray-500 italic text-sm">No weapons equipped.</div>
+                    <div class="text-center text-gray-500 italic text-sm">Keine Waffen ausgerüstet.</div>
                     {% endfor %}
                 </div>
             </div>
             <div class="glass-panel rounded-2xl p-4 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-blue-400">auto_fix_high</span>
-                    <span class="font-bold text-white">Spell Slots (Lvl 1)</span>
+                    <span class="font-bold text-white">Zauberplätze (Stufe 1)</span>
                 </div>
                 <div class="flex gap-2">
                     <!-- Quick hack for spell slots visualization based on level 1 slots -->
@@ -362,7 +347,7 @@
                 {% endif %}
                 {% endfor %}
                 {% else %}
-                <span class="text-xs text-gray-500">No slots</span>
+                <span class="text-xs text-gray-500">Keine Plätze</span>
                 {% endif %}
             </div>
         </div>
@@ -372,15 +357,15 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-2">
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">backpack</span> Inventory
+                        <span class="material-symbols-outlined text-sm">backpack</span> Inventar
                     </h3>
                     <button
                         class="w-5 h-5 rounded flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors group relative"
-                        title="Add Custom Item">
+                        title="Gegenstand hinzufügen">
                         <span class="material-symbols-outlined text-[14px]">add</span>
                         <div
                             class="absolute top-8 left-0 w-[200px] z-20 glass-panel rounded-lg p-2 opacity-0 group-focus-within:opacity-100 pointer-events-none group-focus-within:pointer-events-auto transition-opacity shadow-xl">
-                            <input class="glass-input w-full" placeholder="Add custom item..." type="text" />
+                            <input class="glass-input w-full" placeholder="Gegenstand hinzufügen..." type="text" />
                         </div>
                     </button>
                 </div>
@@ -414,21 +399,20 @@
                 {% for item in character.inventory %}
                 <li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 cursor-pointer group">
                     <span class="text-gray-300 group-hover:text-white">{{ item.name }}</span>
-                    <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">x{{ item.quantity
-                        }}</span>
+                    <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">x{{ item.quantity }}</span>
                 </li>
                 {% empty %}
                 {% if character.equipment %}
                 <li class="text-sm text-gray-400 p-2">{{ character.equipment }}</li>
                 {% else %}
-                <li class="text-sm text-gray-500 italic p-2">Empty inventory</li>
+                <li class="text-sm text-gray-500 italic p-2">Leeres Inventar</li>
                 {% endif %}
                 {% endfor %}
             </ul>
             <div class="pt-4 flex justify-center">
                 <button
-                    class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">View
-                    All Items</button>
+                    class="text-xs text-primary-glow hover:text-white transition-colors uppercase font-bold tracking-wider border-b border-dashed border-primary-glow/50 hover:border-white">Alle
+                    Gegenstände</button>
             </div>
 
             <div
@@ -443,7 +427,7 @@
                             <span class="material-symbols-outlined text-sm text-purple-400">psychology</span>
                             <h3
                                 class="text-xs font-bold uppercase tracking-widest text-gray-300 group-hover:text-white transition-colors">
-                                Personality</h3>
+                                Persönlichkeit</h3>
                         </div>
                         <span
                             class="material-symbols-outlined text-gray-400 group-hover:text-white transition-all group-hover:rotate-180">keyboard_arrow_up</span>
@@ -452,9 +436,9 @@
                         class="space-y-4 pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 flex-grow overflow-y-auto">
                         <div>
                             <span
-                                class="block text-[10px] text-purple-400 uppercase tracking-wide mb-1 font-bold">Trait</span>
-                            <p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.personality_traits
-                                }}"</p>
+                                class="block text-[10px] text-purple-400 uppercase tracking-wide mb-1 font-bold">Merkmal</span>
+                            <p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.personality_traits }}"
+                            </p>
                         </div>
                         <div class="w-full h-px bg-white/5"></div>
                         <div>
@@ -465,13 +449,13 @@
                         <div class="w-full h-px bg-white/5"></div>
                         <div>
                             <span
-                                class="block text-[10px] text-pink-400 uppercase tracking-wide mb-1 font-bold">Bond</span>
+                                class="block text-[10px] text-pink-400 uppercase tracking-wide mb-1 font-bold">Bindung</span>
                             <p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.bonds }}"</p>
                         </div>
                         <div class="w-full h-px bg-white/5"></div>
                         <div>
                             <span
-                                class="block text-[10px] text-red-400 uppercase tracking-wide mb-1 font-bold">Flaw</span>
+                                class="block text-[10px] text-red-400 uppercase tracking-wide mb-1 font-bold">Makel</span>
                             <p class="text-sm text-gray-200 italic leading-relaxed">"{{ character.flaws }}"</p>
                         </div>
                     </div>
@@ -503,7 +487,7 @@
         </div>
         <button onclick="closeStatModal()"
             class="w-full py-3 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 text-white font-bold transition-colors border border-purple-500/30 shadow-[0_0_10px_#a855f74d,0_0_20px_#a855f71a] uppercase text-sm tracking-wider cursor-pointer">
-            Done
+            Fertig
         </button>
     </div>
 </div>
@@ -545,7 +529,7 @@
                     document.getElementById('editModalStatValue').innerText = data.new_value;
 
                     // Update specific stat row
-                    document.getElementById(`stat-score-${currentEditingStat}`).innerText = `SCORE ${data.new_value}`;
+                    document.getElementById(`stat-score-${currentEditingStat}`).innerText = `WERT ${data.new_value}`;
                     document.getElementById(`stat-mod-${currentEditingStat}`).innerText = data.new_mod;
                     // update onclick value so next time modal opens it has correct start val
                     const row = document.getElementById(`stat-row-${currentEditingStat}`);
@@ -557,7 +541,7 @@
                         const hpCurEl = document.getElementById('base-current-hp');
                         const hpCircle = document.getElementById('hp-circle-ring');
 
-                        if (hpMaxEl) hpMaxEl.innerText = `/ ${data.new_max_hp} HP`;
+                        if (hpMaxEl) hpMaxEl.innerText = `/ ${data.new_max_hp} TP`;
                         if (hpCurEl) hpCurEl.innerText = data.new_current_hp;
 
                         if (hpCircle) {
@@ -571,7 +555,7 @@
                     }
                     if (data.new_available_points !== undefined) {
                         const ptsEl = document.getElementById('available-stat-points');
-                        if (ptsEl) ptsEl.innerText = `Available Points: ${data.new_available_points}`;
+                        if (ptsEl) ptsEl.innerText = `Verfügbare Punkte: ${data.new_available_points}`;
                     }
                 } else {
                     alert('Error updating stat: ' + data.error);
