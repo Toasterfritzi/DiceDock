@@ -220,9 +220,13 @@ def character_detail(request, pk):
 def character_levelup(request, pk):
     """Stufenaufstieg durchführen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
+    new_level = character.level + 1
+
+    # Features für die neue Stufe aus den Regeldaten laden
+    new_features = character.get_features_for_level(new_level)
 
     if request.method == 'POST':
-        character.level += 1
+        character.level = new_level
 
         # TP-Erhöhung: Durchschnitt des Trefferwürfels + KON-Modifikator
         try:
@@ -247,10 +251,27 @@ def character_levelup(request, pk):
         if character.level in asi_levels:
             character.available_stat_points += 2
 
+        # Features zur Feature-Liste hinzufügen
+        current_features = character.features or []
+        for feat in new_features:
+            current_features.append({
+                'stufe': character.level,
+                'name': feat['name'],
+                'beschreibung': feat['beschreibung'],
+            })
+        character.features = current_features
+
+        # Trefferwürfel-Anzahl aktualisieren
+        character.hit_dice_total = character.level
+
         character.save()
         return redirect('character_detail', pk=character.pk)
 
-    return render(request, 'characters/character_levelup.html', {'character': character})
+    return render(request, 'characters/character_levelup.html', {
+        'character': character,
+        'new_level': new_level,
+        'new_features': new_features,
+    })
 
 
 @login_required

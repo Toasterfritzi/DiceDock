@@ -216,6 +216,44 @@
                     {% endfor %}
                 </div>
             </div>
+
+            <!-- Klassenmerkmale -->
+            <div class="glass-panel rounded-2xl p-5">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-purple-400">auto_awesome</span> Klassenmerkmale
+                </h3>
+                <div class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                    {% for feature in character.get_all_features_up_to_level %}
+                    <div class="p-2 rounded-lg bg-white/5 border border-white/5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-300">{{ feature.name }}</span>
+                            <span class="text-[10px] text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">St. {{
+                                feature.stufe }}</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">{{ feature.beschreibung }}</p>
+                    </div>
+                    {% empty %}
+                    <span class="text-xs text-gray-500 italic">Keine Klassenmerkmale vorhanden.</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Spezies-Merkmale -->
+            <div class="glass-panel rounded-2xl p-5">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-cyan-400">genetics</span> Spezies-Merkmale
+                </h3>
+                <div class="space-y-2">
+                    {% for trait in character.get_species_traits %}
+                    <div class="p-2 rounded-lg bg-white/5 border border-white/5">
+                        <span class="text-xs font-bold text-cyan-300">{{ trait.name }}</span>
+                        <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">{{ trait.beschreibung }}</p>
+                    </div>
+                    {% empty %}
+                    <span class="text-xs text-gray-500 italic">Keine Spezies-Merkmale gefunden.</span>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
             <div class="glass-panel glass-highlight rounded-3xl p-8 relative overflow-hidden flex flex-col items-center justify-center text-center animate-float"

@@ -40,21 +40,20 @@
                 <div class="mt-6 pt-6 border-t border-white/10 text-left">
                     <h3 class="font-bold text-white mb-2 flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm text-yellow-400">star</span>
-                        Neue Fähigkeiten (Stufe {{ character.level|add:"1" }})
+                        Neue Fähigkeiten (Stufe {{ new_level }})
                     </h3>
-                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                        {% with n=character.level|add:"1" %}
-                        {% if n == 4 or n == 8 or n == 12 or n == 16 or n == 19 %}
-                        <li class="text-purple-300 font-medium">Attributsverbesserung (ASI) oder Talent</li>
-                        {% endif %}
-                        {% if n == 5 %}
-                        <li class="text-blue-300 font-medium">Extra-Angriff (für Kriegerklassen) oder mächtigere Zauber
+                    <ul class="list-none space-y-3">
+                        {% for feature in new_features %}
+                        <li class="bg-white/5 rounded-xl p-3 border border-white/10">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="material-symbols-outlined text-sm text-purple-400">auto_awesome</span>
+                                <span class="text-purple-300 font-bold text-sm">{{ feature.name }}</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed pl-6">{{ feature.beschreibung }}</p>
                         </li>
-                        <li class="text-green-300 font-medium">Übungsbonus steigt auf +3</li>
-                        {% endif %}
-                        {% endwith %}
-                        <li class="italic text-gray-500 text-xs mt-2">Detaillierte Features kommen im nächsten Update.
-                        </li>
+                        {% empty %}
+                        <li class="text-sm text-gray-500 italic">Keine neuen Klassenmerkmale auf dieser Stufe.</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
