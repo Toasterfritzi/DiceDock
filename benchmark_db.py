@@ -1,9 +1,9 @@
-import os
+from os import environ
 import time
 import django
 from django.db import connection, close_old_connections
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dicedock_project.settings')
+environ.setdefault('DJANGO_SETTINGS_MODULE', 'dicedock_project.settings')
 django.setup()
 
 def benchmark():
