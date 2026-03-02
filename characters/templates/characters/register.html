@@ -1,6 +1,6 @@
 {% extends 'characters/base.html' %}
 
-{% block title %}Register - DiceDock{% endblock %}
+{% block title %}Registrieren - DiceDock{% endblock %}
 
 {% block content %}
 <div class="w-full max-w-lg mx-auto mt-10">
@@ -56,7 +56,7 @@
                 <div class="space-y-1 relative">
                     <label for="{{ form.email.id_for_label }}"
                         class="block text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">E-Mail <span
-                            class="text-gray-600 font-normal normal-case inline-block ml-1">(Optional)</span></label>
+                            class="text-gray-600 font-normal normal-case inline-block ml-1">(Freiwillig)</span></label>
                     <div class="relative">
                         <span
                             class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">mail</span>
@@ -99,10 +99,10 @@
             </form>
 
             <p class="text-gray-400 text-sm mt-8 pt-6 border-t border-white/10">
-                Already have an account?
+                Bereits ein Konto?
                 <a href="{% url 'login' %}"
-                    class="font-bold text-primary-glow hover:text-white transition-colors border-b border-dashed border-primary-glow/50 hover:border-white ml-1">Login
-                    here</a>
+                    class="font-bold text-primary-glow hover:text-white transition-colors border-b border-dashed border-primary-glow/50 hover:border-white ml-1">Hier
+                    anmelden</a>
             </p>
         </div>
     </div>

@@ -2,27 +2,44 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+
 from .models import Character
 
+
 class UserRegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
+    """Registrierungsformular mit Passwort-Bestätigung und Validierung."""
+
+    password = forms.CharField(
+        label='Passwort',
+        widget=forms.PasswordInput,
+    )
+    password_confirm = forms.CharField(
+        label='Passwort bestätigen',
+        widget=forms.PasswordInput,
+    )
 
     class Meta:
         model = User
         fields = ['username', 'email']
+        labels = {
+            'username': 'Benutzername',
+            'email': 'E-Mail',
+        }
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
 
         if password and password_confirm:
             if password != password_confirm:
-                raise forms.ValidationError("Passwords do not match!")
+                raise forms.ValidationError('Die Passwörter stimmen nicht überein!')
 
-            # Validate password strength
-            user = User(username=cleaned_data.get('username'), email=cleaned_data.get('email'))
+            # Passwort-Stärke prüfen
+            user = User(
+                username=cleaned_data.get('username'),
+                email=cleaned_data.get('email'),
+            )
             try:
                 validate_password(password, user=user)
             except ValidationError as e:
@@ -30,21 +47,39 @@ class UserRegisterForm(forms.ModelForm):
 
         return cleaned_data
 
+
 class CharacterForm(forms.ModelForm):
+    """Formular zur Erstellung eines neuen Charakters."""
+
     EQUIPMENT_CHOICES = [
-        ('equipment', 'Startausrüstung (Standard items for your class)'),
-        ('gold', 'Startgold (Buy your own items)')
+        ('equipment', 'Startausrüstung (Standardgegenstände für deine Klasse)'),
+        ('gold', 'Startgold (Kaufe deine eigene Ausrüstung)'),
     ]
+
     equipment_preference = forms.ChoiceField(
-        choices=EQUIPMENT_CHOICES, 
+        label='Ausrüstungswahl',
+        choices=EQUIPMENT_CHOICES,
         widget=forms.RadioSelect,
-        help_text="Wähle für den Start zwischen Ausrüstung oder Gold."
+        help_text='Wähle für den Start zwischen Ausrüstung oder Gold.',
     )
 
     class Meta:
         model = Character
         fields = [
-            'name', 'image', 'character_class', 'subclass', 'race', 
-            'background', 'alignment', 'personality_traits', 'ideals', 
-            'bonds', 'flaws'
+            'name', 'image', 'character_class', 'subclass', 'race',
+            'background', 'alignment', 'personality_traits', 'ideals',
+            'bonds', 'flaws',
         ]
+        labels = {
+            'name': 'Name',
+            'image': 'Charakterbild',
+            'character_class': 'Klasse',
+            'subclass': 'Unterklasse',
+            'race': 'Volk',
+            'background': 'Hintergrund',
+            'alignment': 'Gesinnung',
+            'personality_traits': 'Persönlichkeitsmerkmale',
+            'ideals': 'Ideale',
+            'bonds': 'Bindungen',
+            'flaws': 'Makel',
+        }

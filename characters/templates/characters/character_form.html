@@ -1,6 +1,6 @@
 {% extends "characters/base.html" %}
 
-{% block title %}Create Character - DiceDock{% endblock %}
+{% block title %}Charakter erstellen - DiceDock{% endblock %}
 
 {% block content %}
 
@@ -78,7 +78,7 @@
                                         id="{{ form.character_class.id_for_label }}"
                                         name="{{ form.character_class.html_name }}"
                                         value="{{ form.character_class.value|default_if_none:'' }}"
-                                        placeholder="Rogue, Wizard..." type="text" required />
+                                        placeholder="Schurke, Magier..." type="text" required />
                                 </div>
                             </div>
                             <div class="space-y-2">
@@ -91,7 +91,7 @@
                                         class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                         id="{{ form.subclass.id_for_label }}" name="{{ form.subclass.html_name }}"
                                         value="{{ form.subclass.value|default_if_none:'' }}"
-                                        placeholder="Arcane Trickster..." type="text" />
+                                        placeholder="Arkaner Trickser..." type="text" />
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}"
-                                    value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Dwarf, Human..."
+                                    value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Zwerg, Mensch..."
                                     type="text" required />
                             </div>
                             <div class="space-y-2">
@@ -112,7 +112,7 @@
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.background.id_for_label }}" name="{{ form.background.html_name }}"
                                     value="{{ form.background.value|default_if_none:'' }}"
-                                    placeholder="Criminal, Noble..." type="text" required />
+                                    placeholder="Krimineller, Adeliger..." type="text" required />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -120,7 +120,7 @@
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.alignment.id_for_label }}" name="{{ form.alignment.html_name }}"
-                                    value="{{ form.alignment.value|default_if_none:'' }}" placeholder="Chaotic Good..."
+                                    value="{{ form.alignment.value|default_if_none:'' }}" placeholder="Chaotisch Gut..."
                                     type="text" required />
                             </div>
                         </div>
@@ -272,7 +272,8 @@
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
                                         name="{{ form.equipment_preference.html_name }}" type="radio" value="equipment"
-                                        {% if form.equipment_preference.value == 'equipment' or not form.equipment_preference.value %}checked{% endif %} />
+                                        {% if form.equipment_preference.value=='equipment' or not
+                                        form.equipment_preference.value %}checked{% endif %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startausrüstung</span>
@@ -284,11 +285,12 @@
                                 <div class="flex items-center h-5 mt-0.5">
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
-                                        name="{{ form.equipment_preference.html_name }}" type="radio" value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %} />
-                                <div class="text-sm">
-                                    <span class="font-medium text-white block mb-0.5">Startgold</span>
-                                    <span class="text-gray-500 text-xs">Kaufe deine eigene Ausrüstung</span>
-                                </div>
+                                        name="{{ form.equipment_preference.html_name }}" type="radio" value="gold" {% if
+                                        form.equipment_preference.value=='gold' %}checked{% endif %} />
+                                    <div class="text-sm">
+                                        <span class="font-medium text-white block mb-0.5">Startgold</span>
+                                        <span class="text-gray-500 text-xs">Kaufe deine eigene Ausrüstung</span>
+                                    </div>
                             </label>
                         </div>
                     </div>
