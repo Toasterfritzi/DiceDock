@@ -75,6 +75,122 @@
             overflow-x: hidden;
         }
 
+        /* ── Easter Eggs ── */
+        @keyframes dice-spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            25% {
+                transform: rotate(180deg) scale(1.4);
+            }
+
+            75% {
+                transform: rotate(540deg) scale(1.4);
+            }
+
+            100% {
+                transform: rotate(720deg) scale(1);
+            }
+        }
+
+        .dice-spinning {
+            animation: dice-spin 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+        }
+
+        #dice-result-badge {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: rgba(15, 10, 30, 0.95);
+            border: 1px solid rgba(168, 85, 247, 0.6);
+            border-radius: 0.6rem;
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: white;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            opacity: 0;
+            z-index: 200;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+        }
+
+        #dice-result-badge.visible {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        #dice-result-badge.nat20 {
+            color: #fbbf24;
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px #fbbf2488;
+        }
+
+        #dice-result-badge.crit {
+            color: #f87171;
+            border-color: #f87171;
+            box-shadow: 0 0 20px #f8717188;
+        }
+
+        #dice-result-badge.high {
+            color: #34d399;
+            border-color: #34d399;
+            box-shadow: 0 0 12px #34d39944;
+        }
+
+        /* Dice rain (Konami) */
+        #dice-rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .rain-die {
+            position: absolute;
+            top: -60px;
+            font-size: 2.2rem;
+            animation: rain-fall linear forwards;
+            opacity: 0.85;
+        }
+
+        @keyframes rain-fall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Gottmodus banner */
+        #gottmodus-banner {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(59, 130, 246, 0.25));
+            border: 1px solid rgba(168, 85, 247, 0.5);
+            backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            padding: 12px 28px;
+            color: white;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            z-index: 9998;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        #gottmodus-banner.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
         .bg-obsidian {
             background-color: #050608;
             background-image:
@@ -201,9 +317,16 @@
         <div
             class="glass-panel max-w-7xl mx-auto rounded-xl px-6 py-3 flex justify-between items-center refraction-edge">
             <a href="{% url 'dashboard' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <span class="material-symbols-outlined text-neon-purple text-3xl animate-float">casino</span>
-                <span
-                    class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple">DiceDock</span>
+                <!-- Easter Egg #1: Würfel-Klick rollt einen d20 -->
+                <span id="nav-dice"
+                    class="material-symbols-outlined text-neon-purple text-3xl animate-float relative cursor-pointer select-none"
+                    title="Klick mich!" onclick="rollNavDice(event)">casino
+                    <span id="dice-result-badge"></span>
+                </span>
+                <!-- Easter Egg #3: 5× klicken = Gottmodus -->
+                <span id="logo-text"
+                    class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple cursor-default select-none"
+                    onclick="gottmodusClick()">DiceDock</span>
             </a>
             <div class="flex items-center gap-6 text-sm font-medium">
                 {% if user.is_authenticated %}
@@ -230,6 +353,109 @@
         {% endblock %}
     </main>
     {% block extra_scripts %}{% endblock %}
+
+    <!-- Easter Egg Overlays -->
+    <div id="dice-rain"></div>
+    <div id="gottmodus-banner">⚔️ &nbsp;GOTTMODUS AKTIVIERT&nbsp; ⚔️</div>
+
+    <script>
+        // ── Easter Egg #1: Würfel im Navbar ─────────────────────────────────────
+        const DICE_EMOJIS = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        const DICE_FACES = ['🎲', '🎯', '🃏', '🎰', '♟️', '🎮'];
+        let diceRollTimer = null;
+
+        function rollNavDice(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const icon = document.getElementById('nav-dice');
+            const badge = document.getElementById('dice-result-badge');
+
+            // Spin animation
+            icon.classList.remove('dice-spinning');
+            void icon.offsetWidth; // reflow
+            icon.classList.add('dice-spinning');
+
+            // Roll d20
+            const roll = Math.floor(Math.random() * 20) + 1;
+            let label = `d20: ${roll}`;
+            badge.className = ''; // reset classes
+            badge.id = 'dice-result-badge';
+
+            if (roll === 20) {
+                label = `🌟 NAT 20!`;
+                badge.classList.add('nat20');
+            } else if (roll === 1) {
+                label = `💀 PATZER!`;
+                badge.classList.add('crit');
+            } else if (roll >= 15) {
+                badge.classList.add('high');
+            }
+
+            badge.textContent = label;
+            badge.classList.add('visible');
+
+            clearTimeout(diceRollTimer);
+            diceRollTimer = setTimeout(() => badge.classList.remove('visible'), 2200);
+        }
+
+        // ── Easter Egg #2: Konami-Code → Würfelregen ────────────────────────────
+        const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIdx = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === KONAMI[konamiIdx]) {
+                konamiIdx++;
+                if (konamiIdx === KONAMI.length) {
+                    konamiIdx = 0;
+                    triggerDiceRain();
+                }
+            } else {
+                konamiIdx = e.key === KONAMI[0] ? 1 : 0;
+            }
+        });
+
+        function triggerDiceRain() {
+            const rain = document.getElementById('dice-rain');
+            const symbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅', '🎲', '🎯', '🎰', 'd20', '1', '20'];
+            const colors = ['#a855f7', '#3b82f6', '#06b6d4', '#22c55e', '#f59e0b', '#ec4899'];
+            let count = 0;
+            const interval = setInterval(() => {
+                if (count++ > 60) { clearInterval(interval); return; }
+                const el = document.createElement('span');
+                el.className = 'rain-die';
+                el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                el.style.left = `${Math.random() * 100}vw`;
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                const dur = 1.4 + Math.random() * 2;
+                el.style.animationDuration = `${dur}s`;
+                el.style.animationDelay = `${Math.random() * 0.8}s`;
+                el.style.fontSize = `${1.5 + Math.random() * 2}rem`;
+                el.style.filter = `drop-shadow(0 0 8px currentColor)`;
+                rain.appendChild(el);
+                setTimeout(() => el.remove(), (dur + 1) * 1000);
+            }, 60);
+        }
+
+        // ── Easter Egg #3: Logo-Text 5× klicken → Gottmodus ────────────────────
+        let logoClicks = 0;
+        let logoTimer = null;
+        const banner = document.getElementById('gottmodus-banner');
+
+        function gottmodusClick() {
+            logoClicks++;
+            clearTimeout(logoTimer);
+            logoTimer = setTimeout(() => logoClicks = 0, 1500);
+
+            if (logoClicks >= 5) {
+                logoClicks = 0;
+                banner.classList.add('visible');
+                triggerDiceRain();
+                setTimeout(() => banner.classList.remove('visible'), 4000);
+            }
+        }
+    </script>
 </body>
 
 </html>
