@@ -1,0 +1,79 @@
+DiceDock Source Available License
+Copyright (c) 2026 Toasterfritzi
+
+All rights reserved.
+
+1. DEFINITIONS
+
+   "Original Work" means the DiceDock software and all associated source code,
+   assets, and documentation as authored and published by Toasterfritzi
+   (GitHub: https://github.com/Toasterfritzi/DiceDock).
+
+   "Derivative Work" means any work that is based upon, derived from, or
+   incorporates a substantial portion of the Original Work, and represents
+   significant, clearly distinguishable modifications such that it constitutes
+   a meaningfully different project from the Original Work.
+
+   "Minor Modification" means any change, adaptation, fork, or copy of the
+   Original Work where the differences are not substantial -- including but not
+   limited to: cosmetic changes, renaming, minor feature additions, or
+   translations of the existing codebase without significant new functionality.
+
+2. PERMISSIONS
+
+   Subject to the conditions in Section 3, you are permitted to:
+
+   a) View and study the source code for personal, educational, or research
+      purposes.
+
+   b) Create and distribute Derivative Works, PROVIDED that the Derivative Work
+      represents substantial and clearly distinguishable changes from the
+      Original Work (e.g., fundamentally different architecture, entirely new
+      core features, or a different primary use case).
+
+3. CONDITIONS
+
+   Any permitted use, reproduction, or distribution of the Original Work or
+   any Derivative Work must comply with ALL of the following conditions:
+
+   a) ATTRIBUTION: Every copy, distribution, or public use must include clear
+      and prominent attribution stating:
+        - The name of the original project: "DiceDock"
+        - The original author: "Toasterfritzi"
+        - A link to the original repository:
+          https://github.com/Toasterfritzi/DiceDock
+      This attribution must be visible in any README, About page, documentation,
+      or other prominent location within the project.
+
+   b) DERIVATIVE WORKS ONLY: Redistribution, publication, or deployment of
+      copies or forks of this software is ONLY permitted if the work qualifies
+      as a Derivative Work as defined in Section 1. Distribution of Minor
+      Modifications is NOT permitted without explicit written permission from
+      the original author.
+
+   c) NOTICE: Any Derivative Work must include a notice clearly stating that
+      it has been modified from the Original Work, along with a description
+      of the major changes made.
+
+4. RESTRICTIONS
+
+   a) You may NOT copy, redistribute, publish, or deploy the Original Work
+      or any Minor Modification thereof without explicit written permission
+      from the original author (Toasterfritzi).
+
+   b) You may NOT misrepresent the origin of the Original Work. You may NOT
+      claim authorship of the Original Work or present it as your own creation.
+
+   c) You may NOT use the name "DiceDock" or the name "Toasterfritzi" to
+      endorse or promote Derivative Works without prior written permission.
+
+5. NO WARRANTY
+
+   THE ORIGINAL WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED. THE AUTHOR SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES,
+   OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
+
+6. CONTACT
+
+   For permissions beyond the scope of this license, contact the original
+   author via GitHub: https://github.com/Toasterfritzi
