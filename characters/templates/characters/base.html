@@ -26,7 +26,7 @@
             <a href="{% url 'dashboard' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <span id="nav-dice"
                     class="material-symbols-outlined text-neon-purple text-3xl animate-float relative cursor-pointer select-none"
-                    title="Würfeln!" onclick="rollDice(event)">casino<span id="dice-result"></span></span>
+                    title="Würfeln!" onclick="rollDice(event)">casino</span>
                 <span
                     class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple">DiceDock</span>
             </a>
@@ -63,7 +63,6 @@
         // ── Würfel Easter Egg ───────────────────────────────────────────────────
         const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
         let isRolling = false;
-        let resultTimer = null;
 
         function rollDice(e) {
             e.preventDefault();
@@ -72,7 +71,6 @@
             isRolling = true;
 
             const icon = document.getElementById('nav-dice');
-            const badge = document.getElementById('dice-result');
             const result = Math.floor(Math.random() * 6) + 1;
 
             // Spin animation
@@ -80,15 +78,12 @@
             void icon.offsetWidth;
             icon.classList.add('dice-rolling');
 
-            // Ergebnis nach Animation zeigen
-            badge.classList.remove('show');
-            clearTimeout(resultTimer);
-
+            // Nach der Animation: Icon-Text durch gewürfelte Zahl ersetzen
             setTimeout(() => {
-                badge.textContent = DICE_FACES[result - 1];
-                badge.classList.add('show');
+                icon.classList.remove('material-symbols-outlined');
+                icon.textContent = DICE_FACES[result - 1];
+                icon.style.fontSize = '1.8rem';
                 icon.classList.remove('dice-rolling');
-                resultTimer = setTimeout(() => badge.classList.remove('show'), 2500);
                 isRolling = false;
             }, 900);
         }
