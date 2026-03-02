@@ -27,3 +27,4 @@ Thumbs.db
 # Rulebook Extraction
 page_*.png
 extract_pages.py
+cookies.txt
