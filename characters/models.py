@@ -46,6 +46,11 @@ class Character(models.Model):
     weapons = models.JSONField('Waffen', default=list, blank=True)
     inventory = models.JSONField('Inventar', default=list, blank=True)
     spell_slots = models.JSONField('Zauberplätze', default=dict, blank=True)
+    features = models.JSONField('Merkmale', default=list, blank=True)
+    feats = models.JSONField('Talente', default=list, blank=True)
+    saving_throw_proficiencies = models.JSONField('Rettungswurf-Übungen', default=list, blank=True)
+    skill_proficiencies = models.JSONField('Fertigkeits-Übungen', default=list, blank=True)
+    skill_expertises = models.JSONField('Fertigkeits-Expertisen', default=list, blank=True)
 
     # Erfahrung
     experience = models.IntegerField('Erfahrungspunkte', default=0)
@@ -109,3 +114,32 @@ class Character(models.Model):
         if self.level >= 5:
             return 3
         return 2
+
+    def get_features_for_level(self, level):
+        """Gibt alle Klassen-Features für eine bestimmte Stufe zurück."""
+        from .rules_data.klassen import KLASSEN_DATEN
+        klasse = None
+        for k in KLASSEN_DATEN:
+            if k.lower() in self.character_class.lower():
+                klasse = KLASSEN_DATEN[k]
+                break
+        if not klasse:
+            return []
+        return klasse.get('features', {}).get(level, [])
+
+    def get_all_features_up_to_level(self):
+        """Gibt alle Klassen-Features bis zur aktuellen Stufe zurück."""
+        all_features = []
+        for lvl in range(1, self.level + 1):
+            features = self.get_features_for_level(lvl)
+            for f in features:
+                all_features.append({'stufe': lvl, **f})
+        return all_features
+
+    def get_species_traits(self):
+        """Gibt die Spezies-Merkmale zurück."""
+        from .rules_data.spezies import SPEZIES_DATEN
+        for name, data in SPEZIES_DATEN.items():
+            if name.lower() in self.race.lower():
+                return data.get('merkmale', [])
+        return []
