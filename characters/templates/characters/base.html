@@ -27,7 +27,7 @@
                 <span id="nav-dice"
                     class="material-symbols-outlined text-neon-purple text-3xl animate-float relative cursor-pointer select-none"
                     title="Würfeln!" onclick="rollDice(event)">casino</span>
-                <span
+                <span id="nav-brand"
                     class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white tracking-tight text-glow-purple">DiceDock</span>
             </a>
             <div class="flex items-center gap-6 text-sm font-medium">
@@ -64,9 +64,31 @@
         const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
         let isRolling = false;
 
+        let diceClickCount = 0;
+        let diceClickTimer = null;
+
         function rollDice(e) {
             e.preventDefault();
             e.stopPropagation();
+
+            // DiceCock Easter Egg
+            diceClickCount++;
+            if (diceClickCount === 5) {
+                const brandSpan = document.getElementById('nav-brand');
+                if (brandSpan) {
+                    const originalText = brandSpan.textContent || 'DiceDock';
+                    brandSpan.textContent = 'DiceCock';
+                    setTimeout(() => {
+                        brandSpan.textContent = originalText;
+                    }, 3000);
+                }
+                diceClickCount = 0;
+            }
+            clearTimeout(diceClickTimer);
+            diceClickTimer = setTimeout(() => {
+                diceClickCount = 0;
+            }, 1000);
+
             if (isRolling) return;
             isRolling = true;
 
