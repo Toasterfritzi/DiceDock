@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+body {
+    background-color: #050608;
+    color: #e2e8f0;
+    overflow-x: hidden;
+}
+
+/* ── Würfel Easter Egg ── */
+@keyframes dice-roll {
+    0% {
+        transform: rotateY(0deg) rotateX(0deg) scale(1);
+    }
+
+    20% {
+        transform: rotateY(360deg) rotateX(180deg) scale(1.3);
+    }
+
+    50% {
+        transform: rotateY(720deg) rotateX(360deg) scale(1.2);
+    }
+
+    80% {
+        transform: rotateY(1000deg) rotateX(500deg) scale(1.1);
+    }
+
+    100% {
+        transform: rotateY(1080deg) rotateX(720deg) scale(1);
+    }
+}
+
+.dice-rolling {
+    animation: dice-roll 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+#dice-result {
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 50%;
+    background: rgba(15, 10, 30, 0.92);
+    border: 1.5px solid rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    pointer-events: none;
+    transform: scale(0);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+}
+
+#dice-result.show {
+    transform: scale(1);
+}
+
+/* Dice rain (Konami) */
+#dice-rain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.rain-die {
+    position: absolute;
+    top: -60px;
+    font-size: 2.2rem;
+    animation: rain-fall linear forwards;
+    opacity: 0.85;
+}
+
+@keyframes rain-fall {
+    to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.bg-obsidian {
+    background-color: #050608;
+    background-image:
+        radial-gradient(at 10% 10%, rgba(88, 28, 135, 0.15) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(30, 64, 175, 0.15) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+.glass-panel {
+    background: rgba(20, 22, 28, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glass-highlight {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.text-glow-purple {
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+}
+
+.text-glow-blue {
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+}
+
+.text-glow-green {
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+}
+
+.text-glow-cyan {
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+}
+
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    z-index: -1;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.refraction-edge {
+    position: relative;
+    overflow: hidden;
+}
+
+.refraction-edge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.03), transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.refraction-edge:hover::before {
+    transform: skewX(-25deg) translateX(50%);
+}
+
+.glass-input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+}

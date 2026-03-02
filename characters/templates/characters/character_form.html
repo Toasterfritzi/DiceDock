@@ -51,10 +51,11 @@
                                 class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 text-base focus:ring-0"
                                 id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}"
                                 value="{{ form.name.value|default_if_none:'' }}" placeholder="z.B. Valerius der Kühne"
-                                type="text" required />
+                                type="text" autocomplete="off" required />
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-sm font-medium text-gray-300 ml-1">Charakterbild</label>
+                            <label class="block text-sm font-medium text-gray-300 ml-1"
+                                for="{{ form.image.id_for_label }}">Charakterbild</label>
                             <div
                                 class="glass-input p-2 rounded-xl flex items-center gap-3 group hover:border-primary/50 cursor-pointer transition-colors relative overflow-hidden">
                                 <input class="absolute inset-0 opacity-0 cursor-pointer z-10" type="file"
@@ -78,7 +79,7 @@
                                         id="{{ form.character_class.id_for_label }}"
                                         name="{{ form.character_class.html_name }}"
                                         value="{{ form.character_class.value|default_if_none:'' }}"
-                                        placeholder="Schurke, Magier..." type="text" required />
+                                        placeholder="Schurke, Magier..." type="text" autocomplete="off" required />
                                 </div>
                             </div>
                             <div class="space-y-2">
@@ -91,7 +92,7 @@
                                         class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                         id="{{ form.subclass.id_for_label }}" name="{{ form.subclass.html_name }}"
                                         value="{{ form.subclass.value|default_if_none:'' }}"
-                                        placeholder="Arkaner Trickser..." type="text" />
+                                        placeholder="Arkaner Trickser..." type="text" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
@@ -103,7 +104,7 @@
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}"
                                     value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Zwerg, Mensch..."
-                                    type="text" required />
+                                    type="text" autocomplete="off" required />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -112,7 +113,7 @@
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.background.id_for_label }}" name="{{ form.background.html_name }}"
                                     value="{{ form.background.value|default_if_none:'' }}"
-                                    placeholder="Krimineller, Adeliger..." type="text" required />
+                                    placeholder="Krimineller, Adeliger..." type="text" autocomplete="off" required />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -121,7 +122,7 @@
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.alignment.id_for_label }}" name="{{ form.alignment.html_name }}"
                                     value="{{ form.alignment.value|default_if_none:'' }}" placeholder="Chaotisch Gut..."
-                                    type="text" required />
+                                    type="text" autocomplete="off" required />
                             </div>
                         </div>
                     </div>
@@ -266,29 +267,34 @@
                         </h2>
                         <p class="text-sm text-gray-400 mb-4">Wähle für den Start zwischen Ausrüstung oder Gold.</p>
                         <div class="space-y-3">
-                            <label
+                            <label for="id_equip_equipment"
                                 class="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer transition-all">
                                 <div class="flex items-center h-5 mt-0.5">
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
-                                        name="{{ form.equipment_preference.html_name }}" type="radio" value="equipment"
-                                        {% if form.equipment_preference.value == 'equipment' or not form.equipment_preference.value %}checked{% endif %} />
+                                        id="id_equip_equipment" name="{{ form.equipment_preference.html_name }}"
+                                        type="radio" value="equipment" {% if
+                                        form.equipment_preference.value=='equipment' or not
+                                        form.equipment_preference.value %}checked{% endif %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startausrüstung</span>
                                     <span class="text-gray-500 text-xs">Standardausrüstung für deine Klasse</span>
                                 </div>
                             </label>
-                            <label
+                            <label for="id_equip_gold"
                                 class="flex items-start gap-3 p-3 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer transition-all">
                                 <div class="flex items-center h-5 mt-0.5">
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
-                                        name="{{ form.equipment_preference.html_name }}" type="radio" value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %} />
-                                    <div class="text-sm">
-                                        <span class="font-medium text-white block mb-0.5">Startgold</span>
-                                        <span class="text-gray-500 text-xs">Kaufe deine eigene Ausrüstung</span>
-                                    </div>
+                                        id="id_equip_gold" name="{{ form.equipment_preference.html_name }}" type="radio"
+                                        value="gold" {% if form.equipment_preference.value=='gold' %}checked{% endif
+                                        %} />
+                                </div>
+                                <div class="text-sm">
+                                    <span class="font-medium text-white block mb-0.5">Startgold</span>
+                                    <span class="text-gray-500 text-xs">Kaufe deine eigene Ausrüstung</span>
+                                </div>
                             </label>
                         </div>
                     </div>

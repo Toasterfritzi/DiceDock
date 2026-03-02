@@ -1,0 +1,28 @@
+{
+  "name": "dicedock",
+  "version": "1.0.0",
+  "description": "**Dein ultimativer digitaler Begleiter für Dungeons & Dragons und andere Pen & Paper Abenteuer.**",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./characters/static/characters/css/input.css -o ./characters/static/characters/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./characters/static/characters/css/input.css -o ./characters/static/characters/css/tailwind.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Toasterfritzi/DiceDock.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Toasterfritzi/DiceDock/issues"
+  },
+  "homepage": "https://github.com/Toasterfritzi/DiceDock#readme",
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "tailwindcss": "^3.4.19"
+  }
+}

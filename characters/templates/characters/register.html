@@ -49,7 +49,7 @@
                         <span
                             class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">person</span>
                         <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
-                            class="glass-input pl-10" required>
+                            class="glass-input pl-10" autocomplete="username" required>
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@
                         <span
                             class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">mail</span>
                         <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
-                            class="glass-input pl-10">
+                            class="glass-input pl-10" autocomplete="email">
                     </div>
                 </div>
 
@@ -73,7 +73,8 @@
                             <span
                                 class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">lock</span>
                             <input type="password" name="{{ form.password.html_name }}"
-                                id="{{ form.password.id_for_label }}" class="glass-input pl-10" required>
+                                id="{{ form.password.id_for_label }}" class="glass-input pl-10"
+                                autocomplete="new-password" required>
                         </div>
                     </div>
 
@@ -84,7 +85,8 @@
                             <span
                                 class="material-symbols-outlined absolute left-3 top-3 text-gray-500 text-[20px] pointer-events-none">lock_reset</span>
                             <input type="password" name="{{ form.password_confirm.html_name }}"
-                                id="{{ form.password_confirm.id_for_label }}" class="glass-input pl-10" required>
+                                id="{{ form.password_confirm.id_for_label }}" class="glass-input pl-10"
+                                autocomplete="new-password" required>
                         </div>
                     </div>
                 </div>

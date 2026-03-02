@@ -7,7 +7,8 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
-static/
+staticfiles/
+node_modules/
 
 # Environment
 .env
