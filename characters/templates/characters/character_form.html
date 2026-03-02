@@ -273,9 +273,7 @@
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
                                         id="id_equip_equipment" name="{{ form.equipment_preference.html_name }}"
-                                        type="radio" value="equipment" {% if
-                                        form.equipment_preference.value=='equipment' or not
-                                        form.equipment_preference.value %}checked{% endif %} />
+                                        type="radio" value="equipment" {% if form.equipment_preference.value == 'equipment' or not form.equipment_preference.value %}checked{% endif %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startausrüstung</span>
@@ -288,8 +286,7 @@
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
                                         id="id_equip_gold" name="{{ form.equipment_preference.html_name }}" type="radio"
-                                        value="gold" {% if form.equipment_preference.value=='gold' %}checked{% endif
-                                        %} />
+                                        value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startgold</span>

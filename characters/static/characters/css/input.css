@@ -182,7 +182,10 @@ body {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
-    padding: 0.75rem 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     border-radius: 0.75rem;
     font-size: 1rem;
     transition: all 0.3s ease;
