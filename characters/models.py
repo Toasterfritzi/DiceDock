@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .rules_data.spezies import SPEZIES_DATEN
+
+_SPEZIES_DATEN_LOWER = {k.lower(): v for k, v in SPEZIES_DATEN.items()}
 
 
 class Character(models.Model):
@@ -138,8 +141,14 @@ class Character(models.Model):
 
     def get_species_traits(self):
         """Gibt die Spezies-Merkmale zurück."""
-        from .rules_data.spezies import SPEZIES_DATEN
-        for name, data in SPEZIES_DATEN.items():
-            if name.lower() in self.race.lower():
+        race_lower = self.race.lower()
+        # O(1) lookup
+        data = _SPEZIES_DATEN_LOWER.get(race_lower)
+        if data:
+            return data.get('merkmale', [])
+
+        # Fallback for substring matching (e.g. "Hochelf" where "elf" is in SPEZIES_DATEN)
+        for name, data in _SPEZIES_DATEN_LOWER.items():
+            if name in race_lower:
                 return data.get('merkmale', [])
         return []
