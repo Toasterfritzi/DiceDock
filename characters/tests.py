@@ -27,6 +27,7 @@ class CharacterCreationTest(TestCase):
             'wisdom': 10,
             'charisma': 12,
             'equipment_preference': 'equipment',
+            'level': 1,
         })
 
         # Check redirect (success)
@@ -60,6 +61,7 @@ class CharacterCreationTest(TestCase):
             'wisdom': 10,
             'charisma': 10,
             'equipment_preference': 'gold',
+            'level': 1,
         })
 
         # Check redirect (success)
