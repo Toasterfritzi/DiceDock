@@ -1,10 +1,10 @@
-import os
+from os import environ
 import time
 import django
 from django.db import connection, close_old_connections
 
 # First test with CONN_MAX_AGE = 0
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dicedock_project.settings')
+environ.setdefault('DJANGO_SETTINGS_MODULE', 'dicedock_project.settings')
 django.setup()
 from django.conf import settings
 
