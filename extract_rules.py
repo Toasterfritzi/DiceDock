@@ -11,8 +11,12 @@ def extract_text(pdf_path, output_txt):
         with open(output_txt, 'w', encoding='utf-8') as f:
             f.writelines(pages_text)
         print(f"Successfully extracted text to {output_txt}")
-    except Exception as e:
-        print(f"Error: {e}")
+    except FileNotFoundError as e:
+        print(f"Error: File not found - {e}")
+    except fitz.FileDataError as e:
+        print(f"Error: Invalid PDF file - {e}")
+    except OSError as e:
+        print(f"Error: OS error occurred - {e}")
 
 if __name__ == "__main__":
     extract_text('D-D - Spielregeln_compressed.pdf', 'full_rules.txt')
