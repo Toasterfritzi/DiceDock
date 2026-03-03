@@ -255,9 +255,7 @@ def character_levelup(request, pk):
     """Stufenaufstieg durchführen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    if character.experience < character.max_experience:
-        messages.error(request, 'Nicht genug Erfahrungspunkte für einen Stufenaufstieg.')
-        return redirect('character_detail', pk=character.pk)
+    # XP check removed for independent level ups
 
     new_level = character.level + 1
 
