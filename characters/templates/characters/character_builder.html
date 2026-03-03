@@ -482,7 +482,7 @@
             card.innerHTML = '<div class="builder-card-inner glass-panel p-4 rounded-2xl border border-white/5 hover:border-primary/40 transition-all h-full flex flex-col hover:bg-white/5" id="sp-' + name.replace(/\s/g, '_') + '">' +
                 '<div class="w-full h-24 rounded-xl bg-white/5 mb-3 flex items-center justify-center border border-white/5"><span class="material-symbols-outlined text-3xl text-gray-600">genetics</span></div>' +
                 '<h3 class="text-sm font-bold text-white mb-1">' + name + '</h3>' +
-                '<div class="flex gap-2 text-[10px] text-gray-500 mb-2"><span>' + data.groesse + '</span><span>•</span><span>' + data.geschwindigkeit + ' ft</span></div>' +
+                '<div class="flex gap-2 text-[10px] text-gray-500 mb-2"><span>' + data.groesse + '</span><span>•</span><span>' + data.geschwindigkeit + ' m</span></div>' +
                 '<div class="flex flex-col gap-0.5">' + traits + '</div>' + abstHtml + '</div>';
             grid.appendChild(card);
         }
@@ -496,7 +496,7 @@
         const data = SPEZIES[name];
         const panel = document.getElementById('detail-species');
         let html = '<h3 class="text-xl font-bold text-primary mb-2">' + name + '</h3>';
-        html += '<div class="flex gap-3 text-xs text-gray-400 mb-4"><span>Größe: <strong class="text-white">' + data.groesse + '</strong></span><span>•</span><span>Geschwindigkeit: <strong class="text-white">' + data.geschwindigkeit + ' ft</strong></span>';
+        html += '<div class="flex gap-3 text-xs text-gray-400 mb-4"><span>Größe: <strong class="text-white">' + data.groesse + '</strong></span><span>•</span><span>Geschwindigkeit: <strong class="text-white">' + data.geschwindigkeit + ' m</strong></span>';
         if (data.tp_bonus) html += '<span>•</span><span>TP-Bonus: <strong class="text-white">+' + data.tp_bonus + '/Stufe</strong></span>';
         html += '</div>';
 

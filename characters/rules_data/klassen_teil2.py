@@ -300,7 +300,7 @@ KLASSEN_DATEN_TEIL2 = {
                 6: [{'name': 'Eigenes Glück erzwingen', 'beschreibung': 'Addiere W10 auf Fertigkeitswurf oder Rettungswurf. 1/KR.'}],
             },
             'Großer Alter': {
-                3: [{'name': 'Erwachte Telepathie', 'beschreibung': 'Telepathische Kommunikation (Reichweite = 5× Stufe Fuß).'}],
+                3: [{'name': 'Erwachte Telepathie', 'beschreibung': 'Telepathische Kommunikation (Reichweite = 1,5× Stufe m).'}],
                 6: [{'name': 'Psychischer Schutz', 'beschreibung': 'Resistenz gegen psychischen Schaden.'}],
             },
             'Erzfee': {
