@@ -407,6 +407,7 @@ def character_builder(request):
     """Interaktiver Charakter-Builder – liefert alle Regeldaten als JSON an das Template."""
     from .rules_data.klassen import KLASSEN_DATEN
     from .rules_data.hintergruende import HINTERGRUND_DATEN
+    from .rules_data.spezies import SPEZIES_DATEN
     from .rules_data.builder_beschreibungen import (
         KLASSEN_BESCHREIBUNGEN,
         UNTERKLASSEN_BESCHREIBUNGEN,
@@ -420,20 +421,27 @@ def character_builder(request):
         unterklassen = {}
         for uk_name in data.get('unterklassen', {}):
             uk_beschr = UNTERKLASSEN_BESCHREIBUNGEN.get(uk_name, {})
-            # Features der Unterklasse (Stufe 3 + 6) für die Vorschau
+            # Alle Features der Unterklasse (alle Stufen)
             uk_features = data['unterklassen'][uk_name]
-            preview_features = []
-            for lvl in sorted(uk_features.keys())[:2]:
-                for feat in uk_features[lvl]:
-                    preview_features.append(feat['name'])
+            alle_features = {}
+            for lvl in sorted(uk_features.keys()):
+                alle_features[str(lvl)] = [
+                    {'name': f['name'], 'beschreibung': f.get('beschreibung', '')}
+                    for f in uk_features[lvl]
+                ]
             unterklassen[uk_name] = {
                 'beschreibung': uk_beschr.get('beschreibung', ''),
                 'bild': uk_beschr.get('bild', ''),
-                'vorschau_features': preview_features,
+                'features': alle_features,
             }
 
-        # Klasse-Level-1 Features für Vorschau
-        lvl1_features = [f['name'] for f in data.get('features', {}).get(1, [])]
+        # Alle Klassen-Features für Detail-Ansicht
+        alle_klassen_features = {}
+        for lvl, feats in data.get('features', {}).items():
+            alle_klassen_features[str(lvl)] = [
+                {'name': f['name'], 'beschreibung': f.get('beschreibung', '')}
+                for f in feats
+            ]
 
         klassen_json[name] = {
             'beschreibung': beschr.get('beschreibung', ''),
@@ -444,7 +452,7 @@ def character_builder(request):
             'ruestungen': data.get('ruestungen', []),
             'waffen': data.get('waffen', []),
             'zauberattribut': data.get('zauberattribut'),
-            'lvl1_features': lvl1_features,
+            'features': alle_klassen_features,
             'unterklassen': unterklassen,
         }
 
@@ -453,7 +461,7 @@ def character_builder(request):
     for name, data in HINTERGRUND_DATEN.items():
         beschr = HINTERGRUND_BESCHREIBUNGEN.get(name, {})
         attr = data.get('attribute', {})
-        ATTR_MAP = {
+        a_map = {
             'strength': 'Stärke', 'dexterity': 'Geschicklichkeit',
             'constitution': 'Konstitution', 'intelligence': 'Intelligenz',
             'wisdom': 'Weisheit', 'charisma': 'Charisma',
@@ -461,16 +469,38 @@ def character_builder(request):
         hintergruende_json[name] = {
             'beschreibung': beschr.get('beschreibung', ''),
             'bild': beschr.get('bild', ''),
-            'primaer': ATTR_MAP.get(attr.get('primary', ''), ''),
-            'sekundaer': ATTR_MAP.get(attr.get('secondary', ''), ''),
+            'primaer': a_map.get(attr.get('primary', ''), ''),
+            'sekundaer': a_map.get(attr.get('secondary', ''), ''),
             'talent': data.get('talent', ''),
             'fertigkeiten': data.get('fertigkeiten', []),
             'werkzeug': data.get('werkzeug', ''),
         }
 
+    # Spezies-Daten für das Frontend
+    spezies_json = {}
+    for name, data in SPEZIES_DATEN.items():
+        merkmale = [
+            {'name': m['name'], 'beschreibung': m.get('beschreibung', '')}
+            for m in data.get('merkmale', [])
+        ]
+        abstammungen = {}
+        for ab_name, ab_traits in data.get('abstammungen', {}).items():
+            abstammungen[ab_name] = [
+                {'name': t['name'], 'beschreibung': t.get('beschreibung', '')}
+                for t in ab_traits
+            ]
+        spezies_json[name] = {
+            'groesse': data.get('groesse', 'Mittel'),
+            'geschwindigkeit': data.get('geschwindigkeit', 30),
+            'merkmale': merkmale,
+            'tp_bonus': data.get('tp_bonus', 0),
+            'abstammungen': abstammungen,
+        }
+
     context = {
         'klassen_json': json.dumps(klassen_json, ensure_ascii=False),
         'hintergruende_json': json.dumps(hintergruende_json, ensure_ascii=False),
+        'spezies_json': json.dumps(spezies_json, ensure_ascii=False),
     }
     return render(request, 'characters/character_builder.html', context)
 
