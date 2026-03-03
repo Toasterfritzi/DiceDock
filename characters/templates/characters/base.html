@@ -51,6 +51,30 @@
     </nav>
 
     <main class="flex-grow flex flex-col justify-start p-6 pt-32 pb-12 w-full max-w-7xl mx-auto relative z-10 gap-6">
+                {% if messages %}
+        <div class="fixed top-24 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+            {% for message in messages %}
+            <div class="glass-panel px-6 py-4 rounded-xl border {% if message.tags == 'error' %}border-red-500/50 text-red-200 bg-red-900/20 shadow-[0_0_15px_rgba(239,68,68,0.3)]{% elif message.tags == 'success' %}border-green-500/50 text-green-200 bg-green-900/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]{% else %}border-blue-500/50 text-blue-200 bg-blue-900/20 shadow-[0_0_15px_rgba(59,130,246,0.3)]{% endif %} flex items-center gap-3 animate-fade-in pointer-events-auto">
+                <span class="material-symbols-outlined text-lg">
+                    {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}check_circle{% else %}info{% endif %}
+                </span>
+                <span class="font-medium">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <script>
+            // Auto-hide messages after 5 seconds
+            setTimeout(() => {
+                const msgs = document.querySelectorAll('.animate-fade-in');
+                msgs.forEach(msg => {
+                    msg.style.opacity = '0';
+                    msg.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(() => msg.remove(), 500);
+                });
+            }, 5000);
+        </script>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>

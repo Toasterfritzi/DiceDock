@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -220,6 +221,11 @@ def character_detail(request, pk):
 def character_levelup(request, pk):
     """Stufenaufstieg durchführen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    if character.experience < character.max_experience:
+        messages.error(request, 'Nicht genug Erfahrungspunkte für einen Stufenaufstieg.')
+        return redirect('character_detail', pk=character.pk)
+
     new_level = character.level + 1
 
     # Features für die neue Stufe aus den Regeldaten laden
