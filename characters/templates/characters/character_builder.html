@@ -1,0 +1,485 @@
+{% extends "characters/base.html" %}
+{% load static %}
+
+{% block title %}Charakter erstellen - DiceDock{% endblock %}
+
+{% block content %}
+<div class="glass-panel-heavy w-full max-w-6xl rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl mx-auto">
+    <div
+        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+    </div>
+
+    <!-- Fortschrittsbalken -->
+    <div class="mb-10">
+        <div class="flex items-center justify-between mb-4">
+            <button onclick="prevStep()" id="btn-prev"
+                class="flex items-center gap-1 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                disabled>
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                <span class="text-sm font-medium">Zurück</span>
+            </button>
+            <h1 id="step-title" class="text-2xl md:text-3xl font-bold text-white tracking-tight text-neon text-center">
+            </h1>
+            <div class="w-[80px]"></div>
+        </div>
+        <div class="flex items-center gap-1">
+            <div class="step-dot active" data-step="0">
+                <div class="w-full h-1.5 rounded-full bg-primary transition-all duration-500"></div>
+            </div>
+            <div class="step-dot" data-step="1">
+                <div class="w-full h-1.5 rounded-full bg-white/10 transition-all duration-500"></div>
+            </div>
+            <div class="step-dot" data-step="2">
+                <div class="w-full h-1.5 rounded-full bg-white/10 transition-all duration-500"></div>
+            </div>
+            <div class="step-dot" data-step="3">
+                <div class="w-full h-1.5 rounded-full bg-white/10 transition-all duration-500"></div>
+            </div>
+            <div class="step-dot" data-step="4">
+                <div class="w-full h-1.5 rounded-full bg-white/10 transition-all duration-500"></div>
+            </div>
+        </div>
+        <div class="flex justify-between text-[10px] text-gray-500 mt-1 px-1">
+            <span>Klasse</span><span>Unterklasse</span><span>Hintergrund</span><span>Ausrüstung</span><span>Details</span>
+        </div>
+    </div>
+
+    <!-- Hidden Submit Form -->
+    <form id="builder-form" action="{% url 'character_builder_submit' %}" method="POST" enctype="multipart/form-data"
+        class="hidden">
+        {% csrf_token %}
+        <input type="hidden" name="character_class" id="f-class">
+        <input type="hidden" name="subclass" id="f-subclass">
+        <input type="hidden" name="background" id="f-background">
+        <input type="hidden" name="equipment_preference" id="f-equipment" value="equipment">
+        <input type="hidden" name="name" id="f-name">
+        <input type="hidden" name="race" id="f-race">
+        <input type="hidden" name="alignment" id="f-alignment">
+        <input type="hidden" name="level" id="f-level" value="1">
+        <input type="hidden" name="personality_traits" id="f-personality">
+        <input type="hidden" name="ideals" id="f-ideals">
+        <input type="hidden" name="bonds" id="f-bonds">
+        <input type="hidden" name="flaws" id="f-flaws">
+    </form>
+
+    <!-- ═══ STEP 0: Klasse ═══ -->
+    <div id="step-0" class="builder-step">
+        <p class="text-gray-400 mb-6 text-center">Wähle die Klasse deines Charakters.</p>
+        <div id="class-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </div>
+
+    <!-- ═══ STEP 1: Unterklasse ═══ -->
+    <div id="step-1" class="builder-step hidden">
+        <p class="text-gray-400 mb-6 text-center">Wähle die Unterklasse für <span id="chosen-class-name"
+                class="text-primary font-semibold"></span>.</p>
+        <div id="subclass-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- ═══ STEP 2: Hintergrund ═══ -->
+    <div id="step-2" class="builder-step hidden">
+        <p class="text-gray-400 mb-6 text-center">Wähle den Hintergrund deines Charakters.</p>
+        <div id="bg-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </div>
+
+    <!-- ═══ STEP 3: Ausrüstung ═══ -->
+    <div id="step-3" class="builder-step hidden">
+        <p class="text-gray-400 mb-6 text-center">Wähle deine Startausstattung.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div class="equip-card cursor-pointer group" data-equip="equipment" onclick="selectEquipment('equipment')">
+                <div
+                    class="glass-panel p-8 rounded-2xl border-2 border-primary/40 hover:border-primary transition-all text-center group-hover:bg-white/5 equip-selected">
+                    <span class="material-symbols-outlined text-5xl text-primary mb-4 block">shield</span>
+                    <h3 class="text-xl font-bold text-white mb-2">Startausrüstung</h3>
+                    <p class="text-gray-400 text-sm">Standardausrüstung passend zu deiner Klasse. Sofort kampfbereit.
+                    </p>
+                </div>
+            </div>
+            <div class="equip-card cursor-pointer group" data-equip="gold" onclick="selectEquipment('gold')">
+                <div
+                    class="glass-panel p-8 rounded-2xl border-2 border-white/10 hover:border-amber-500/50 transition-all text-center group-hover:bg-white/5">
+                    <span class="material-symbols-outlined text-5xl text-amber-400 mb-4 block">payments</span>
+                    <h3 class="text-xl font-bold text-white mb-2">Startgold</h3>
+                    <p class="text-gray-400 text-sm">100 Gold zum freien Einkauf deiner eigenen Ausrüstung.</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-center mt-8">
+            <button onclick="nextStep()"
+                class="px-8 py-3 rounded-xl bg-gradient-to-r from-primary to-purple-700 text-white font-bold hover:to-purple-600 transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] flex items-center gap-2">
+                <span class="material-symbols-outlined">arrow_forward</span> Weiter
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══ STEP 4: Details ═══ -->
+    <div id="step-4" class="builder-step hidden">
+        <p class="text-gray-400 mb-8 text-center">Gib deinem Charakter den letzten Schliff.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="space-y-5">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Name</label>
+                    <input
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
+                        id="input-name" placeholder="z.B. Valerius der Kühne" type="text" required />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-300 ml-1">Volk</label>
+                        <input
+                            class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
+                            id="input-race" placeholder="Elf, Zwerg..." type="text" required />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-300 ml-1">Stufe</label>
+                        <input
+                            class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
+                            id="input-level" type="number" min="1" max="20" value="1" required />
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Gesinnung</label>
+                    <input
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
+                        id="input-alignment" placeholder="Chaotisch Gut..." type="text" />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Charakterbild</label>
+                    <div
+                        class="glass-input p-2 rounded-xl flex items-center gap-3 group hover:border-primary/50 cursor-pointer transition-colors relative overflow-hidden">
+                        <input class="absolute inset-0 opacity-0 cursor-pointer z-10" type="file" id="input-image"
+                            accept="image/*" />
+                        <div
+                            class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-xl">image</span>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-gray-200">Datei auswählen...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-5">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Persönlichkeitsmerkmale</label>
+                    <textarea
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
+                        id="input-personality" rows="2"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Ideale</label>
+                    <textarea
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
+                        id="input-ideals" rows="2"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Bindungen</label>
+                    <textarea
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
+                        id="input-bonds" rows="2"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-300 ml-1">Makel</label>
+                    <textarea
+                        class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0 resize-none"
+                        id="input-flaws" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zusammenfassung -->
+        <div class="mt-8 glass-panel rounded-2xl p-6 border border-white/5 max-w-4xl mx-auto">
+            <h3 class="text-lg font-bold text-primary mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined">summarize</span> Zusammenfassung
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div><span class="text-gray-500">Klasse:</span> <span id="sum-class"
+                        class="text-white font-medium"></span></div>
+                <div><span class="text-gray-500">Unterklasse:</span> <span id="sum-subclass"
+                        class="text-white font-medium"></span></div>
+                <div><span class="text-gray-500">Hintergrund:</span> <span id="sum-bg"
+                        class="text-white font-medium"></span></div>
+                <div><span class="text-gray-500">Ausrüstung:</span> <span id="sum-equip"
+                        class="text-white font-medium"></span></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <button onclick="submitBuilder()"
+                class="w-full md:w-auto md:min-w-[300px] flex justify-center items-center gap-2 py-4 px-8 border border-transparent rounded-2xl shadow-[0_0_20px_rgba(168,85,247,0.4)] text-base font-bold text-white bg-gradient-to-r from-primary to-purple-700 hover:to-purple-600 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] relative overflow-hidden group">
+                <span
+                    class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_infinite]"></span>
+                <span class="material-symbols-outlined">magic_button</span>
+                Charakter erstellen
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Charakter-Builder Wizard
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const KLASSEN = {{ klassen_json| safe }};
+    const HINTERGRUENDE = {{ hintergruende_json| safe }};
+
+    const STEP_TITLES = ['Klasse wählen', 'Unterklasse wählen', 'Hintergrund wählen', 'Ausrüstung wählen', 'Details & Abschluss'];
+
+    let currentStep = 0;
+    let characterData = {
+        character_class: '',
+        subclass: '',
+        background: '',
+        equipment_preference: 'equipment',
+    };
+
+    // ── Fortschritt ──────────────────────────────────────────────────────────
+
+    function updateProgress() {
+        document.getElementById('step-title').textContent = STEP_TITLES[currentStep];
+        document.getElementById('btn-prev').disabled = currentStep === 0;
+
+        document.querySelectorAll('.step-dot').forEach(dot => {
+            const s = parseInt(dot.dataset.step);
+            const bar = dot.querySelector('div');
+            if (s <= currentStep) {
+                bar.classList.remove('bg-white/10');
+                bar.classList.add('bg-primary');
+            } else {
+                bar.classList.remove('bg-primary');
+                bar.classList.add('bg-white/10');
+            }
+        });
+    }
+
+    function showStep(step) {
+        document.querySelectorAll('.builder-step').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`step-${step}`).classList.remove('hidden');
+        currentStep = step;
+        updateProgress();
+    }
+
+    function nextStep() {
+        if (currentStep < 4) showStep(currentStep + 1);
+    }
+
+    function prevStep() {
+        if (currentStep > 0) showStep(currentStep - 1);
+    }
+
+    // ── Step 0: Klassen ─────────────────────────────────────────────────────
+
+    function renderClasses() {
+        const grid = document.getElementById('class-grid');
+        grid.innerHTML = '';
+        for (const [name, data] of Object.entries(KLASSEN)) {
+            const card = document.createElement('div');
+            card.className = 'cursor-pointer group';
+            card.onclick = () => selectClass(name);
+
+            const vorteile = (data.vorteile || []).map(v =>
+                `<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium border border-primary/20">${v}</span>`
+            ).join('');
+
+            const features = (data.lvl1_features || []).slice(0, 2).map(f =>
+                `<span class="text-[10px] text-gray-500">• ${f}</span>`
+            ).join(' ');
+
+            card.innerHTML = `
+            <div class="glass-panel p-4 rounded-2xl border border-white/5 hover:border-primary/40 transition-all h-full flex flex-col group-hover:bg-white/5 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                 id="class-card-${name}">
+                <div class="w-full h-28 rounded-xl bg-white/5 mb-3 flex items-center justify-center overflow-hidden border border-white/5">
+                    <span class="material-symbols-outlined text-4xl text-gray-600 group-hover:text-primary transition-colors">swords</span>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1 group-hover:text-primary transition-colors">${name}</h3>
+                <p class="text-xs text-gray-400 mb-2 line-clamp-2">${data.beschreibung}</p>
+                <div class="flex flex-wrap gap-1 mb-2">${vorteile}</div>
+                <div class="mt-auto flex flex-col gap-0.5">
+                    <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">${data.trefferwuerfel}</span>
+                    ${features}
+                </div>
+            </div>
+        `;
+            grid.appendChild(card);
+        }
+    }
+
+    function selectClass(name) {
+        characterData.character_class = name;
+        characterData.subclass = '';
+        document.getElementById('chosen-class-name').textContent = name;
+        document.getElementById('sum-class').textContent = name;
+        renderSubclasses(name);
+        nextStep();
+    }
+
+    // ── Step 1: Unterklassen ────────────────────────────────────────────────
+
+    function renderSubclasses(className) {
+        const grid = document.getElementById('subclass-grid');
+        grid.innerHTML = '';
+        const klasse = KLASSEN[className];
+        if (!klasse || !klasse.unterklassen) return;
+
+        for (const [name, data] of Object.entries(klasse.unterklassen)) {
+            const card = document.createElement('div');
+            card.className = 'cursor-pointer group';
+            card.onclick = () => selectSubclass(name);
+
+            const features = (data.vorschau_features || []).map(f =>
+                `<div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-sm mt-0.5">auto_awesome</span>
+                <span class="text-sm text-gray-300">${f}</span>
+            </div>`
+            ).join('');
+
+            card.innerHTML = `
+            <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-primary/40 transition-all h-full flex flex-col group-hover:bg-white/5 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                 id="subclass-card-${name}">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 flex-shrink-0">
+                        <span class="material-symbols-outlined text-2xl text-gray-600 group-hover:text-primary transition-colors">mediation</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-primary transition-colors">${name}</h3>
+                        <p class="text-sm text-gray-400">${data.beschreibung}</p>
+                    </div>
+                </div>
+                <div class="space-y-2 mt-auto">${features}</div>
+            </div>
+        `;
+            grid.appendChild(card);
+        }
+    }
+
+    function selectSubclass(name) {
+        characterData.subclass = name;
+        document.getElementById('sum-subclass').textContent = name;
+        nextStep();
+    }
+
+    // ── Step 2: Hintergründe ────────────────────────────────────────────────
+
+    function renderBackgrounds() {
+        const grid = document.getElementById('bg-grid');
+        grid.innerHTML = '';
+        for (const [name, data] of Object.entries(HINTERGRUENDE)) {
+            const card = document.createElement('div');
+            card.className = 'cursor-pointer group';
+            card.onclick = () => selectBackground(name);
+
+            const tags = [];
+            if (data.primaer) tags.push(`+2 ${data.primaer}`);
+            if (data.sekundaer) tags.push(`+1 ${data.sekundaer}`);
+            if (data.talent) tags.push(data.talent);
+
+            const tagHtml = tags.map(t =>
+                `<span class="px-2 py-0.5 rounded-full bg-white/5 text-gray-300 text-[10px] font-medium border border-white/10">${t}</span>`
+            ).join('');
+
+            const skills = (data.fertigkeiten || []).join(', ');
+
+            card.innerHTML = `
+            <div class="glass-panel p-4 rounded-2xl border border-white/5 hover:border-primary/40 transition-all h-full flex flex-col group-hover:bg-white/5 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                 id="bg-card-${name}">
+                <div class="w-full h-24 rounded-xl bg-white/5 mb-3 flex items-center justify-center overflow-hidden border border-white/5">
+                    <span class="material-symbols-outlined text-3xl text-gray-600 group-hover:text-primary transition-colors">auto_stories</span>
+                </div>
+                <h3 class="text-sm font-bold text-white mb-1 group-hover:text-primary transition-colors">${name}</h3>
+                <p class="text-xs text-gray-400 mb-2 line-clamp-2">${data.beschreibung}</p>
+                <div class="flex flex-wrap gap-1 mb-1">${tagHtml}</div>
+                <span class="text-[10px] text-gray-500 mt-auto">${skills}</span>
+            </div>
+        `;
+            grid.appendChild(card);
+        }
+    }
+
+    function selectBackground(name) {
+        characterData.background = name;
+        document.getElementById('sum-bg').textContent = name;
+        nextStep();
+    }
+
+    // ── Step 3: Ausrüstung ──────────────────────────────────────────────────
+
+    function selectEquipment(type) {
+        characterData.equipment_preference = type;
+        document.querySelectorAll('.equip-card .glass-panel').forEach(el => {
+            el.classList.remove('border-primary/40', 'border-amber-500/50');
+            el.classList.add('border-white/10');
+        });
+        const chosen = document.querySelector(`.equip-card[data-equip="${type}"] .glass-panel`);
+        if (type === 'equipment') {
+            chosen.classList.remove('border-white/10');
+            chosen.classList.add('border-primary/40');
+        } else {
+            chosen.classList.remove('border-white/10');
+            chosen.classList.add('border-amber-500/50');
+        }
+        document.getElementById('sum-equip').textContent = type === 'gold' ? 'Startgold' : 'Startausrüstung';
+    }
+
+    // ── Step 4: Submit ──────────────────────────────────────────────────────
+
+    function submitBuilder() {
+        const name = document.getElementById('input-name').value.trim();
+        if (!name) {
+            alert('Bitte gib deinem Charakter einen Namen!');
+            return;
+        }
+        const race = document.getElementById('input-race').value.trim();
+        if (!race) {
+            alert('Bitte gib ein Volk an!');
+            return;
+        }
+
+        // Fill hidden form
+        document.getElementById('f-class').value = characterData.character_class;
+        document.getElementById('f-subclass').value = characterData.subclass;
+        document.getElementById('f-background').value = characterData.background;
+        document.getElementById('f-equipment').value = characterData.equipment_preference;
+        document.getElementById('f-name').value = name;
+        document.getElementById('f-race').value = race;
+        document.getElementById('f-alignment').value = document.getElementById('input-alignment').value;
+        document.getElementById('f-level').value = document.getElementById('input-level').value || '1';
+        document.getElementById('f-personality').value = document.getElementById('input-personality').value;
+        document.getElementById('f-ideals').value = document.getElementById('input-ideals').value;
+        document.getElementById('f-bonds').value = document.getElementById('input-bonds').value;
+        document.getElementById('f-flaws').value = document.getElementById('input-flaws').value;
+
+        // Image handling
+        const imageInput = document.getElementById('input-image');
+        if (imageInput.files.length > 0) {
+            const form = document.getElementById('builder-form');
+            const imgClone = imageInput.cloneNode(true);
+            imgClone.name = 'image';
+            imgClone.classList.remove('absolute', 'inset-0', 'opacity-0');
+            imgClone.style.display = 'none';
+            form.appendChild(imgClone);
+            // Transfer files
+            const dt = new DataTransfer();
+            for (const file of imageInput.files) dt.items.add(file);
+            imgClone.files = dt.files;
+        }
+
+        document.getElementById('builder-form').submit();
+    }
+
+    // ── Init ────────────────────────────────────────────────────────────────
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderClasses();
+        renderBackgrounds();
+        selectEquipment('equipment');
+        showStep(0);
+        document.getElementById('sum-equip').textContent = 'Startausrüstung';
+    });
+</script>
+
+<style>
+    .step-dot {
+        flex: 1;
+    }
+</style>
+{% endblock %}

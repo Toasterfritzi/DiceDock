@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.contrib import messages
@@ -146,7 +147,7 @@ def dashboard(request):
 
 @login_required
 def create_character(request):
-    """Neuen Charakter erstellen mit automatischer Werte-Berechnung."""
+    """Bestehenden Charakter mit Stufe importieren und Werte automatisch berechnen."""
     if request.method == 'POST':
         form = CharacterForm(request.POST, request.FILES)
         if form.is_valid():
@@ -176,20 +177,39 @@ def create_character(request):
             # Hintergrund-Boni
             _apply_background_bonuses(character)
 
-            # Stufe-1 Grundwerte
-            character.level = 1
-            character.experience = 0
-            character.max_experience = 300  # EP für Stufe 2
+            # Stufenbasierte Grundwerte übernehmen
+            character.level = form.cleaned_data.get('level', 1)
 
-            # Maximale TP: Maximum des Trefferwürfels + KON-Modifikator
+            # Erfahrungspunkte nach Stufe setzen
+            xp_thresholds = {
+                1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
+                6: 14000, 7: 23000, 8: 34000, 9: 48000, 10: 64000,
+                11: 85000, 12: 100000, 13: 120000, 14: 140000, 15: 165000,
+                16: 195000, 17: 225000, 18: 265000, 19: 305000, 20: 355000
+            }
+            character.experience = xp_thresholds.get(character.level, 0)
+            if character.level >= 20:
+                character.max_experience = character.experience
+            else:
+                character.max_experience = xp_thresholds.get(character.level + 1, 355000)
+
+            # Maximale TP berechnen: Grundwerte für Lvl 1
             hit_die_value = int(hit_die[1:])  # 'd10' → 10
             con_mod = character._ability_modifier(character.constitution)
-            character.max_hp = hit_die_value + con_mod
+            
+            base_hp = hit_die_value + con_mod
+            hp_per_level = (hit_die_value // 2) + 1 + con_mod
 
-            # Völker-spezifische TP-Boni
+            # Völker-spezifische TP-Boni (1 TP pro Level für Zwerge z.B.)
             race_lower = character.race.lower()
             if 'zwerg' in race_lower or 'dwarf' in race_lower:
-                character.max_hp += 1
+                base_hp += 1
+                hp_per_level += 1
+
+            if character.level > 1:
+                character.max_hp = base_hp + (hp_per_level * (character.level - 1))
+            else:
+                character.max_hp = base_hp
 
             character.current_hp = character.max_hp
 
@@ -203,7 +223,20 @@ def create_character(request):
             elif 'goliath' in race_lower:
                 character.speed = 35
 
+            # ASI berechnen
+            asi_levels = _get_asi_levels(character.character_class)
+            asi_points = sum(2 for l in asi_levels if l <= character.level)
+            character.available_stat_points = asi_points
+
+            # Trefferwürfel Count
+            character.hit_dice_total = character.level
+            
             character.save()
+            
+            # Alle Klassenmerkmale bis zur aktuellen Stufe hinzufügen
+            character.features = character.get_all_features_up_to_level()
+            character.save()
+
             return redirect('character_detail', pk=character.pk)
     else:
         form = CharacterForm()
@@ -363,3 +396,189 @@ def update_character_stat(request, pk):
         'new_ac': character.armor_class,
         'new_available_points': character.available_stat_points,
     })
+
+
+# ---------------------------------------------------------------------------
+# Charakter-Builder (Wizard)
+# ---------------------------------------------------------------------------
+
+@login_required
+def character_builder(request):
+    """Interaktiver Charakter-Builder – liefert alle Regeldaten als JSON an das Template."""
+    from .rules_data.klassen import KLASSEN_DATEN
+    from .rules_data.hintergruende import HINTERGRUND_DATEN
+    from .rules_data.builder_beschreibungen import (
+        KLASSEN_BESCHREIBUNGEN,
+        UNTERKLASSEN_BESCHREIBUNGEN,
+        HINTERGRUND_BESCHREIBUNGEN,
+    )
+
+    # Klassen-Daten für das Frontend aufbereiten
+    klassen_json = {}
+    for name, data in KLASSEN_DATEN.items():
+        beschr = KLASSEN_BESCHREIBUNGEN.get(name, {})
+        unterklassen = {}
+        for uk_name in data.get('unterklassen', {}):
+            uk_beschr = UNTERKLASSEN_BESCHREIBUNGEN.get(uk_name, {})
+            # Features der Unterklasse (Stufe 3 + 6) für die Vorschau
+            uk_features = data['unterklassen'][uk_name]
+            preview_features = []
+            for lvl in sorted(uk_features.keys())[:2]:
+                for feat in uk_features[lvl]:
+                    preview_features.append(feat['name'])
+            unterklassen[uk_name] = {
+                'beschreibung': uk_beschr.get('beschreibung', ''),
+                'bild': uk_beschr.get('bild', ''),
+                'vorschau_features': preview_features,
+            }
+
+        # Klasse-Level-1 Features für Vorschau
+        lvl1_features = [f['name'] for f in data.get('features', {}).get(1, [])]
+
+        klassen_json[name] = {
+            'beschreibung': beschr.get('beschreibung', ''),
+            'vorteile': beschr.get('vorteile', []),
+            'bild': beschr.get('bild', ''),
+            'trefferwuerfel': data.get('trefferwuerfel', 'd8'),
+            'rettungswuerfe': data.get('rettungswuerfe', []),
+            'ruestungen': data.get('ruestungen', []),
+            'waffen': data.get('waffen', []),
+            'zauberattribut': data.get('zauberattribut'),
+            'lvl1_features': lvl1_features,
+            'unterklassen': unterklassen,
+        }
+
+    # Hintergrund-Daten für das Frontend
+    hintergruende_json = {}
+    for name, data in HINTERGRUND_DATEN.items():
+        beschr = HINTERGRUND_BESCHREIBUNGEN.get(name, {})
+        attr = data.get('attribute', {})
+        ATTR_MAP = {
+            'strength': 'Stärke', 'dexterity': 'Geschicklichkeit',
+            'constitution': 'Konstitution', 'intelligence': 'Intelligenz',
+            'wisdom': 'Weisheit', 'charisma': 'Charisma',
+        }
+        hintergruende_json[name] = {
+            'beschreibung': beschr.get('beschreibung', ''),
+            'bild': beschr.get('bild', ''),
+            'primaer': ATTR_MAP.get(attr.get('primary', ''), ''),
+            'sekundaer': ATTR_MAP.get(attr.get('secondary', ''), ''),
+            'talent': data.get('talent', ''),
+            'fertigkeiten': data.get('fertigkeiten', []),
+            'werkzeug': data.get('werkzeug', ''),
+        }
+
+    context = {
+        'klassen_json': json.dumps(klassen_json, ensure_ascii=False),
+        'hintergruende_json': json.dumps(hintergruende_json, ensure_ascii=False),
+    }
+    return render(request, 'characters/character_builder.html', context)
+
+
+@login_required
+@require_POST
+def character_builder_submit(request):
+    """Verarbeitet die Daten aus dem Charakter-Builder Wizard."""
+    data = request.POST
+    character = Character(user=request.user)
+
+    # Grunddaten
+    character.name = data.get('name', 'Unbenannt')
+    character.character_class = data.get('character_class', '')
+    character.subclass = data.get('subclass', '')
+    character.background = data.get('background', '')
+    character.race = data.get('race', 'Mensch')
+    character.alignment = data.get('alignment', '')
+    character.personality_traits = data.get('personality_traits', '')
+    character.ideals = data.get('ideals', '')
+    character.bonds = data.get('bonds', '')
+    character.flaws = data.get('flaws', '')
+
+    # Level
+    try:
+        character.level = max(1, min(20, int(data.get('level', 1))))
+    except (ValueError, TypeError):
+        character.level = 1
+
+    # Ausrüstung oder Gold
+    if data.get('equipment_preference') == 'gold':
+        character.gold = 100
+        character.equipment = 'Nichts (Startgold gewählt)'
+    else:
+        character.gold = 0
+        character.equipment = f'Standard-Ausrüstung für {character.character_class}'
+
+    # Bild
+    if 'image' in request.FILES:
+        character.image = request.FILES['image']
+
+    # Stat-Zuweisung basierend auf Klasse
+    class_config = _match_keywords(character.character_class, CLASS_CONFIGS)
+    if class_config:
+        stat_order, hit_die = class_config
+    else:
+        stat_order = list(ABILITY_NAMES)
+        hit_die = 'd8'
+
+    for attr, value in zip(stat_order, STANDARD_ARRAY):
+        setattr(character, attr, value)
+    character.hit_dice = f'1{hit_die}'
+
+    # Hintergrund-Boni
+    _apply_background_bonuses(character)
+
+    # Erfahrungspunkte
+    xp_thresholds = {
+        1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
+        6: 14000, 7: 23000, 8: 34000, 9: 48000, 10: 64000,
+        11: 85000, 12: 100000, 13: 120000, 14: 140000, 15: 165000,
+        16: 195000, 17: 225000, 18: 265000, 19: 305000, 20: 355000,
+    }
+    character.experience = xp_thresholds.get(character.level, 0)
+    if character.level >= 20:
+        character.max_experience = character.experience
+    else:
+        character.max_experience = xp_thresholds.get(character.level + 1, 355000)
+
+    # Trefferpunkte
+    hit_die_value = int(hit_die[1:])
+    con_mod = character._ability_modifier(character.constitution)
+    base_hp = hit_die_value + con_mod
+    hp_per_level = (hit_die_value // 2) + 1 + con_mod
+
+    race_lower = character.race.lower()
+    if 'zwerg' in race_lower or 'dwarf' in race_lower:
+        base_hp += 1
+        hp_per_level += 1
+
+    if character.level > 1:
+        character.max_hp = base_hp + (hp_per_level * (character.level - 1))
+    else:
+        character.max_hp = base_hp
+    character.current_hp = character.max_hp
+
+    # Rüstungsklasse
+    character.armor_class = 10 + character._ability_modifier(character.dexterity)
+
+    # Bewegungsrate
+    character.speed = 30
+    if 'waldelf' in race_lower or 'wood elf' in race_lower:
+        character.speed = 35
+    elif 'goliath' in race_lower:
+        character.speed = 35
+
+    # ASI-Punkte
+    asi_levels = _get_asi_levels(character.character_class)
+    character.available_stat_points = sum(2 for l in asi_levels if l <= character.level)
+
+    # Hit Dice
+    character.hit_dice_total = character.level
+
+    character.save()
+
+    # Features bis zur aktuellen Stufe
+    character.features = character.get_all_features_up_to_level()
+    character.save()
+
+    return redirect('character_detail', pk=character.pk)
+

@@ -63,15 +63,24 @@ class CharacterForm(forms.ModelForm):
         help_text='Wähle für den Start zwischen Ausrüstung oder Gold.',
     )
 
+    level = forms.IntegerField(
+        label='Aktuelle Stufe',
+        min_value=1,
+        max_value=20,
+        initial=1,
+        help_text='Die Stufe des Charakters (1-20).'
+    )
+
     class Meta:
         model = Character
         fields = [
-            'name', 'image', 'character_class', 'subclass', 'race',
+            'name', 'level', 'image', 'character_class', 'subclass', 'race',
             'background', 'alignment', 'personality_traits', 'ideals',
             'bonds', 'flaws',
         ]
         labels = {
             'name': 'Name',
+            'level': 'Aktuelle Stufe',
             'image': 'Charakterbild',
             'character_class': 'Klasse',
             'subclass': 'Unterklasse',

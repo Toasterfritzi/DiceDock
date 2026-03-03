@@ -1,6 +1,6 @@
 {% extends "characters/base.html" %}
 
-{% block title %}Charakter erstellen - DiceDock{% endblock %}
+{% block title %}Charakter importieren - DiceDock{% endblock %}
 
 {% block content %}
 
@@ -10,7 +10,7 @@
     </div>
     <div class="mb-10 text-center md:text-left relative">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight text-neon">
-            Einen neuen Charakter erstellen
+            Bestehenden Charakter importieren
         </h1>
         <p class="text-gray-400 text-lg font-light max-w-2xl">
             Schmiede dein Schicksal. Fülle die folgenden Felder aus, um deine Legende zu beginnen.
@@ -105,6 +105,15 @@
                                     id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}"
                                     value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Zwerg, Mensch..."
                                     type="text" autocomplete="off" required />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-300 ml-1"
+                                    for="{{ form.level.id_for_label }}">Aktuelle Stufe</label>
+                                <input
+                                    class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
+                                    id="{{ form.level.id_for_label }}" name="{{ form.level.html_name }}"
+                                    value="{{ form.level.value|default_if_none:'1' }}" placeholder="1-20"
+                                    type="number" min="1" max="20" required />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -305,7 +314,7 @@
                 <span
                     class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1s_infinite]"></span>
                 <span class="material-symbols-outlined">magic_button</span>
-                Charakter erstellen
+                Charakter importieren
             </button>
         </div>
     </form>

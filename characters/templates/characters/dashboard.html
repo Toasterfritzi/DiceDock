@@ -10,11 +10,18 @@
             </h1>
             <p class="text-gray-400 text-lg">Verwalte all deine Helden und legendären Begleiter im DiceDock.</p>
         </div>
-        <a href="{% url 'create_character' %}"
-            class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
-            <span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
-            Neuen Charakter erstellen
-        </a>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <a href="{% url 'character_builder' %}"
+                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
+                <span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
+                Charakter erstellen
+            </a>
+            <a href="{% url 'create_character' %}"
+                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold transition-all hover:scale-105 group">
+                <span class="material-symbols-outlined transition-transform group-hover:rotate-12">upload</span>
+                Charakter importieren
+            </a>
+        </div>
     </div>
 
     {% if characters %}
