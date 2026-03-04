@@ -433,6 +433,30 @@ class StatUpdateTest(TestCase):
         self.character.refresh_from_db()
         self.assertEqual(self.character.armor_class, 11)
 
+    def test_update_stat_not_logged_in(self):
+        self.client.logout()
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('login')))
+
+    def test_update_stat_wrong_user(self):
+        other_user = User.objects.create_user(username='otheruser', password='testpassword')
+        self.client.login(username='otheruser', password='testpassword')
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_stat_not_post(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
 class CharacterLevelupTest(TestCase):
     def setUp(self):
         self.client = Client()
