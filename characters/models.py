@@ -118,23 +118,30 @@ class Character(models.Model):
             return 3
         return 2
 
-    def get_features_for_level(self, level):
-        """Gibt alle Klassen-Features für eine bestimmte Stufe zurück."""
+    def _get_klasse_data(self):
         from .rules_data.klassen import KLASSEN_DATEN
-        klasse = None
         for k in KLASSEN_DATEN:
             if k.lower() in self.character_class.lower():
-                klasse = KLASSEN_DATEN[k]
-                break
+                return KLASSEN_DATEN[k]
+        return None
+
+    def get_features_for_level(self, level):
+        """Gibt alle Klassen-Features für eine bestimmte Stufe zurück."""
+        klasse = self._get_klasse_data()
         if not klasse:
             return []
         return klasse.get('features', {}).get(level, [])
 
     def get_all_features_up_to_level(self):
         """Gibt alle Klassen-Features bis zur aktuellen Stufe zurück."""
+        klasse = self._get_klasse_data()
+        if not klasse:
+            return []
+
         all_features = []
+        features_dict = klasse.get('features', {})
         for lvl in range(1, self.level + 1):
-            features = self.get_features_for_level(lvl)
+            features = features_dict.get(lvl, [])
             for f in features:
                 all_features.append({'stufe': lvl, **f})
         return all_features
