@@ -328,25 +328,11 @@
                         Waffe hinzufügen</button>
                     <div
                         class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-2xl border border-white/10">
-                        <input
+                        <input id="weapon-search-input"
                             class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2"
-                            placeholder="Waffen suchen..." type="text" />
-                        <div class="space-y-1 max-h-40 overflow-y-auto pr-1">
-                            <div
-                                class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Großschwert</span>
-                                <span class="text-xs text-gray-500">2d6 Hieb</span>
-                            </div>
-                            <div
-                                class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Dolch</span>
-                                <span class="text-xs text-gray-500">1d4 Stich</span>
-                            </div>
-                            <div
-                                class="p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors">
-                                <span>Kurzbogen</span>
-                                <span class="text-xs text-gray-500">1d6 Stich</span>
-                            </div>
+                            placeholder="Waffen suchen..." type="text" autocomplete="off" />
+                        <div id="weapon-suggestions" class="space-y-1 max-h-40 overflow-y-auto pr-1">
+                            <!-- JS blendet hier Vorschläge ein -->
                         </div>
                     </div>
                 </div>
@@ -422,7 +408,8 @@
                 </div>
             </div>
             <div class="flex items-center justify-between bg-black/20 p-2 rounded-lg mb-4 border border-white/5">
-                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('gold', {{ character.gold }})" id="coin-group-gold">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110"
+                    onclick="openCoinModal('gold', {{ character.gold }})" id="coin-group-gold">
                     <div
                         class="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_8px_rgba(234,179,8,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-yellow-400">monetization_on</span>
@@ -430,20 +417,24 @@
                     <span id="coin-val-gold" class="text-xs font-bold text-yellow-400 mt-1">{{ character.gold }}</span>
                 </div>
                 <div class="w-px h-8 bg-white/10"></div>
-                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('silver', {{ character.silver }})" id="coin-group-silver">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110"
+                    onclick="openCoinModal('silver', {{ character.silver }})" id="coin-group-silver">
                     <div
                         class="w-6 h-6 rounded-full bg-slate-400/20 border border-slate-400/50 flex items-center justify-center shadow-[0_0_8px_rgba(148,163,184,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-slate-300">monetization_on</span>
                     </div>
-                    <span id="coin-val-silver" class="text-xs font-bold text-slate-300 mt-1">{{ character.silver }}</span>
+                    <span id="coin-val-silver" class="text-xs font-bold text-slate-300 mt-1">{{ character.silver
+                        }}</span>
                 </div>
                 <div class="w-px h-8 bg-white/10"></div>
-                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('copper', {{ character.copper }})" id="coin-group-copper">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110"
+                    onclick="openCoinModal('copper', {{ character.copper }})" id="coin-group-copper">
                     <div
                         class="w-6 h-6 rounded-full bg-orange-700/20 border border-orange-700/50 flex items-center justify-center shadow-[0_0_8px_rgba(194,65,12,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-orange-600">monetization_on</span>
                     </div>
-                    <span id="coin-val-copper" class="text-xs font-bold text-orange-600 mt-1">{{ character.copper }}</span>
+                    <span id="coin-val-copper" class="text-xs font-bold text-orange-600 mt-1">{{ character.copper
+                        }}</span>
                 </div>
             </div>
             <ul class="space-y-3 overflow-y-auto max-h-[400px]">
@@ -568,7 +559,82 @@
     </div>
 </div>
 
+<script id="weapon-data" type="application/json">
+{{ waffen_json|safe }}
+</script>
 <script>
+    const WAFFEN_DATEN = JSON.parse(document.getElementById('weapon-data').textContent);
+    const charStats = {
+        strMod: parseInt('{{ character.strength_mod }}') || 0,
+        dexMod: parseInt('{{ character.dexterity_mod }}') || 0,
+        profBonus: parseInt('{{ character.proficiency_bonus }}') || 2
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById('weapon-search-input');
+        const suggestionsBox = document.getElementById('weapon-suggestions');
+
+        if (searchInput && suggestionsBox) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                suggestionsBox.innerHTML = '';
+                if (!query) return;
+
+                const matches = Object.entries(WAFFEN_DATEN).filter(([name]) => name.toLowerCase().includes(query));
+
+                matches.forEach(([name, data]) => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2 hover:bg-white/10 rounded-lg cursor-pointer flex justify-between items-center text-sm text-gray-300 hover:text-white transition-colors';
+                    div.innerHTML = `<span>${name}</span> <span class="text-xs text-gray-500">${data.schaden} ${data.schadenstyp}</span>`;
+
+                    div.addEventListener('click', () => submitWeapon(name, data));
+                    suggestionsBox.appendChild(div);
+                });
+            });
+        }
+    });
+
+    function submitWeapon(name, data) {
+        let isFinesse = data.eigenschaften.includes('finesse');
+        let isRanged = data.eigenschaften.includes('fernkampf');
+
+        // Attributsmodifikator für Angriff & Schaden bestimmen
+        let mod = charStats.strMod; // Nahkampf Standard
+        if (isRanged) mod = charStats.dexMod; // Fernkampf Standard
+        if (isFinesse) mod = Math.max(charStats.strMod, charStats.dexMod); // Finesse = besserer Wert
+
+        let hitBonus = mod + charStats.profBonus;
+        let damageStr = `${data.schaden}`;
+        if (mod !== 0) {
+            damageStr += (mod > 0 ? `+${mod}` : `${mod}`);
+        }
+        damageStr += ` ${data.schadenstyp}`;
+
+        let hitStr = hitBonus >= 0 ? `+${hitBonus}` : `${hitBonus}`;
+
+        fetch(`/character/{{ character.pk }}/add_weapon/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                name: name,
+                type: data.eigenschaften.join(', '),
+                hit: hitStr,
+                damage: damageStr
+            })
+        })
+            .then(res => res.json())
+            .then(resData => {
+                if (resData.success) {
+                    location.reload();
+                } else {
+                    alert('Fehler beim Hinzufügen der Waffe: ' + resData.error);
+                }
+            });
+    }
+
     let currentEditingStat = '';
     const csrfToken = '{{ csrf_token }}';
 
@@ -627,29 +693,29 @@
                 action: action
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update modal value
-                document.getElementById('editModalCoinValue').innerText = data.new_value;
-                // Update UI value
-                const coinEl = document.getElementById(`coin-val-${currentEditingCoin}`);
-                if (coinEl) {
-                    coinEl.innerText = data.new_value;
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update modal value
+                    document.getElementById('editModalCoinValue').innerText = data.new_value;
+                    // Update UI value
+                    const coinEl = document.getElementById(`coin-val-${currentEditingCoin}`);
+                    if (coinEl) {
+                        coinEl.innerText = data.new_value;
+                    }
+                    // Update onclick handler to keep current value synced
+                    const coinGroup = document.getElementById(`coin-group-${currentEditingCoin}`);
+                    if (coinGroup) {
+                        coinGroup.setAttribute('onclick', `openCoinModal('${currentEditingCoin}', ${data.new_value})`);
+                    }
+                } else {
+                    alert(data.error || 'Fehler beim Aktualisieren der Münzen.');
                 }
-                // Update onclick handler to keep current value synced
-                const coinGroup = document.getElementById(`coin-group-${currentEditingCoin}`);
-                if (coinGroup) {
-                    coinGroup.setAttribute('onclick', `openCoinModal('${currentEditingCoin}', ${data.new_value})`);
-                }
-            } else {
-                alert(data.error || 'Fehler beim Aktualisieren der Münzen.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ein Netzwerkfehler ist aufgetreten.');
-        });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ein Netzwerkfehler ist aufgetreten.');
+            });
     }
 
     function openStatModal(statName, currentVal) {
