@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .rules_data.spezies import SPEZIES_DATEN
+from .rules_data.zauber import ZAUBER, ZAUBERLISTEN
+from .rules_data.zauberplaetze import ZAUBERPLATZ_TABELLE
 
 _SPEZIES_DATEN_LOWER = {k.lower(): v for k, v in SPEZIES_DATEN.items()}
 
@@ -54,6 +56,7 @@ class Character(models.Model):
     saving_throw_proficiencies = models.JSONField('Rettungswurf-Übungen', default=list, blank=True)
     skill_proficiencies = models.JSONField('Fertigkeits-Übungen', default=list, blank=True)
     skill_expertises = models.JSONField('Fertigkeits-Expertisen', default=list, blank=True)
+    known_spells = models.JSONField('Bekannte Zauber', default=list, blank=True)
 
     # Erfahrung
     experience = models.IntegerField('Erfahrungspunkte', default=0)
@@ -149,13 +152,72 @@ class Character(models.Model):
     def get_species_traits(self):
         """Gibt die Spezies-Merkmale zurück."""
         race_lower = self.race.lower()
-        # O(1) lookup
         data = _SPEZIES_DATEN_LOWER.get(race_lower)
         if data:
             return data.get('merkmale', [])
-
-        # Fallback for substring matching (e.g. "Hochelf" where "elf" is in SPEZIES_DATEN)
         for name, data in _SPEZIES_DATEN_LOWER.items():
             if name in race_lower:
                 return data.get('merkmale', [])
         return []
+
+    # --- Zauber-Methoden ---
+
+    def get_spell_slots_for_level(self):
+        """Gibt die Zauberplätze für die aktuelle Stufe und den Zaubertyp zurück."""
+        klasse = self._get_klasse_data()
+        if not klasse:
+            return {}
+        zaubertyp = klasse.get('zaubertyp')
+        if not zaubertyp:
+            return {}
+        tabelle = ZAUBERPLATZ_TABELLE.get(zaubertyp, {})
+        if zaubertyp == 'paktmagie':
+            pakt = tabelle.get(self.level, {})
+            if pakt:
+                return {'pakt_anzahl': pakt['anzahl'], 'pakt_grad': pakt['grad']}
+            return {}
+        return tabelle.get(self.level, {})
+
+    def get_max_spell_grade(self):
+        """Gibt den höchsten verfügbaren Zaubergrad zurück."""
+        slots = self.get_spell_slots_for_level()
+        if not slots:
+            return 0
+        if 'pakt_grad' in slots:
+            return slots['pakt_grad']
+        return max(slots.keys()) if slots else 0
+
+    def get_available_spells(self):
+        """Gibt alle für diese Klasse+Stufe verfügbaren Zauber zurück, gruppiert nach Grad."""
+        klasse_name = self.character_class
+        if klasse_name not in ZAUBERLISTEN:
+            return {}
+        alle_zauber = ZAUBERLISTEN[klasse_name]
+        max_grad = self.get_max_spell_grade()
+        result = {}
+        for grad, namen in alle_zauber.items():
+            if grad <= max_grad or grad == 0:
+                result[grad] = [
+                    {'name': n, **{k: v for k, v in ZAUBER[n].items() if k != 'klassen'}}
+                    for n in namen
+                ]
+        return result
+
+    def get_known_spells_detail(self):
+        """Gibt die Details der bekannten Zauber zurück, gruppiert nach Grad."""
+        result = {}
+        for name in self.known_spells:
+            if name in ZAUBER:
+                z = ZAUBER[name]
+                grad = z['grad']
+                result.setdefault(grad, []).append({
+                    'name': name,
+                    'schule': z.get('schule', ''),
+                    'wirkzeit': z.get('wirkzeit', ''),
+                    'reichweite': z.get('reichweite', ''),
+                    'dauer': z.get('dauer', ''),
+                    'beschreibung': z.get('beschreibung', ''),
+                })
+        for grad in result:
+            result[grad].sort(key=lambda x: x['name'])
+        return result
