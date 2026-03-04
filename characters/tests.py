@@ -413,9 +413,39 @@ class StatUpdateTest(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_max_hp'], 11)
+        self.assertEqual(data['new_current_hp'], 11)
         self.character.refresh_from_db()
         self.assertEqual(self.character.max_hp, 11)
         self.assertEqual(self.character.current_hp, 11)
+
+
+    def test_update_stat_constitution_mod_decrease(self):
+        # Initial con: 12 (mod +1), max_hp: 11, level: 1
+        self.character.constitution = 12
+        self.character.max_hp = 11
+        self.character.current_hp = 11
+        self.character.level = 1
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        # Decrease to 11 (mod 0). max_hp should decrease by 1 * level = 1
+        response = self.client.post(
+            self.url,
+            data='{"stat": "constitution", "action": "decrease"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.assertEqual(data['new_max_hp'], 10)
+        self.assertEqual(data['new_current_hp'], 10)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.max_hp, 10)
+        self.assertEqual(self.character.current_hp, 10)
 
     def test_update_stat_dexterity_mod_change(self):
         # Initial dex: 11 (mod 0), armor_class: 10
@@ -432,6 +462,28 @@ class StatUpdateTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.character.refresh_from_db()
         self.assertEqual(self.character.armor_class, 11)
+
+
+    def test_update_stat_dexterity_mod_decrease(self):
+        # Initial dex: 12 (mod +1), armor_class: 11
+        self.character.dexterity = 12
+        self.character.armor_class = 11
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        # Decrease to 11 (mod 0). AC should decrease by 1
+        response = self.client.post(
+            self.url,
+            data='{"stat": "dexterity", "action": "decrease"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.assertEqual(data['new_ac'], 10)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.armor_class, 10)
 
     def test_update_stat_not_logged_in(self):
         self.client.logout()
