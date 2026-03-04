@@ -13,6 +13,7 @@ urlpatterns = [
     path('character/<int:pk>/levelup/', views.character_levelup, name='character_levelup'),
     path('character/<int:pk>/update_stat/', views.update_character_stat, name='update_character_stat'),
     path('character/<int:pk>/update_coin/', views.update_character_coin, name='update_character_coin'),
+    path('character/<int:pk>/add_weapon/', views.add_character_weapon, name='add_character_weapon'),
     path('build/', views.character_builder, name='character_builder'),
     path('build/submit/', views.character_builder_submit, name='character_builder_submit'),
 ]

@@ -247,7 +247,14 @@ def create_character(request):
 def character_detail(request, pk):
     """Charakterbogen anzeigen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
-    return render(request, 'characters/character_detail.html', {'character': character})
+
+    from .rules_data.waffen import WAFFEN_DATEN
+    waffen_json = json.dumps(WAFFEN_DATEN, ensure_ascii=False)
+
+    return render(request, 'characters/character_detail.html', {
+        'character': character,
+        'waffen_json': waffen_json,
+    })
 
 
 @login_required
@@ -659,3 +666,37 @@ def update_character_coin(request, pk):
         'success': True,
         'new_value': getattr(character, coin),
     })
+
+
+@login_required
+@require_POST
+def add_character_weapon(request, pk):
+    """AJAX-Endpunkt: Waffe zum Charakter hinzufügen."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'success': False, 'error': 'Ungültige Anfragedaten.'}, status=400)
+
+    weapon_name = data.get('name')
+    weapon_type = data.get('type')
+    hit = data.get('hit')
+    damage = data.get('damage')
+
+    if not weapon_name:
+        return JsonResponse({'success': False, 'error': 'Waffenname fehlt.'}, status=400)
+
+    new_weapon = {
+        'name': weapon_name,
+        'typ': weapon_type or '',
+        'angriffsbonus': hit or '+0',
+        'schaden': damage or '0'
+    }
+
+    current_weapons = character.weapons or []
+    current_weapons.append(new_weapon)
+    character.weapons = current_weapons
+    character.save()
+
+    return JsonResponse({'success': True, 'weapons': character.weapons})
