@@ -328,7 +328,8 @@
                         Waffe hinzufügen</button>
                     <div
                         class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-2xl border border-white/10">
-                        <input id="weapon-search-input"
+                        <!-- Fix for PR issue #43 -->
+                        <input id="weapon-search-input" name="weapon_search"
                             class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2"
                             placeholder="Waffen suchen..." type="text" autocomplete="off" />
                         <div id="weapon-suggestions" class="space-y-1 max-h-40 overflow-y-auto pr-1">
@@ -402,7 +403,9 @@
                         <span class="material-symbols-outlined text-[14px]">add</span>
                         <div
                             class="absolute top-8 left-0 w-[200px] z-20 glass-panel rounded-lg p-2 opacity-0 group-focus-within:opacity-100 pointer-events-none group-focus-within:pointer-events-auto transition-opacity shadow-xl">
-                            <input class="glass-input w-full" placeholder="Gegenstand hinzufügen..." type="text" />
+                            <!-- Fix for PR issue #43 -->
+                            <input id="item-add-input" name="item_add" class="glass-input w-full"
+                                placeholder="Gegenstand hinzufügen..." type="text" />
                         </div>
                     </button>
                 </div>
