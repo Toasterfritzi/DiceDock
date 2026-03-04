@@ -9,6 +9,19 @@ from characters.rules_data.klassen import KLASSEN_DATEN
 from characters.rules_data.hintergruende import HINTERGRUND_DATEN
 from characters.rules_data.spezies import SPEZIES_DATEN
 
+ALIGNMENT_CHOICES = [
+    ('', '--- Wähle eine Gesinnung ---'),
+    ('Rechtschaffen Gut', 'Rechtschaffen Gut'),
+    ('Neutral Gut', 'Neutral Gut'),
+    ('Chaotisch Gut', 'Chaotisch Gut'),
+    ('Rechtschaffen Neutral', 'Rechtschaffen Neutral'),
+    ('Neutral', 'Neutral'),
+    ('Chaotisch Neutral', 'Chaotisch Neutral'),
+    ('Rechtschaffen Böse', 'Rechtschaffen Böse'),
+    ('Neutral Böse', 'Neutral Böse'),
+    ('Chaotisch Böse', 'Chaotisch Böse'),
+]
+
 def get_class_choices():
     choices = [(name, name) for name in sorted(KLASSEN_DATEN.keys())]
     choices.insert(0, ('', '--- Wähle eine Klasse ---'))
@@ -139,11 +152,30 @@ class CharacterForm(forms.ModelForm):
         })
     )
 
+    alignment = forms.ChoiceField(
+        label='Gesinnung',
+        choices=ALIGNMENT_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+        })
+    )
+
+    abstammung = forms.CharField(
+        label='Abstammung',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+            'placeholder': 'z.B. Hochelf, Waldelf, etc. (falls anwendbar)',
+        })
+    )
+
     class Meta:
         model = Character
         fields = [
             'name', 'level', 'image', 'character_class', 'subclass', 'race',
-            'background', 'alignment', 'personality_traits', 'ideals',
+            'abstammung', 'background', 'alignment', 'personality_traits', 'ideals',
             'bonds', 'flaws',
         ]
         labels = {

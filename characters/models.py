@@ -19,8 +19,9 @@ class Character(models.Model):
     character_class = models.CharField('Klasse', max_length=100)
     subclass = models.CharField('Unterklasse', max_length=100, blank=True)
     race = models.CharField('Volk', max_length=100)
+    abstammung = models.CharField('Abstammung', max_length=100, blank=True)
     background = models.CharField('Hintergrund', max_length=100)
-    alignment = models.CharField('Gesinnung', max_length=50)
+    alignment = models.CharField('Gesinnung', max_length=50, blank=True)
 
     # Attribute
     strength = models.IntegerField('Stärke', default=10)
@@ -33,7 +34,7 @@ class Character(models.Model):
 
     # Kampf & Leben
     armor_class = models.IntegerField('Rüstungsklasse', default=10)
-    speed = models.IntegerField('Bewegung', default=30)
+    speed = models.FloatField('Bewegung (m)', default=9.0)
     max_hp = models.IntegerField('Maximale Trefferpunkte', default=10)
     current_hp = models.IntegerField('Aktuelle Trefferpunkte', default=10)
     temp_hp = models.IntegerField('Temporäre Trefferpunkte', default=0)
@@ -56,6 +57,7 @@ class Character(models.Model):
     saving_throw_proficiencies = models.JSONField('Rettungswurf-Übungen', default=list, blank=True)
     skill_proficiencies = models.JSONField('Fertigkeits-Übungen', default=list, blank=True)
     skill_expertises = models.JSONField('Fertigkeits-Expertisen', default=list, blank=True)
+    tool_proficiencies = models.JSONField('Werkzeug-Übungen', default=list, blank=True)
     known_spells = models.JSONField('Bekannte Zauber', default=list, blank=True)
 
     # Erfahrung
@@ -136,17 +138,33 @@ class Character(models.Model):
         return klasse.get('features', {}).get(level, [])
 
     def get_all_features_up_to_level(self):
-        """Gibt alle Klassen-Features bis zur aktuellen Stufe zurück."""
+        """Gibt alle Klassen- UND Unterklassen-Features bis zur aktuellen Stufe zurück."""
         klasse = self._get_klasse_data()
         if not klasse:
             return []
 
         all_features = []
+        # Klassen-Features
         features_dict = klasse.get('features', {})
         for lvl in range(1, self.level + 1):
             features = features_dict.get(lvl, [])
             for f in features:
                 all_features.append({'stufe': lvl, **f})
+
+        # Unterklassen-Features
+        if self.subclass:
+            unterklassen = klasse.get('unterklassen', {})
+            uk_features = None
+            for uk_name, uk_data in unterklassen.items():
+                if uk_name.lower() == self.subclass.lower() or uk_name == self.subclass:
+                    uk_features = uk_data
+                    break
+            if uk_features:
+                for lvl in range(1, self.level + 1):
+                    features = uk_features.get(lvl, [])
+                    for f in features:
+                        all_features.append({'stufe': lvl, 'unterklasse': True, **f})
+
         return all_features
 
     def get_species_traits(self):
@@ -221,3 +239,63 @@ class Character(models.Model):
         for grad in result:
             result[grad].sort(key=lambda x: x['name'])
         return result
+
+    # --- Abgeleitete Kampfwerte ---
+
+    def get_unarmored_ac(self):
+        """Berechnet die RK ohne Rüstung basierend auf Klasse."""
+        klasse = self._get_klasse_data()
+        base_class = self.character_class.lower() if self.character_class else ''
+
+        if 'barbar' in base_class:
+            return 10 + self.dexterity_mod + self.constitution_mod
+        if 'mönch' in base_class or 'monk' in base_class:
+            return 10 + self.dexterity_mod + self.wisdom_mod
+
+        # Zauberer Drachenblut-Linie (Unterklasse ab Stufe 3)
+        if 'zauberer' in base_class and self.subclass:
+            if 'drachenblut' in self.subclass.lower() and self.level >= 3:
+                return 13 + self.dexterity_mod
+
+        # Barde Schule des Tanzes (Unterklasse ab Stufe 3)
+        if 'bard' in base_class and self.subclass:
+            if 'tanz' in self.subclass.lower() and self.level >= 3:
+                return 10 + self.dexterity_mod + self.charisma_mod
+
+        return 10 + self.dexterity_mod
+
+    @property
+    def spellcasting_ability_mod(self):
+        """Gibt den Modifikator des Zauberattributs zurück."""
+        klasse = self._get_klasse_data()
+        if not klasse:
+            return 0
+        attr = klasse.get('zauberattribut')
+        if not attr:
+            return 0
+        mapping = {
+            'charisma': self.charisma_mod,
+            'wisdom': self.wisdom_mod,
+            'intelligence': self.intelligence_mod,
+        }
+        return mapping.get(attr, 0)
+
+    @property
+    def spell_save_dc(self):
+        """Zauber-SG = 8 + Übungsbonus + Zauberattribut-Mod."""
+        mod = self.spellcasting_ability_mod
+        if mod == 0:
+            klasse = self._get_klasse_data()
+            if not klasse or not klasse.get('zauberattribut'):
+                return 0
+        return 8 + self.proficiency_bonus + self.spellcasting_ability_mod
+
+    @property
+    def spell_attack_bonus(self):
+        """Zauber-Angriffswurf = Übungsbonus + Zauberattribut-Mod."""
+        mod = self.spellcasting_ability_mod
+        if mod == 0:
+            klasse = self._get_klasse_data()
+            if not klasse or not klasse.get('zauberattribut'):
+                return 0
+        return self.proficiency_bonus + self.spellcasting_ability_mod
