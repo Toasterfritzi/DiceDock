@@ -8,3 +8,4 @@ from .spezies import SPEZIES_DATEN
 from .hintergruende import HINTERGRUND_DATEN
 from .fertigkeiten import FERTIGKEITEN
 from .zauberplaetze import ZAUBERPLATZ_TABELLE
+from .zauber import ZAUBER, ZAUBERLISTEN

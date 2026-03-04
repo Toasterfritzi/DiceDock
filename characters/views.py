@@ -248,12 +248,20 @@ def character_detail(request, pk):
     """Charakterbogen anzeigen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    from .rules_data.waffen import WAFFEN_DATEN
+    from .rules_data.waffen import WAFFEN_DATEN, WAFFEN_MEISTERUNGEN
     waffen_json = json.dumps(WAFFEN_DATEN, ensure_ascii=False)
+    meisterung_json = json.dumps(WAFFEN_MEISTERUNGEN, ensure_ascii=False)
+
+    # Zauber-Daten
+    spell_slots = character.get_spell_slots_for_level()
+    known_spells_detail = character.get_known_spells_detail()
 
     return render(request, 'characters/character_detail.html', {
         'character': character,
         'waffen_json': waffen_json,
+        'meisterung_json': meisterung_json,
+        'spell_slots': spell_slots,
+        'known_spells_detail': known_spells_detail,
     })
 
 
@@ -307,6 +315,15 @@ def character_levelup(request, pk):
 
         # Trefferwürfel-Anzahl aktualisieren
         character.hit_dice_total = character.level
+
+        # Zauberplätze und bekannte Zauber aktualisieren
+        character.spell_slots = character.get_spell_slots_for_level()
+        available = character.get_available_spells()
+        all_spell_names = []
+        for grad, spells in available.items():
+            for s in spells:
+                all_spell_names.append(s['name'])
+        character.known_spells = all_spell_names
 
         character.save()
         return redirect('character_detail', pk=character.pk)
@@ -608,6 +625,15 @@ def character_builder_submit(request):
 
     # Hit Dice
     character.hit_dice_total = character.level
+
+    # Zauberplätze und bekannte Zauber zuweisen
+    character.spell_slots = character.get_spell_slots_for_level()
+    available = character.get_available_spells()
+    all_spell_names = []
+    for grad, spells in available.items():
+        for s in spells:
+            all_spell_names.append(s['name'])
+    character.known_spells = all_spell_names
 
     character.save()
 
