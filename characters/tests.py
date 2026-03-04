@@ -11,10 +11,10 @@ class CharacterCreationTest(TestCase):
     def test_character_creation_form_submission(self):
         response = self.client.post('/create/', {
             'name': 'Test Character',
-            'character_class': 'Warrior',
+            'character_class': 'Kämpfer',
             'subclass': 'Champion',
-            'race': 'Human',
-            'background': 'Soldier',
+            'race': 'Mensch',
+            'background': 'Soldat',
             'alignment': 'Neutral Good',
             'personality_traits': 'Brave',
             'ideals': 'Honor',
@@ -41,7 +41,7 @@ class CharacterCreationTest(TestCase):
 
         char = Character.objects.get(name='Test Character')
         self.assertEqual(char.user, self.user)
-        self.assertEqual(char.character_class, 'Warrior')
+        self.assertEqual(char.character_class, 'Kämpfer')
         self.assertEqual(char.strength, 17)
         # Check equipment handling logic (based on views.py logic)
         self.assertEqual(char.gold, 0)
@@ -50,9 +50,9 @@ class CharacterCreationTest(TestCase):
     def test_character_creation_gold_option(self):
         response = self.client.post('/create/', {
             'name': 'Gold Character',
-            'character_class': 'Rogue',
+            'character_class': 'Schurke',
             'race': 'Elf',
-            'background': 'Criminal',
+            'background': 'Krimineller',
             'alignment': 'Chaotic Neutral',
             'strength': 10,
             'dexterity': 10,

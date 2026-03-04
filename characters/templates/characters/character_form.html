@@ -74,12 +74,7 @@
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">swords</span>
-                                    <input
-                                        class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
-                                        id="{{ form.character_class.id_for_label }}"
-                                        name="{{ form.character_class.html_name }}"
-                                        value="{{ form.character_class.value|default_if_none:'' }}"
-                                        placeholder="Schurke, Magier..." type="text" autocomplete="off" required />
+                                    {{ form.character_class }}
                                 </div>
                             </div>
                             <div class="space-y-2">
@@ -88,11 +83,7 @@
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-3.5 text-gray-500 pointer-events-none">mediation</span>
-                                    <input
-                                        class="glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
-                                        id="{{ form.subclass.id_for_label }}" name="{{ form.subclass.html_name }}"
-                                        value="{{ form.subclass.value|default_if_none:'' }}"
-                                        placeholder="Arkaner Trickser..." type="text" autocomplete="off" />
+                                    {{ form.subclass }}
                                 </div>
                             </div>
                         </div>
@@ -100,11 +91,7 @@
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
                                     for="{{ form.race.id_for_label }}">Volk</label>
-                                <input
-                                    class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
-                                    id="{{ form.race.id_for_label }}" name="{{ form.race.html_name }}"
-                                    value="{{ form.race.value|default_if_none:'' }}" placeholder="Elf, Zwerg, Mensch..."
-                                    type="text" autocomplete="off" required />
+                                {{ form.race }}
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -118,11 +105,7 @@
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
                                     for="{{ form.background.id_for_label }}">Hintergrund</label>
-                                <input
-                                    class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
-                                    id="{{ form.background.id_for_label }}" name="{{ form.background.html_name }}"
-                                    value="{{ form.background.value|default_if_none:'' }}"
-                                    placeholder="Krimineller, Adeliger..." type="text" autocomplete="off" required />
+                                {{ form.background }}
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
