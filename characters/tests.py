@@ -300,6 +300,139 @@ class StatUpdateTest(TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
 
+    def test_update_stat_increase_success(self):
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.assertEqual(data['new_available_points'], 1)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.strength, 11)
+        self.assertEqual(self.character.available_stat_points, 1)
+
+    def test_update_stat_decrease_success(self):
+        self.character.strength = 12
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "decrease"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.assertEqual(data['new_available_points'], 1)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.strength, 11)
+        self.assertEqual(self.character.available_stat_points, 1)
+
+    def test_update_stat_invalid_stat(self):
+        response = self.client.post(
+            self.url,
+            data='{"stat": "invalid_stat", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültiges Attribut.')
+
+    def test_update_stat_invalid_action(self):
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "invalid_action"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Aktion.')
+
+    def test_update_stat_increase_max_limit(self):
+        self.character.strength = 30
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Attribut ist bereits am Maximum (30).')
+
+    def test_update_stat_increase_no_points(self):
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Keine verfügbaren Attributspunkte vorhanden.')
+
+    def test_update_stat_decrease_min_limit(self):
+        self.character.strength = 1
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "decrease"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Attribut kann nicht unter 1 sinken.')
+
+    def test_update_stat_constitution_mod_change(self):
+        # Initial con: 11 (mod 0), max_hp: 10, level: 1
+        self.character.constitution = 11
+        self.character.max_hp = 10
+        self.character.current_hp = 10
+        self.character.level = 1
+        self.character.save()
+
+        # Increase to 12 (mod +1). max_hp should increase by 1 * level = 1
+        response = self.client.post(
+            self.url,
+            data='{"stat": "constitution", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.max_hp, 11)
+        self.assertEqual(self.character.current_hp, 11)
+
+    def test_update_stat_dexterity_mod_change(self):
+        # Initial dex: 11 (mod 0), armor_class: 10
+        self.character.dexterity = 11
+        self.character.armor_class = 10
+        self.character.save()
+
+        # Increase to 12 (mod +1). AC should increase by 1
+        response = self.client.post(
+            self.url,
+            data='{"stat": "dexterity", "action": "increase"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.armor_class, 11)
+
 class CharacterLevelupTest(TestCase):
     def setUp(self):
         self.client = Client()
