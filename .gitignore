@@ -28,3 +28,4 @@ Thumbs.db
 page_*.png
 extract_pages.py
 cookies.txt
+.coverage

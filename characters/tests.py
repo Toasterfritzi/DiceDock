@@ -290,6 +290,19 @@ class StatUpdateTest(TestCase):
         self.url = reverse('update_character_stat', args=[self.character.pk])
         self.client.login(username='testuser', password='testpassword')
 
+
+    def test_update_stat_invalid_decode_error(self):
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "increase"', # missing bracket
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
+
+
     def test_update_stat_invalid_json(self):
         response = self.client.post(
             self.url,
@@ -312,6 +325,7 @@ class StatUpdateTest(TestCase):
         self.assertTrue(data['success'])
         self.assertEqual(data['new_value'], 11)
         self.assertEqual(data['new_available_points'], 1)
+        self.assertEqual(data['new_mod'], '+0')
         self.character.refresh_from_db()
         self.assertEqual(self.character.strength, 11)
         self.assertEqual(self.character.available_stat_points, 1)
@@ -331,6 +345,7 @@ class StatUpdateTest(TestCase):
         self.assertTrue(data['success'])
         self.assertEqual(data['new_value'], 11)
         self.assertEqual(data['new_available_points'], 1)
+        self.assertEqual(data['new_mod'], '+0')
         self.character.refresh_from_db()
         self.assertEqual(self.character.strength, 11)
         self.assertEqual(self.character.available_stat_points, 1)
@@ -485,6 +500,24 @@ class StatUpdateTest(TestCase):
         self.assertEqual(data['new_ac'], 10)
         self.character.refresh_from_db()
         self.assertEqual(self.character.armor_class, 10)
+
+
+    def test_update_stat_negative_mod(self):
+        self.character.strength = 9
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        # Decrease to 8 (mod -1). Modifier string should be "-1" without "+"
+        response = self.client.post(
+            self.url,
+            data='{"stat": "strength", "action": "decrease"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 8)
+        self.assertEqual(data['new_mod'], '-1')
 
     def test_update_stat_not_logged_in(self):
         self.client.logout()
