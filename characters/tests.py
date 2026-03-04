@@ -273,3 +273,29 @@ class CoinUpdateTest(TestCase):
         self.assertEqual(data['error'], 'Münzanzahl kann nicht unter 0 sinken.')
         self.character.refresh_from_db()
         self.assertEqual(self.character.copper, 0)
+
+class StatUpdateTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Test Character',
+            race='Mensch',
+            character_class='Kämpfer',
+            strength=10,
+            available_stat_points=2
+        )
+        self.url = reverse('update_character_stat', args=[self.character.pk])
+        self.client.login(username='testuser', password='testpassword')
+
+    def test_update_stat_invalid_json(self):
+        response = self.client.post(
+            self.url,
+            data='invalid json',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
