@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import Character
@@ -215,3 +216,58 @@ class DashboardViewTest(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith(reverse('login')))
+
+class CoinUpdateTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Test Character',
+            race='Mensch',
+            character_class='Kämpfer',
+            gold=10,
+            silver=5,
+            copper=0
+        )
+        self.url = reverse('update_character_coin', args=[self.character.pk])
+        self.client.login(username='testuser', password='testpassword')
+
+    def test_increase_coin(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'coin': 'gold', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.gold, 11)
+
+    def test_decrease_coin(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'coin': 'silver', 'action': 'decrease'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 4)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.silver, 4)
+
+    def test_decrease_coin_below_zero(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'coin': 'copper', 'action': 'decrease'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Münzanzahl kann nicht unter 0 sinken.')
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.copper, 0)

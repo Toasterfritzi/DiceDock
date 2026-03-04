@@ -610,3 +610,52 @@ def character_builder_submit(request):
 
     return redirect('character_detail', pk=character.pk)
 
+
+@login_required
+@require_POST
+def update_character_coin(request, pk):
+    """AJAX-Endpunkt: Einzelnes Münz-Attribut erhöhen oder senken."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    try:
+        import json
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse(
+            {'success': False, 'error': 'Ungültige Anfragedaten.'},
+            status=400,
+        )
+
+    coin = data.get('coin')
+    action = data.get('action')
+
+    if coin not in ('gold', 'silver', 'copper'):
+        return JsonResponse(
+            {'success': False, 'error': 'Ungültige Münze.'},
+            status=400,
+        )
+
+    if action not in ('increase', 'decrease'):
+        return JsonResponse(
+            {'success': False, 'error': 'Ungültige Aktion.'},
+            status=400,
+        )
+
+    current_value = getattr(character, coin)
+
+    if action == 'increase':
+        setattr(character, coin, current_value + 1)
+    else:  # decrease
+        if current_value <= 0:
+            return JsonResponse(
+                {'success': False, 'error': 'Münzanzahl kann nicht unter 0 sinken.'},
+                status=400,
+            )
+        setattr(character, coin, current_value - 1)
+
+    character.save()
+
+    return JsonResponse({
+        'success': True,
+        'new_value': getattr(character, coin),
+    })
