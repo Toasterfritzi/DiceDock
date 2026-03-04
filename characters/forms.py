@@ -5,6 +5,36 @@ from django.core.exceptions import ValidationError
 
 from .models import Character
 
+from characters.rules_data.klassen import KLASSEN_DATEN
+from characters.rules_data.hintergruende import HINTERGRUND_DATEN
+from characters.rules_data.spezies import SPEZIES_DATEN
+
+def get_class_choices():
+    choices = [(name, name) for name in sorted(KLASSEN_DATEN.keys())]
+    choices.insert(0, ('', '--- Wähle eine Klasse ---'))
+    return choices
+
+def get_subclass_choices():
+    choices = []
+    for name, data in KLASSEN_DATEN.items():
+        if 'unterklassen' in data:
+            for subclass_name in data['unterklassen'].keys():
+                choices.append((subclass_name, subclass_name))
+    choices = sorted(choices)
+    choices.insert(0, ('', '--- Wähle eine Unterklasse (optional) ---'))
+    return choices
+
+def get_race_choices():
+    choices = [(name, name) for name in sorted(SPEZIES_DATEN.keys())]
+    choices.insert(0, ('', '--- Wähle ein Volk ---'))
+    return choices
+
+def get_background_choices():
+    choices = [(name, name) for name in sorted(HINTERGRUND_DATEN.keys())]
+    choices.insert(0, ('', '--- Wähle einen Hintergrund ---'))
+    return choices
+
+
 
 class UserRegisterForm(forms.ModelForm):
     """Registrierungsformular mit Passwort-Bestätigung und Validierung."""
@@ -17,6 +47,7 @@ class UserRegisterForm(forms.ModelForm):
         label='Passwort bestätigen',
         widget=forms.PasswordInput,
     )
+
 
     class Meta:
         model = User
@@ -69,6 +100,43 @@ class CharacterForm(forms.ModelForm):
         max_value=20,
         initial=1,
         help_text='Die Stufe des Charakters (1-20).'
+    )
+
+
+    character_class = forms.ChoiceField(
+        label='Klasse',
+        choices=get_class_choices(),
+        widget=forms.Select(attrs={
+            'class': 'glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+            'required': True,
+        })
+    )
+
+    subclass = forms.ChoiceField(
+        label='Unterklasse',
+        choices=get_subclass_choices(),
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'glass-input block w-full pl-10 pr-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+        })
+    )
+
+    race = forms.ChoiceField(
+        label='Volk',
+        choices=get_race_choices(),
+        widget=forms.Select(attrs={
+            'class': 'glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+            'required': True,
+        })
+    )
+
+    background = forms.ChoiceField(
+        label='Hintergrund',
+        choices=get_background_choices(),
+        widget=forms.Select(attrs={
+            'class': 'glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0',
+            'required': True,
+        })
     )
 
     class Meta:
