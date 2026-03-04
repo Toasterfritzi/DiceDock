@@ -273,3 +273,86 @@ class CoinUpdateTest(TestCase):
         self.assertEqual(data['error'], 'Münzanzahl kann nicht unter 0 sinken.')
         self.character.refresh_from_db()
         self.assertEqual(self.character.copper, 0)
+
+class CharacterLevelupTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='levelupuser', password='password123')
+        self.client = Client()
+        self.client.login(username='levelupuser', password='password123')
+        self.char = Character.objects.create(
+            user=self.user,
+            name="Levelup Hero",
+            character_class="Kämpfer",
+            race="Mensch",
+            level=3,
+            constitution=14, # +2 mod
+            hit_dice="1d10",
+            max_hp=28,
+            current_hp=28,
+            available_stat_points=0,
+            hit_dice_total=3
+        )
+
+    def test_levelup_get(self):
+        url = reverse('character_levelup', args=[self.char.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/character_levelup.html')
+        self.assertEqual(response.context['new_level'], 4)
+
+    def test_levelup_post_asi_level(self):
+        # Level 4 is an ASI level for Fighter
+        url = reverse('character_levelup', args=[self.char.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+        self.char.refresh_from_db()
+        self.assertEqual(self.char.level, 4)
+        # HP increase: (10 // 2) + 1 + 2 = 5 + 1 + 2 = 8. max_hp becomes 28 + 8 = 36
+        self.assertEqual(self.char.max_hp, 36)
+        self.assertEqual(self.char.current_hp, 36)
+        # Available stat points should increase by 2
+        self.assertEqual(self.char.available_stat_points, 2)
+        self.assertEqual(self.char.hit_dice_total, 4)
+        self.assertTrue(any(f['stufe'] == 4 for f in self.char.features))
+
+    def test_levelup_post_non_asi_level(self):
+        self.char.level = 1
+        self.char.hit_dice_total = 1
+        self.char.save()
+
+        url = reverse('character_levelup', args=[self.char.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+        self.char.refresh_from_db()
+        self.assertEqual(self.char.level, 2)
+        # HP increase: 8. max_hp becomes 28 + 8 = 36
+        self.assertEqual(self.char.max_hp, 36)
+        self.assertEqual(self.char.available_stat_points, 0)
+        self.assertEqual(self.char.hit_dice_total, 2)
+
+    def test_levelup_post_dwarf_hp_bonus(self):
+        self.char.race = "Zwerg"
+        self.char.save()
+
+        url = reverse('character_levelup', args=[self.char.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+        self.char.refresh_from_db()
+        # HP increase: 8 (base) + 1 (dwarf bonus) = 9. max_hp becomes 28 + 9 = 37
+        self.assertEqual(self.char.max_hp, 37)
+
+    def test_levelup_invalid_hit_dice(self):
+        self.char.hit_dice = "invalid"
+        self.char.save()
+
+        url = reverse('character_levelup', args=[self.char.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+        self.char.refresh_from_db()
+        self.assertEqual(self.char.level, 4)
+        # max_hp shouldn't increase due to the ValueError, remaining at 28
+        self.assertEqual(self.char.max_hp, 28)
