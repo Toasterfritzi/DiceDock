@@ -533,3 +533,71 @@ class CharacterLevelupTest(TestCase):
         # HP remains unchanged
         self.assertEqual(invalid_char.max_hp, 12)
         self.assertEqual(invalid_char.current_hp, 12)
+
+
+    def test_levelup_unauthenticated(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login/') or response.url.startswith('/accounts/login/'))
+
+    def test_levelup_wrong_user(self):
+        other_user = User.objects.create_user(username='otheruser', password='password')
+        self.client.login(username='otheruser', password='password')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_levelup_not_found(self):
+        response = self.client.post(reverse('character_levelup', args=[9999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_levelup_unknown_class(self):
+        unknown_char = Character.objects.create(
+            user=self.user,
+            name='Unknown Class Test',
+            character_class='UnbekannteKlasse',
+            race='Mensch',
+            level=1,
+            hit_dice='1d10',
+            constitution=14,
+            max_hp=12,
+            current_hp=12,
+            available_stat_points=0,
+            features=[]
+        )
+        url = reverse('character_levelup', args=[unknown_char.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        unknown_char.refresh_from_db()
+        self.assertEqual(unknown_char.level, 2)
+        self.assertEqual(len(unknown_char.features), 0)
+
+    def test_levelup_none_features(self):
+        # We simulate that the DB returned an object with features=None
+        none_features_char = Character.objects.create(
+            user=self.user,
+            name='None Features Test',
+            character_class='Kämpfer',
+            race='Mensch',
+            level=1,
+            hit_dice='1d10',
+            constitution=14,
+            max_hp=12,
+            current_hp=12,
+            available_stat_points=0,
+            features=[]
+        )
+        url = reverse('character_levelup', args=[none_features_char.pk])
+
+        from unittest.mock import patch
+        with patch('characters.views.get_object_or_404') as mock_get_object:
+            # Prepare an object with features = None
+            none_features_char.features = None
+            mock_get_object.return_value = none_features_char
+            response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 302)
+        # Verify the mock object was updated properly
+        self.assertEqual(none_features_char.level, 2)
+        self.assertIsInstance(none_features_char.features, list)
+        self.assertTrue(len(none_features_char.features) > 0)
