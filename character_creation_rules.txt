@@ -9,14 +9,14 @@ Jede Klasse bietet spezifische Merkmale, Trefferwürfel und Fähigkeiten beim St
 ### Barbar (S. 53-56)
 - **Hauptattribut:** Stärke
 - **Trefferwürfel:** 1W12 pro Stufe
-- **Unterklassen (Pfad):** Berserker, Eiferer (Zealot), Weltenbaum (World Tree), Wildes Herz (Wild Heart)
+- **Unterklassen (Pfad):** Berserker, Eiferer (Zealot), Weltenbaum (World Tree)
 - **Level 3:** Unterklasse wählen, Kampfrausch-Features
 - **Level 4:** Attributswerterhöhung (ASI) oder Talent
 
 ### Barde (S. 58-65)
 - **Hauptattribut:** Charisma
 - **Trefferwürfel:** 1W8 pro Stufe
-- **Unterklassen (Schule):** Schule des Wagemuts, Schule des Tanzes, Schule des Zauberbanns (Glamour), Schule des Wissens
+- **Unterklassen (Schule):** Schule des Wagemuts, Schule der Beredsamkeit, Schule des Schlamms (Glamour), Schule des Wissens
 - **Level 3:** Unterklasse wählen, Bardische Inspiration verbessert
 - **Level 4:** ASI oder Talent
 
@@ -56,7 +56,7 @@ Jede Klasse bietet spezifische Merkmale, Trefferwürfel und Fähigkeiten beim St
 - **Level 3:** Unterklasse wählen
 - **Level 4:** ASI oder Talent
 
-### Mönch (Monk) (S. 112-121)
+### Mönch (Monk) (S. 121-131)
 - **Hauptattribut:** Geschicklichkeit & Weisheit
 - **Trefferwürfel:** 1W8 pro Stufe
 - **Unterklassen:** Krieger der Elemente, Krieger der Gnade, Krieger der Offenen Hand, Krieger der Schatten

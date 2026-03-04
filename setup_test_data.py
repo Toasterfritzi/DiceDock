@@ -10,12 +10,12 @@ from characters.models import Character
 user = User.objects.create_user(username='testuser', password='password123')
 character = Character.objects.create(
     user=user,
-    name="Testcharakter",
-    character_class="Kämpfer",  # Gültiger D&D 5.5e Klassenname (deutsch)
-    race="Mensch",              # Gültiger Spezies-Name (deutsch)
+    name="Test Character",
+    character_class="Warrior",
+    race="Human",
     level=1,
     experience=0,
-    max_experience=300,        # XP-Schwelle für Stufe 2 (Stufe 3: 900, Stufe 4: 2700 usw.)
+    max_experience=300,
     strength=15, dexterity=12, constitution=14, intelligence=10, wisdom=10, charisma=12
 )
 print("Created test user and character.")
