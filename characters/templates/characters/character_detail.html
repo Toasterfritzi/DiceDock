@@ -422,28 +422,28 @@
                 </div>
             </div>
             <div class="flex items-center justify-between bg-black/20 p-2 rounded-lg mb-4 border border-white/5">
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('gold', {{ character.gold }})" id="coin-group-gold">
                     <div
                         class="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center shadow-[0_0_8px_rgba(234,179,8,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-yellow-400">monetization_on</span>
                     </div>
-                    <span class="text-xs font-bold text-yellow-400 mt-1">{{ character.gold }}</span>
+                    <span id="coin-val-gold" class="text-xs font-bold text-yellow-400 mt-1">{{ character.gold }}</span>
                 </div>
                 <div class="w-px h-8 bg-white/10"></div>
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('silver', {{ character.silver }})" id="coin-group-silver">
                     <div
                         class="w-6 h-6 rounded-full bg-slate-400/20 border border-slate-400/50 flex items-center justify-center shadow-[0_0_8px_rgba(148,163,184,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-slate-300">monetization_on</span>
                     </div>
-                    <span class="text-xs font-bold text-slate-300 mt-1">{{ character.silver }}</span>
+                    <span id="coin-val-silver" class="text-xs font-bold text-slate-300 mt-1">{{ character.silver }}</span>
                 </div>
                 <div class="w-px h-8 bg-white/10"></div>
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110" onclick="openCoinModal('copper', {{ character.copper }})" id="coin-group-copper">
                     <div
                         class="w-6 h-6 rounded-full bg-orange-700/20 border border-orange-700/50 flex items-center justify-center shadow-[0_0_8px_rgba(194,65,12,0.4)]">
                         <span class="material-symbols-outlined text-[14px] text-orange-600">monetization_on</span>
                     </div>
-                    <span class="text-xs font-bold text-orange-600 mt-1">{{ character.copper }}</span>
+                    <span id="coin-val-copper" class="text-xs font-bold text-orange-600 mt-1">{{ character.copper }}</span>
                 </div>
             </div>
             <ul class="space-y-3 overflow-y-auto max-h-[400px]">
@@ -519,6 +519,31 @@
 {% endblock %}
 
 {% block extra_scripts %}
+
+<!-- Coin Edit Modal (Analog zu Attributen) -->
+<div id="coinEditModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="glass-panel p-8 rounded-2xl border-2 border-yellow-500/30 max-w-sm w-full relative">
+        <h3 class="text-2xl font-black text-white mb-6 text-center uppercase tracking-widest" id="editModalCoinName">
+            Münze
+        </h3>
+        <div class="flex items-center justify-center gap-8 mb-8">
+            <button onclick="changeCoin('decrease')"
+                class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] cursor-pointer">
+                <span class="material-symbols-outlined text-2xl">remove</span>
+            </button>
+            <span class="text-5xl font-black text-white" id="editModalCoinValue">0</span>
+            <button onclick="changeCoin('increase')"
+                class="w-12 h-12 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] cursor-pointer">
+                <span class="material-symbols-outlined text-2xl">add</span>
+            </button>
+        </div>
+        <button onclick="closeCoinModal()"
+            class="w-full py-3 rounded-lg bg-yellow-600/20 hover:bg-yellow-600/40 text-white font-bold transition-colors border border-yellow-500/30 shadow-[0_0_10px_#eab3084d,0_0_20px_#eab3081a] uppercase text-sm tracking-wider cursor-pointer">
+            Fertig
+        </button>
+    </div>
+</div>
+
 <!-- Stat Edit Modal -->
 <div id="statEditModal"
     class="hidden fixed inset-0 z-[100] flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -546,6 +571,86 @@
 <script>
     let currentEditingStat = '';
     const csrfToken = '{{ csrf_token }}';
+
+
+    let currentEditingCoin = '';
+
+    const coinTranslations = {
+        'gold': 'Gold',
+        'silver': 'Silber',
+        'copper': 'Kupfer'
+    };
+
+    function openCoinModal(coinName, currentVal) {
+        currentEditingCoin = coinName;
+        document.getElementById('editModalCoinName').innerText = coinTranslations[coinName] || coinName;
+        document.getElementById('editModalCoinValue').innerText = currentVal;
+
+        const modal = document.getElementById('coinEditModal');
+        const modalInner = modal.querySelector('.glass-panel');
+        const btn = modal.querySelector('button[onclick="closeCoinModal()"]');
+
+        // Farbe anpassen basierend auf Münztyp
+        modalInner.className = 'glass-panel p-8 rounded-2xl border-2 max-w-sm w-full relative';
+        btn.className = 'w-full py-3 rounded-lg text-white font-bold transition-colors uppercase text-sm tracking-wider cursor-pointer';
+
+        if (coinName === 'gold') {
+            modalInner.classList.add('border-yellow-500/30');
+            btn.classList.add('bg-yellow-600/20', 'hover:bg-yellow-600/40', 'border', 'border-yellow-500/30', 'shadow-[0_0_10px_#eab3084d,0_0_20px_#eab3081a]');
+        } else if (coinName === 'silver') {
+            modalInner.classList.add('border-slate-400/30');
+            btn.classList.add('bg-slate-500/20', 'hover:bg-slate-500/40', 'border', 'border-slate-400/30', 'shadow-[0_0_10px_#94a3b84d,0_0_20px_#94a3b81a]');
+        } else if (coinName === 'copper') {
+            modalInner.classList.add('border-orange-700/30');
+            btn.classList.add('bg-orange-700/20', 'hover:bg-orange-700/40', 'border', 'border-orange-700/30', 'shadow-[0_0_10px_#c2410c4d,0_0_20px_#c2410c1a]');
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeCoinModal() {
+        document.getElementById('coinEditModal').classList.add('hidden');
+        document.getElementById('coinEditModal').classList.remove('flex');
+    }
+
+    function changeCoin(action) {
+        const url = `/character/{{ character.pk }}/update_coin/`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                coin: currentEditingCoin,
+                action: action
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update modal value
+                document.getElementById('editModalCoinValue').innerText = data.new_value;
+                // Update UI value
+                const coinEl = document.getElementById(`coin-val-${currentEditingCoin}`);
+                if (coinEl) {
+                    coinEl.innerText = data.new_value;
+                }
+                // Update onclick handler to keep current value synced
+                const coinGroup = document.getElementById(`coin-group-${currentEditingCoin}`);
+                if (coinGroup) {
+                    coinGroup.setAttribute('onclick', `openCoinModal('${currentEditingCoin}', ${data.new_value})`);
+                }
+            } else {
+                alert(data.error || 'Fehler beim Aktualisieren der Münzen.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ein Netzwerkfehler ist aufgetreten.');
+        });
+    }
 
     function openStatModal(statName, currentVal) {
         currentEditingStat = statName;
