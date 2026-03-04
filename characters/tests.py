@@ -166,6 +166,7 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.wisdom_mod, -1)
         self.assertEqual(char.charisma_mod, 5)
 
+from .views import _apply_background_bonuses
 from django.urls import reverse
 
 class DashboardViewTest(TestCase):
@@ -625,3 +626,54 @@ class CharacterLevelupTest(TestCase):
         self.assertEqual(none_features_char.level, 2)
         self.assertIsInstance(none_features_char.features, list)
         self.assertTrue(len(none_features_char.features) > 0)
+
+
+class BackgroundBonusesTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='bgtestuser', password='password123')
+        self.char = Character(
+            user=self.user,
+            name="Test Hero",
+            strength=10,
+            dexterity=10,
+            constitution=10,
+            intelligence=10,
+            wisdom=10,
+            charisma=10
+        )
+
+    def test_known_background_bonus(self):
+        # Soldat gives +2 Strength, +1 Constitution
+        self.char.background = "Soldat"
+        self.char.character_class = "Kämpfer"
+        _apply_background_bonuses(self.char)
+        self.assertEqual(self.char.strength, 12)
+        self.assertEqual(self.char.constitution, 11)
+        self.assertEqual(self.char.dexterity, 10)
+
+    def test_fallback_melee_bonus(self):
+        # Unbekannter Hintergrund, aber Nahkampf-Klasse -> +2 Str, +1 Con
+        self.char.background = "Unbekannt"
+        self.char.character_class = "Barbar"
+        _apply_background_bonuses(self.char)
+        self.assertEqual(self.char.strength, 12)
+        self.assertEqual(self.char.constitution, 11)
+        self.assertEqual(self.char.dexterity, 10)
+
+    def test_fallback_agile_bonus(self):
+        # Unbekannter Hintergrund, aber Agile-Klasse -> +2 Dex, +1 Wis
+        self.char.background = "Unbekannt"
+        self.char.character_class = "Schurke"
+        _apply_background_bonuses(self.char)
+        self.assertEqual(self.char.dexterity, 12)
+        self.assertEqual(self.char.wisdom, 11)
+        self.assertEqual(self.char.strength, 10)
+
+    def test_fallback_default_bonus(self):
+        # Unbekannter Hintergrund und andere Klasse -> +2 Cha, +1 Int
+        self.char.background = "Unbekannt"
+        self.char.character_class = "Magier"
+        _apply_background_bonuses(self.char)
+        self.assertEqual(self.char.charisma, 12)
+        self.assertEqual(self.char.intelligence, 11)
+        self.assertEqual(self.char.strength, 10)
