@@ -299,3 +299,104 @@ class StatUpdateTest(TestCase):
         data = response.json()
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
+
+class CharacterLevelupTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Test Character',
+            character_class='Kämpfer',
+            race='Mensch',
+            level=1,
+            hit_dice='1d10',
+            constitution=14,  # +2 mod
+            max_hp=12,
+            current_hp=12,
+            available_stat_points=0,
+            features=[]
+        )
+        self.url = reverse('character_levelup', args=[self.character.pk])
+        self.client.login(username='testuser', password='testpassword')
+
+    def test_levelup_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/character_levelup.html')
+        self.assertEqual(response.context['character'], self.character)
+        self.assertEqual(response.context['new_level'], 2)
+        self.assertIn('new_features', response.context)
+
+    def test_levelup_post_success(self):
+        response = self.client.post(self.url)
+        self.assertRedirects(response, reverse('character_detail', args=[self.character.pk]))
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.level, 2)
+        # hit_dice='1d10', con=14(+2). hp_increase = (10 // 2) + 1 + 2 = 8
+        self.assertEqual(self.character.max_hp, 20)
+        self.assertEqual(self.character.current_hp, 20)
+        self.assertEqual(self.character.hit_dice_total, 2)
+
+    def test_levelup_dwarf_hp_bonus(self):
+        dwarf_char = Character.objects.create(
+            user=self.user,
+            name='Dwarf Test',
+            character_class='Kämpfer',
+            race='Zwerg',
+            level=1,
+            hit_dice='1d10',
+            constitution=14, # +2 mod
+            max_hp=13, # base + 1 for dwarf
+            current_hp=13,
+            available_stat_points=0,
+            features=[]
+        )
+        url = reverse('character_levelup', args=[dwarf_char.pk])
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse('character_detail', args=[dwarf_char.pk]))
+        dwarf_char.refresh_from_db()
+        # hp_increase = (10 // 2) + 1 + 2 = 8, plus 1 for dwarf = 9. 13 + 9 = 22
+        self.assertEqual(dwarf_char.max_hp, 22)
+
+    def test_levelup_asi(self):
+        asi_char = Character.objects.create(
+            user=self.user,
+            name='ASI Test',
+            character_class='Kämpfer',
+            race='Mensch',
+            level=3,
+            hit_dice='1d10',
+            constitution=14,
+            max_hp=28,
+            current_hp=28,
+            available_stat_points=0,
+            features=[]
+        )
+        url = reverse('character_levelup', args=[asi_char.pk])
+        self.client.post(url)
+        asi_char.refresh_from_db()
+        self.assertEqual(asi_char.level, 4)
+        self.assertEqual(asi_char.available_stat_points, 2)
+
+    def test_levelup_invalid_hit_dice(self):
+        invalid_char = Character.objects.create(
+            user=self.user,
+            name='Invalid Hit Dice Test',
+            character_class='Kämpfer',
+            race='Mensch',
+            level=1,
+            hit_dice='invalid', # Will cause ValueError/IndexError
+            constitution=14,
+            max_hp=12,
+            current_hp=12,
+            available_stat_points=0,
+            features=[]
+        )
+        url = reverse('character_levelup', args=[invalid_char.pk])
+        self.client.post(url)
+        invalid_char.refresh_from_db()
+        self.assertEqual(invalid_char.level, 2)
+        # HP remains unchanged
+        self.assertEqual(invalid_char.max_hp, 12)
+        self.assertEqual(invalid_char.current_hp, 12)
