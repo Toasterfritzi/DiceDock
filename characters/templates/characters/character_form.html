@@ -88,10 +88,17 @@
                             </div>
                         </div>
                         <div class="space-y-5">
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-300 ml-1"
-                                    for="{{ form.race.id_for_label }}">Volk</label>
-                                {{ form.race }}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-300 ml-1"
+                                        for="{{ form.race.id_for_label }}">Volk</label>
+                                    {{ form.race }}
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-300 ml-1"
+                                        for="{{ form.abstammung.id_for_label }}">Abstammung</label>
+                                    {{ form.abstammung }}
+                                </div>
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -99,8 +106,8 @@
                                 <input
                                     class="glass-input block w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:ring-0"
                                     id="{{ form.level.id_for_label }}" name="{{ form.level.html_name }}"
-                                    value="{{ form.level.value|default_if_none:'1' }}" placeholder="1-20"
-                                    type="number" min="1" max="20" required />
+                                    value="{{ form.level.value|default_if_none:'1' }}" placeholder="1-20" type="number"
+                                    min="1" max="20" required />
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium text-gray-300 ml-1"
@@ -265,7 +272,9 @@
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
                                         id="id_equip_equipment" name="{{ form.equipment_preference.html_name }}"
-                                        type="radio" value="equipment" {% if form.equipment_preference.value == 'equipment' or not form.equipment_preference.value %}checked{% endif %} />
+                                        type="radio" value="equipment" {% if
+                                        form.equipment_preference.value=='equipment' or not
+                                        form.equipment_preference.value %}checked{% endif %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startausrüstung</span>
@@ -278,7 +287,8 @@
                                     <input
                                         class="w-4 h-4 text-primary bg-black/40 border-gray-600 focus:ring-primary focus:ring-offset-gray-900"
                                         id="id_equip_gold" name="{{ form.equipment_preference.html_name }}" type="radio"
-                                        value="gold" {% if form.equipment_preference.value == 'gold' %}checked{% endif %} />
+                                        value="gold" {% if form.equipment_preference.value=='gold' %}checked{% endif
+                                        %} />
                                 </div>
                                 <div class="text-sm">
                                     <span class="font-medium text-white block mb-0.5">Startgold</span>

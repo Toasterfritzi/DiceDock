@@ -20,13 +20,11 @@ logger = logging.getLogger(__name__)
 
 # Stat-Priorität pro Klasse: Reihenfolge der Zuweisung des Standard-Arrays
 # Standard-Array: [15, 14, 13, 12, 10, 8]
-# Schlüssel: (deutsche Keywords, englische Keywords) → (Attribut-Reihenfolge, Trefferwürfel)
 STANDARD_ARRAY = [15, 14, 13, 12, 10, 8]
 
 ABILITY_NAMES = ('strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma')
 
 CLASS_CONFIGS = {
-    # keywords → (stat priority order, hit die)
     ('barbar',):                    (['strength', 'constitution', 'dexterity', 'wisdom', 'charisma', 'intelligence'], 'd12'),
     ('bard',):                      (['charisma', 'dexterity', 'constitution', 'wisdom', 'intelligence', 'strength'], 'd8'),
     ('kleriker', 'cleric'):         (['wisdom', 'constitution', 'strength', 'charisma', 'intelligence', 'dexterity'], 'd8'),
@@ -41,7 +39,6 @@ CLASS_CONFIGS = {
     ('magier', 'wizard'):           (['intelligence', 'constitution', 'dexterity', 'wisdom', 'charisma', 'strength'], 'd6'),
 }
 
-# Hintergrund-Boni: keywords → (primäres Attribut +2, sekundäres Attribut +1)
 BACKGROUND_BONUSES = {
     ('adeliger', 'noble'):              ('strength', 'charisma'),
     ('akolyth', 'acolyte'):             ('wisdom', 'intelligence'),
@@ -61,7 +58,6 @@ BACKGROUND_BONUSES = {
     ('straßenkind', 'urchin', 'wayfarer'): ('dexterity', 'wisdom'),
 }
 
-# Klassen-basierter Fallback für unbekannte Hintergründe
 _MELEE_CLASSES = {'barbar', 'kämpfer', 'paladin', 'fighter'}
 _AGILE_CLASSES = {'schurke', 'mönch', 'waldläufer', 'rogue', 'monk', 'ranger'}
 
@@ -85,7 +81,6 @@ def _apply_background_bonuses(character):
         setattr(character, secondary, getattr(character, secondary) + 1)
         return
 
-    # Fallback: Boni basierend auf Klassentyp
     class_lower = character.character_class.lower()
     if class_lower in _MELEE_CLASSES:
         character.strength += 2
@@ -96,6 +91,111 @@ def _apply_background_bonuses(character):
     else:
         character.charisma += 2
         character.intelligence += 1
+
+
+def _apply_all_rules(character, hit_die):
+    """Wendet alle regelbasierten Werte auf einen neuen Charakter an.
+
+    Muss nach Stat-Zuweisung und Hintergrund-Boni aufgerufen werden.
+    """
+    from .rules_data.klassen import KLASSEN_DATEN
+    from .rules_data.hintergruende import HINTERGRUND_DATEN
+    from .rules_data.spezies import SPEZIES_DATEN
+
+    # --- Klassen-Daten laden ---
+    klasse_data = None
+    for k, v in KLASSEN_DATEN.items():
+        if k.lower() in character.character_class.lower():
+            klasse_data = v
+            break
+
+    # --- Rettungswurf-Übungen aus Klasse ---
+    if klasse_data:
+        character.saving_throw_proficiencies = klasse_data.get('rettungswuerfe', [])
+
+    # --- Fertigkeits-Übungen aus Hintergrund ---
+    bg_data = HINTERGRUND_DATEN.get(character.background)
+    skill_profs = []
+    if bg_data:
+        skill_profs = list(bg_data.get('fertigkeiten', []))
+        # Herkunftstalent (Origin Feat) zuweisen
+        talent = bg_data.get('talent', '')
+        if talent:
+            character.feats = [talent]
+        # Werkzeug-Übung zuweisen
+        werkzeug = bg_data.get('werkzeug', '')
+        if werkzeug:
+            character.tool_proficiencies = [werkzeug]
+    character.skill_proficiencies = skill_profs
+
+    # --- Spezies-Daten: Geschwindigkeit & TP-Bonus ---
+    spezies_data = None
+    race_lower = character.race.lower()
+    for sname, sdata in SPEZIES_DATEN.items():
+        if sname.lower() == race_lower or sname.lower() in race_lower:
+            spezies_data = sdata
+            break
+
+    if spezies_data:
+        character.speed = spezies_data.get('geschwindigkeit', 9.0)
+        # Waldelf-Sonderfall: 10,5m (in Abstammung gespeichert)
+        if character.abstammung:
+            abstammung_lower = character.abstammung.lower()
+            if 'waldelf' in abstammung_lower:
+                character.speed = 10.5
+    else:
+        character.speed = 9.0
+
+    # --- XP-Schwellen ---
+    xp_thresholds = {
+        1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
+        6: 14000, 7: 23000, 8: 34000, 9: 48000, 10: 64000,
+        11: 85000, 12: 100000, 13: 120000, 14: 140000, 15: 165000,
+        16: 195000, 17: 225000, 18: 265000, 19: 305000, 20: 355000,
+    }
+    character.experience = xp_thresholds.get(character.level, 0)
+    if character.level >= 20:
+        character.max_experience = character.experience
+    else:
+        character.max_experience = xp_thresholds.get(character.level + 1, 355000)
+
+    # --- Trefferpunkte ---
+    hit_die_value = int(hit_die[1:])
+    con_mod = character._ability_modifier(character.constitution)
+    base_hp = hit_die_value + con_mod
+    hp_per_level = (hit_die_value // 2) + 1 + con_mod
+
+    # Völker-spezifische TP-Boni
+    tp_bonus = spezies_data.get('tp_bonus', 0) if spezies_data else 0
+    if tp_bonus:
+        base_hp += tp_bonus
+        hp_per_level += tp_bonus
+
+    if character.level > 1:
+        character.max_hp = base_hp + (hp_per_level * (character.level - 1))
+    else:
+        character.max_hp = base_hp
+    character.current_hp = character.max_hp
+
+    # --- Rüstungsklasse (klassenspezifisch) ---
+    character.armor_class = character.get_unarmored_ac()
+
+    # --- ASI-Punkte ---
+    asi_levels = _get_asi_levels(character.character_class)
+    character.available_stat_points = sum(2 for l in asi_levels if l <= character.level)
+
+    # --- Trefferwürfel ---
+    character.hit_dice_total = character.level
+
+    # --- Zauberplätze und bekannte Zauber ---
+    character.spell_slots = character.get_spell_slots_for_level()
+    available = character.get_available_spells()
+    all_spell_names = []
+    for grad, spells in available.items():
+        for s in spells:
+            all_spell_names.append(s['name'])
+    character.known_spells = all_spell_names
+
 
 
 # ---------------------------------------------------------------------------
@@ -180,63 +280,15 @@ def create_character(request):
             # Hintergrund-Boni
             _apply_background_bonuses(character)
 
-            # Stufenbasierte Grundwerte übernehmen
+            # Stufenbasierte Grundwerte
             character.level = form.cleaned_data.get('level', 1)
 
-            # Erfahrungspunkte nach Stufe setzen
-            xp_thresholds = {
-                1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
-                6: 14000, 7: 23000, 8: 34000, 9: 48000, 10: 64000,
-                11: 85000, 12: 100000, 13: 120000, 14: 140000, 15: 165000,
-                16: 195000, 17: 225000, 18: 265000, 19: 305000, 20: 355000
-            }
-            character.experience = xp_thresholds.get(character.level, 0)
-            if character.level >= 20:
-                character.max_experience = character.experience
-            else:
-                character.max_experience = xp_thresholds.get(character.level + 1, 355000)
+            # Alle Regeln anwenden (Übungen, RK, TP, Speed, Zauber etc.)
+            _apply_all_rules(character, hit_die)
 
-            # Maximale TP berechnen: Grundwerte für Lvl 1
-            hit_die_value = int(hit_die[1:])  # 'd10' → 10
-            con_mod = character._ability_modifier(character.constitution)
-            
-            base_hp = hit_die_value + con_mod
-            hp_per_level = (hit_die_value // 2) + 1 + con_mod
-
-            # Völker-spezifische TP-Boni (1 TP pro Level für Zwerge z.B.)
-            race_lower = character.race.lower()
-            if 'zwerg' in race_lower or 'dwarf' in race_lower:
-                base_hp += 1
-                hp_per_level += 1
-
-            if character.level > 1:
-                character.max_hp = base_hp + (hp_per_level * (character.level - 1))
-            else:
-                character.max_hp = base_hp
-
-            character.current_hp = character.max_hp
-
-            # Rüstungsklasse (ohne Rüstung) = 10 + GES-Modifikator
-            character.armor_class = 10 + character._ability_modifier(character.dexterity)
-
-            # Bewegungsrate
-            character.speed = 30
-            if 'waldelf' in race_lower or 'wood elf' in race_lower:
-                character.speed = 35
-            elif 'goliath' in race_lower:
-                character.speed = 35
-
-            # ASI berechnen
-            asi_levels = _get_asi_levels(character.character_class)
-            asi_points = sum(2 for l in asi_levels if l <= character.level)
-            character.available_stat_points = asi_points
-
-            # Trefferwürfel Count
-            character.hit_dice_total = character.level
-            
             character.save()
-            
-            # Alle Klassenmerkmale bis zur aktuellen Stufe hinzufügen
+
+            # Features bis zur aktuellen Stufe (inkl. Unterklasse)
             character.features = character.get_all_features_up_to_level()
             character.save()
 
@@ -273,12 +325,21 @@ def character_levelup(request, pk):
     """Stufenaufstieg durchführen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    # XP check removed for independent level ups
-
     new_level = character.level + 1
 
-    # Features für die neue Stufe aus den Regeldaten laden
+    # Features für die neue Stufe aus den Regeldaten laden (Klasse + Unterklasse)
     new_features = character.get_features_for_level(new_level)
+
+    # Unterklassen-Features für die neue Stufe laden
+    new_subclass_features = []
+    if character.subclass:
+        klasse_data = character._get_klasse_data()
+        if klasse_data:
+            unterklassen = klasse_data.get('unterklassen', {})
+            for uk_name, uk_data in unterklassen.items():
+                if uk_name.lower() == character.subclass.lower() or uk_name == character.subclass:
+                    new_subclass_features = uk_data.get(new_level, [])
+                    break
 
     if request.method == 'POST':
         character.level = new_level
@@ -288,10 +349,15 @@ def character_levelup(request, pk):
             hit_die_value = int(character.hit_dice.split('d')[1])
             hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
 
-            # Volk-spezifische TP-Boni
+            # Spezies-spezifische TP-Boni
+            from .rules_data.spezies import SPEZIES_DATEN
             race_lower = character.race.lower()
-            if 'zwerg' in race_lower or 'dwarf' in race_lower:
-                hp_increase += 1
+            for sname, sdata in SPEZIES_DATEN.items():
+                if sname.lower() == race_lower or sname.lower() in race_lower:
+                    tp_bonus = sdata.get('tp_bonus', 0)
+                    if tp_bonus:
+                        hp_increase += tp_bonus
+                    break
 
             character.max_hp += hp_increase
             character.current_hp = character.max_hp
@@ -306,7 +372,7 @@ def character_levelup(request, pk):
         if character.level in asi_levels:
             character.available_stat_points += 2
 
-        # Features zur Feature-Liste hinzufügen
+        # Klassen-Features zur Feature-Liste hinzufügen
         current_features = character.features or []
         for feat in new_features:
             current_features.append({
@@ -314,10 +380,21 @@ def character_levelup(request, pk):
                 'name': feat['name'],
                 'beschreibung': feat['beschreibung'],
             })
+        # Unterklassen-Features hinzufügen
+        for feat in new_subclass_features:
+            current_features.append({
+                'stufe': character.level,
+                'unterklasse': True,
+                'name': feat['name'],
+                'beschreibung': feat['beschreibung'],
+            })
         character.features = current_features
 
         # Trefferwürfel-Anzahl aktualisieren
         character.hit_dice_total = character.level
+
+        # Rüstungsklasse neu berechnen (für Klassen die von Stufe abhängen)
+        character.armor_class = character.get_unarmored_ac()
 
         # Zauberplätze und bekannte Zauber aktualisieren
         character.spell_slots = character.get_spell_slots_for_level()
@@ -335,6 +412,7 @@ def character_levelup(request, pk):
         'character': character,
         'new_level': new_level,
         'new_features': new_features,
+        'new_subclass_features': new_subclass_features,
     })
 
 
@@ -543,6 +621,7 @@ def character_builder_submit(request):
     character.subclass = data.get('subclass', '')
     character.background = data.get('background', '')
     character.race = data.get('race', 'Mensch')
+    character.abstammung = data.get('abstammung', '')
     character.alignment = data.get('alignment', '')
     character.personality_traits = data.get('personality_traits', '')
     character.ideals = data.get('ideals', '')
@@ -582,65 +661,12 @@ def character_builder_submit(request):
     # Hintergrund-Boni
     _apply_background_bonuses(character)
 
-    # Erfahrungspunkte
-    xp_thresholds = {
-        1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
-        6: 14000, 7: 23000, 8: 34000, 9: 48000, 10: 64000,
-        11: 85000, 12: 100000, 13: 120000, 14: 140000, 15: 165000,
-        16: 195000, 17: 225000, 18: 265000, 19: 305000, 20: 355000,
-    }
-    character.experience = xp_thresholds.get(character.level, 0)
-    if character.level >= 20:
-        character.max_experience = character.experience
-    else:
-        character.max_experience = xp_thresholds.get(character.level + 1, 355000)
-
-    # Trefferpunkte
-    hit_die_value = int(hit_die[1:])
-    con_mod = character._ability_modifier(character.constitution)
-    base_hp = hit_die_value + con_mod
-    hp_per_level = (hit_die_value // 2) + 1 + con_mod
-
-    race_lower = character.race.lower()
-    if 'zwerg' in race_lower or 'dwarf' in race_lower:
-        base_hp += 1
-        hp_per_level += 1
-
-    if character.level > 1:
-        character.max_hp = base_hp + (hp_per_level * (character.level - 1))
-    else:
-        character.max_hp = base_hp
-    character.current_hp = character.max_hp
-
-    # Rüstungsklasse
-    character.armor_class = 10 + character._ability_modifier(character.dexterity)
-
-    # Bewegungsrate
-    character.speed = 30
-    if 'waldelf' in race_lower or 'wood elf' in race_lower:
-        character.speed = 35
-    elif 'goliath' in race_lower:
-        character.speed = 35
-
-    # ASI-Punkte
-    asi_levels = _get_asi_levels(character.character_class)
-    character.available_stat_points = sum(2 for l in asi_levels if l <= character.level)
-
-    # Hit Dice
-    character.hit_dice_total = character.level
-
-    # Zauberplätze und bekannte Zauber zuweisen
-    character.spell_slots = character.get_spell_slots_for_level()
-    available = character.get_available_spells()
-    all_spell_names = []
-    for grad, spells in available.items():
-        for s in spells:
-            all_spell_names.append(s['name'])
-    character.known_spells = all_spell_names
+    # Alle Regeln anwenden (Übungen, RK, TP, Speed, Zauber etc.)
+    _apply_all_rules(character, hit_die)
 
     character.save()
 
-    # Features bis zur aktuellen Stufe
+    # Features bis zur aktuellen Stufe (inkl. Unterklasse)
     character.features = character.get_all_features_up_to_level()
     character.save()
 

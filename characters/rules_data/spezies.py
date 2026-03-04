@@ -2,7 +2,7 @@
 
 SPEZIES_DATEN = {
     'Aasimar': {
-        'groesse': 'Mittel oder Klein', 'geschwindigkeit': 30,
+        'groesse': 'Mittel oder Klein', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '18m Dunkelsicht.'},
             {'name': 'Himmlische Resistenz', 'beschreibung': 'Resistenz gegen Nekrotischen und Strahlenschaden.'},
@@ -13,17 +13,17 @@ SPEZIES_DATEN = {
         'tp_bonus': 0,
     },
     'Drachenblütler': {
-        'groesse': 'Mittel', 'geschwindigkeit': 30,
+        'groesse': 'Mittel', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Drachensippe', 'beschreibung': 'Wähle Elementtyp (Feuer, Kälte, Blitz, Gift, Säure) für Odemwaffe und Resistenz.'},
-            {'name': 'Odemwaffe', 'beschreibung': 'Aktion (ersetzt einen Angriff). 15ft Kegel oder 30ft Linie. Schaden skaliert mit Stufe. Übungsbonus Nutzungen pro Langer Rast.'},
+            {'name': 'Odemwaffe', 'beschreibung': 'Aktion (ersetzt einen Angriff). 4,5m Kegel oder 9m Linie. Schaden skaliert mit Stufe. Übungsbonus Nutzungen pro Langer Rast.'},
             {'name': 'Resistenz', 'beschreibung': 'Resistenz gegen den gewählten Elementtyp.'},
             {'name': 'Flug', 'beschreibung': 'Ab Stufe 5: Fliegen für 10 Minuten. 1 Nutzung pro Langer Rast.'},
         ],
         'tp_bonus': 0,
     },
     'Elf': {
-        'groesse': 'Mittel', 'geschwindigkeit': 30,
+        'groesse': 'Mittel', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '18m Dunkelsicht.'},
             {'name': 'Feenblut', 'beschreibung': 'Vorteil auf Rettungswürfe gegen Bezauberung. Immun gegen magischen Schlaf.'},
@@ -45,7 +45,7 @@ SPEZIES_DATEN = {
         },
     },
     'Gnom': {
-        'groesse': 'Klein', 'geschwindigkeit': 30,
+        'groesse': 'Klein', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '18m Dunkelsicht.'},
             {'name': 'Gnom-Schlauheit', 'beschreibung': 'Vorteil auf INT-, WIS- und CHA-Rettungswürfe gegen Magie.'},
@@ -61,7 +61,7 @@ SPEZIES_DATEN = {
         },
     },
     'Goliath': {
-        'groesse': 'Mittel', 'geschwindigkeit': 35,
+        'groesse': 'Mittel', 'geschwindigkeit': 10.5,
         'merkmale': [
             {'name': 'Riesen-Erbe', 'beschreibung': 'Wähle Vorfahre (Steingigant, Feuergigant etc.) für verschiedene Boni. Übungsbonus Nutzungen pro Langer Rast.'},
             {'name': 'Große Statur', 'beschreibung': 'Zählt als eine Kategorie größer für Tragekapazität.'},
@@ -70,7 +70,7 @@ SPEZIES_DATEN = {
         'tp_bonus': 0,
     },
     'Halbling': {
-        'groesse': 'Klein', 'geschwindigkeit': 30,
+        'groesse': 'Klein', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Glückspilz', 'beschreibung': 'Bei einer 1 auf dem W20: Wiederhole den Wurf (muss neues Ergebnis nehmen).'},
             {'name': 'Mutig', 'beschreibung': 'Vorteil auf Rettungswürfe gegen Furcht.'},
@@ -80,7 +80,7 @@ SPEZIES_DATEN = {
         'tp_bonus': 0,
     },
     'Mensch': {
-        'groesse': 'Mittel', 'geschwindigkeit': 30,
+        'groesse': 'Mittel', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Vielseitig', 'beschreibung': 'Erhalte ein zusätzliches Herkunftstalent.'},
             {'name': 'Geschickt', 'beschreibung': 'Übung in einer zusätzlichen Fertigkeit deiner Wahl.'},
@@ -89,7 +89,7 @@ SPEZIES_DATEN = {
         'tp_bonus': 0,
     },
     'Ork': {
-        'groesse': 'Mittel', 'geschwindigkeit': 30,
+        'groesse': 'Mittel', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '18m Dunkelsicht.'},
             {'name': 'Adrenalinrausch', 'beschreibung': 'Bonusaktion: Spurt + temporäre TP erhalten. Übungsbonus Nutzungen pro Langer Rast.'},
@@ -99,7 +99,7 @@ SPEZIES_DATEN = {
         'tp_bonus': 0,
     },
     'Tiefling': {
-        'groesse': 'Mittel oder Klein', 'geschwindigkeit': 30,
+        'groesse': 'Mittel oder Klein', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '18m Dunkelsicht.'},
             {'name': 'Andauernde Resistenz', 'beschreibung': 'Resistenz gegen Feuerschaden.'},
@@ -118,7 +118,7 @@ SPEZIES_DATEN = {
         },
     },
     'Zwerg': {
-        'groesse': 'Mittel', 'geschwindigkeit': 30,
+        'groesse': 'Mittel', 'geschwindigkeit': 9.0,
         'merkmale': [
             {'name': 'Dunkelsicht', 'beschreibung': '36m Dunkelsicht (verbessert in 2024!).'},
             {'name': 'Zwergen-Zähigkeit', 'beschreibung': '+1 TP pro Stufe.'},
