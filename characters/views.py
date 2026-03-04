@@ -248,8 +248,9 @@ def character_detail(request, pk):
     """Charakterbogen anzeigen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    from .rules_data.waffen import WAFFEN_DATEN
+    from .rules_data.waffen import WAFFEN_DATEN, WAFFEN_MEISTERUNGEN
     waffen_json = json.dumps(WAFFEN_DATEN, ensure_ascii=False)
+    meisterung_json = json.dumps(WAFFEN_MEISTERUNGEN, ensure_ascii=False)
 
     # Zauber-Daten
     spell_slots = character.get_spell_slots_for_level()
@@ -258,6 +259,7 @@ def character_detail(request, pk):
     return render(request, 'characters/character_detail.html', {
         'character': character,
         'waffen_json': waffen_json,
+        'meisterung_json': meisterung_json,
         'spell_slots': spell_slots,
         'known_spells_detail': known_spells_detail,
     })
