@@ -166,6 +166,42 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.wisdom_mod, -1)
         self.assertEqual(char.charisma_mod, 5)
 
+    def test_proficiency_bonus(self):
+        char = Character(user=self.user, name="Proficiency Test")
+
+        # Test boundaries and within bands
+        # Levels 1-4: +2
+        char.level = 1
+        self.assertEqual(char.proficiency_bonus, 2)
+        char.level = 4
+        self.assertEqual(char.proficiency_bonus, 2)
+
+        # Levels 5-8: +3
+        char.level = 5
+        self.assertEqual(char.proficiency_bonus, 3)
+        char.level = 8
+        self.assertEqual(char.proficiency_bonus, 3)
+
+        # Levels 9-12: +4
+        char.level = 9
+        self.assertEqual(char.proficiency_bonus, 4)
+        char.level = 12
+        self.assertEqual(char.proficiency_bonus, 4)
+
+        # Levels 13-16: +5
+        char.level = 13
+        self.assertEqual(char.proficiency_bonus, 5)
+        char.level = 16
+        self.assertEqual(char.proficiency_bonus, 5)
+
+        # Levels 17+: +6
+        char.level = 17
+        self.assertEqual(char.proficiency_bonus, 6)
+        char.level = 20
+        self.assertEqual(char.proficiency_bonus, 6)
+        char.level = 30
+        self.assertEqual(char.proficiency_bonus, 6)
+
 from .views import _apply_background_bonuses
 from django.urls import reverse
 
