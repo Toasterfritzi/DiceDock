@@ -21,10 +21,10 @@ Dieses Dokument enthält alle notwendigen Daten für die Automatisierung der Cha
 - **Stufe 2: Achtloses Angreifen (Reckless Attack):** Vorteil auf eigene Angriffe, aber Gegner haben auch Vorteil auf dich.
 - **Stufe 2: Gefahrensinn:** Vorteil auf Geschicklichkeitsrettungswürfe gegen sichtbare Effekte.
 - **Stufe 3: Barbarische Unterklasse:** Wähle einen Pfad.
-- **Stufe 3: Urinstinkt:** Du kannst Kampfrausch nutzen, um Wahrnehmung o.ä. zu stärken? (Check printed page 54).
+- **Stufe 3: Urwissen (Primal Knowledge):** Wähle eine Fertigkeit aus der Barbar-Liste (z.B. Einschüchtern, Wahrnehmung). Du kannst Stärke statt des normalerweise verwendeten Attributs für Würfe dieser Fertigkeit nutzen.
 - **Stufe 5: Zusätzlicher Angriff:** Zwei Angriffe pro Angriffsaktion.
 - **Stufe 5: Schnelle Bewegung:** +3 Meter Bewegungsrate (ohne Schwere Rüstung).
-- **Stufe 7: Instinktive Pounce (Check printed name):** Bewegung bei Kampfrausch-Aktivierung?
+- **Stufe 7: Instinktives Springen:** Wenn du Kampfrausch als Bonusaktion aktivierst, kannst du dich sofort bis zur Hälfte deiner Bewegungsrate als Teil derselben Bonusaktion bewegen. Diese Bewegung provoziert keine Gelegenheitsangriffe.
 - **Stufe 9: Brutaler Schlag (Brutal Strike):** Tausche Vorteil gegen Spezialeffekte (Stoßen, Reduzierung der Bewegungsrate etc.) + Extra Schaden.
 - **Stufe 11: Unbändiger Zorn (Relentless Rage):** Bei 0 TP: Rettungswurf (SG 10) um auf 1 TP zu bleiben.
 - **Stufe 15: Anhaltender Zorn:** Kampfrausch endet nur bei KO oder wenn du ihn beendest.
@@ -70,6 +70,8 @@ Dieses Dokument enthält alle notwendigen Daten für die Automatisierung der Cha
 ### KLERIKER (Cleric)
 **Rolle:** Göttlicher Zauberwirker und Heiler.
 - **Trefferwürfel:** 1W8 pro Stufe.
+- **Trefferpunkte (Stufe 1):** 8 + Konstitutionsmodifikator.
+- **Trefferpunkte (Aufstieg):** 1W8 (oder 5) + Konstitutionsmodifikator.
 - **Rettungswürfe:** Weisheit, Charisma.
 - **Waffen:** Einfache Waffen.
 - **Rüstungen:** Leichte Rüstung, Mittelschwere Rüstung, Schilde.
