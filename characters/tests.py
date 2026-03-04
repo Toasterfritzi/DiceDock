@@ -6,7 +6,6 @@ from .models import Character
 class CharacterCreationTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password123')
-        self.client = Client()
         self.client.login(username='testuser', password='password123')
 
     def test_character_creation_form_submission(self):
@@ -170,7 +169,6 @@ from django.urls import reverse
 
 class DashboardViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
         self.user = User.objects.create_user(username='dashboarduser', password='password123')
         self.other_user = User.objects.create_user(username='otheruser', password='password123')
 
@@ -221,7 +219,6 @@ class DashboardViewTest(TestCase):
 
 class CoinUpdateTest(TestCase):
     def setUp(self):
-        self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.character = Character.objects.create(
             user=self.user,
@@ -273,3 +270,176 @@ class CoinUpdateTest(TestCase):
         self.assertEqual(data['error'], 'Münzanzahl kann nicht unter 0 sinken.')
         self.character.refresh_from_db()
         self.assertEqual(self.character.copper, 0)
+
+class CharacterStatUpdateTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser_stat', password='testpassword')
+        self.character = Character.objects.create(
+            user=self.user,
+            name='Test Character Stat',
+            race='Mensch',
+            character_class='Kämpfer',
+            level=1,
+            strength=10,
+            dexterity=10,
+            constitution=10,
+            intelligence=10,
+            wisdom=10,
+            charisma=10,
+            available_stat_points=2,
+            max_hp=10,
+            current_hp=10,
+            armor_class=10
+        )
+        self.url = reverse('update_character_stat', args=[self.character.pk])
+        self.client.login(username='testuser_stat', password='testpassword')
+
+    def test_increase_stat_success(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 11)
+        self.assertEqual(data['new_available_points'], 1)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.strength, 11)
+        self.assertEqual(self.character.available_stat_points, 1)
+
+    def test_decrease_stat_success(self):
+        # First increase it to 11 to have points=1
+        self.character.strength = 11
+        self.character.available_stat_points = 1
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'decrease'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['new_value'], 10)
+        self.assertEqual(data['new_available_points'], 2)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.strength, 10)
+        self.assertEqual(self.character.available_stat_points, 2)
+
+    def test_increase_no_points(self):
+        self.character.available_stat_points = 0
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Keine verfügbaren Attributspunkte vorhanden.')
+
+    def test_increase_max_cap(self):
+        self.character.strength = 30
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Attribut ist bereits am Maximum (30).')
+
+    def test_decrease_min_cap(self):
+        self.character.strength = 1
+        self.character.save()
+
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'decrease'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Attribut kann nicht unter 1 sinken.')
+
+    def test_invalid_stat_name(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'invalid_stat', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültiges Attribut.')
+
+    def test_invalid_action(self):
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'strength', 'action': 'invalid_action'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Aktion.')
+
+    def test_invalid_json(self):
+        response = self.client.post(
+            self.url,
+            data="invalid json",
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
+
+    def test_con_mod_hp_update(self):
+        # Constitution goes from 10 to 12. Mod goes from 0 to 1.
+        self.character.constitution = 11
+        self.character.save()
+
+        # Increase 11 -> 12. Mod changes.
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'constitution', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        # Mod went from 0 to 1. Level is 1. HP diff is 1 * 1 = 1.
+        # Max HP was 10, should be 11.
+        self.assertEqual(data['new_max_hp'], 11)
+        self.assertEqual(data['new_current_hp'], 11)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.max_hp, 11)
+        self.assertEqual(self.character.current_hp, 11)
+
+    def test_dex_mod_ac_update(self):
+        self.character.dexterity = 11
+        self.character.save()
+
+        # Increase 11 -> 12. Mod changes from 0 to 1.
+        response = self.client.post(
+            self.url,
+            data=json.dumps({'stat': 'dexterity', 'action': 'increase'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        # Armor class was 10, should be 11.
+        self.assertEqual(data['new_ac'], 11)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.armor_class, 11)
