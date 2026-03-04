@@ -10,6 +10,7 @@ class CharacterCreationTest(TestCase):
 
     def test_character_creation_form_submission(self):
         response = self.client.post('/create/', {
+            'level': 1,
             'name': 'Test Character',
             'character_class': 'Kämpfer',
             'subclass': 'Champion',
@@ -49,6 +50,7 @@ class CharacterCreationTest(TestCase):
 
     def test_character_creation_gold_option(self):
         response = self.client.post('/create/', {
+            'level': 1,
             'name': 'Gold Character',
             'character_class': 'Schurke',
             'race': 'Elf',
