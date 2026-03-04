@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import CharacterForm, UserRegisterForm
+from .image_utils import compress_character_image
 from .models import Character
 
 logger = logging.getLogger(__name__)
@@ -152,6 +153,8 @@ def create_character(request):
         form = CharacterForm(request.POST, request.FILES)
         if form.is_valid():
             character = form.save(commit=False)
+            if character.image:
+                character.image = compress_character_image(character.image)
             character.user = request.user
 
             # Ausrüstung oder Gold
@@ -560,9 +563,9 @@ def character_builder_submit(request):
         character.gold = 0
         character.equipment = f'Standard-Ausrüstung für {character.character_class}'
 
-    # Bild
+    # Bild (komprimiert auf max. 512×512 WebP)
     if 'image' in request.FILES:
-        character.image = request.FILES['image']
+        character.image = compress_character_image(request.FILES['image'])
 
     # Stat-Zuweisung basierend auf Klasse
     class_config = _match_keywords(character.character_class, CLASS_CONFIGS)

@@ -798,3 +798,53 @@ class BackgroundBonusesTest(TestCase):
         self.assertEqual(self.char.charisma, 12)
         self.assertEqual(self.char.intelligence, 11)
         self.assertEqual(self.char.strength, 10)
+
+
+import io
+from PIL import Image as PILImage
+from django.core.files.uploadedfile import SimpleUploadedFile
+from .image_utils import compress_character_image
+
+
+class ImageCompressionTest(TestCase):
+    """Tests for the compress_character_image utility."""
+
+    def _make_upload(self, width, height, fmt='PNG', name='test.png'):
+        """Helper: create an in-memory uploaded image file."""
+        img = PILImage.new('RGB', (width, height), color='red')
+        buf = io.BytesIO()
+        img.save(buf, format=fmt)
+        buf.seek(0)
+        return SimpleUploadedFile(name, buf.read(), content_type=f'image/{fmt.lower()}')
+
+    def test_large_image_gets_compressed(self):
+        upload = self._make_upload(2000, 2000)
+        result = compress_character_image(upload)
+
+        img = PILImage.open(io.BytesIO(result.read()))
+        self.assertLessEqual(img.width, 512)
+        self.assertLessEqual(img.height, 512)
+
+    def test_small_image_stays_small(self):
+        upload = self._make_upload(100, 100)
+        result = compress_character_image(upload)
+
+        img = PILImage.open(io.BytesIO(result.read()))
+        self.assertEqual(img.width, 100)
+        self.assertEqual(img.height, 100)
+
+    def test_output_is_webp(self):
+        upload = self._make_upload(200, 200)
+        result = compress_character_image(upload)
+
+        self.assertTrue(result.name.endswith('.webp'))
+        img = PILImage.open(io.BytesIO(result.read()))
+        self.assertEqual(img.format, 'WEBP')
+
+    def test_aspect_ratio_preserved(self):
+        upload = self._make_upload(1000, 500, name='wide.png')
+        result = compress_character_image(upload)
+
+        img = PILImage.open(io.BytesIO(result.read()))
+        self.assertEqual(img.width, 512)
+        self.assertEqual(img.height, 256)
