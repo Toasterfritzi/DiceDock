@@ -320,6 +320,60 @@ def character_detail(request, pk):
     })
 
 
+
+def _get_new_subclass_features(character, new_level):
+    new_subclass_features = []
+    if character.subclass:
+        klasse_data = character._get_klasse_data()
+        if klasse_data:
+            unterklassen = klasse_data.get('unterklassen', {})
+            for uk_name, uk_data in unterklassen.items():
+                if uk_name.lower() == character.subclass.lower() or uk_name == character.subclass:
+                    new_subclass_features = uk_data.get(new_level, [])
+                    break
+    return new_subclass_features
+
+def _apply_levelup_hp_increase(character):
+    try:
+        hit_die_value = int(character.hit_dice.split('d')[1])
+        hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
+
+        from .rules_data.spezies import SPEZIES_DATEN
+        race_lower = character.race.lower()
+        for sname, sdata in SPEZIES_DATEN.items():
+            if sname.lower() == race_lower or sname.lower() in race_lower:
+                tp_bonus = sdata.get('tp_bonus', 0)
+                if tp_bonus:
+                    hp_increase += tp_bonus
+                break
+
+        character.max_hp += hp_increase
+        character.current_hp = character.max_hp
+    except (ValueError, IndexError):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            'Ungültiges Trefferwürfel-Format "%s" für Charakter %s (ID: %s)',
+            character.hit_dice, character.name, character.pk,
+        )
+
+def _append_new_features(character, new_features, new_subclass_features):
+    current_features = character.features or []
+    for feat in new_features:
+        current_features.append({
+            'stufe': character.level,
+            'name': feat['name'],
+            'beschreibung': feat['beschreibung'],
+        })
+    for feat in new_subclass_features:
+        current_features.append({
+            'stufe': character.level,
+            'unterklasse': True,
+            'name': feat['name'],
+            'beschreibung': feat['beschreibung'],
+        })
+    character.features = current_features
+
 @login_required
 def character_levelup(request, pk):
     """Stufenaufstieg durchführen."""
@@ -331,41 +385,13 @@ def character_levelup(request, pk):
     new_features = character.get_features_for_level(new_level)
 
     # Unterklassen-Features für die neue Stufe laden
-    new_subclass_features = []
-    if character.subclass:
-        klasse_data = character._get_klasse_data()
-        if klasse_data:
-            unterklassen = klasse_data.get('unterklassen', {})
-            for uk_name, uk_data in unterklassen.items():
-                if uk_name.lower() == character.subclass.lower() or uk_name == character.subclass:
-                    new_subclass_features = uk_data.get(new_level, [])
-                    break
+    new_subclass_features = _get_new_subclass_features(character, new_level)
 
     if request.method == 'POST':
         character.level = new_level
 
         # TP-Erhöhung: Durchschnitt des Trefferwürfels + KON-Modifikator
-        try:
-            hit_die_value = int(character.hit_dice.split('d')[1])
-            hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
-
-            # Spezies-spezifische TP-Boni
-            from .rules_data.spezies import SPEZIES_DATEN
-            race_lower = character.race.lower()
-            for sname, sdata in SPEZIES_DATEN.items():
-                if sname.lower() == race_lower or sname.lower() in race_lower:
-                    tp_bonus = sdata.get('tp_bonus', 0)
-                    if tp_bonus:
-                        hp_increase += tp_bonus
-                    break
-
-            character.max_hp += hp_increase
-            character.current_hp = character.max_hp
-        except (ValueError, IndexError):
-            logger.warning(
-                'Ungültiges Trefferwürfel-Format "%s" für Charakter %s (ID: %s)',
-                character.hit_dice, character.name, character.pk,
-            )
+        _apply_levelup_hp_increase(character)
 
         # Attributsverbesserung (ASI) prüfen
         asi_levels = _get_asi_levels(character.character_class)
@@ -373,22 +399,7 @@ def character_levelup(request, pk):
             character.available_stat_points += 2
 
         # Klassen-Features zur Feature-Liste hinzufügen
-        current_features = character.features or []
-        for feat in new_features:
-            current_features.append({
-                'stufe': character.level,
-                'name': feat['name'],
-                'beschreibung': feat['beschreibung'],
-            })
-        # Unterklassen-Features hinzufügen
-        for feat in new_subclass_features:
-            current_features.append({
-                'stufe': character.level,
-                'unterklasse': True,
-                'name': feat['name'],
-                'beschreibung': feat['beschreibung'],
-            })
-        character.features = current_features
+        _append_new_features(character, new_features, new_subclass_features)
 
         # Trefferwürfel-Anzahl aktualisieren
         character.hit_dice_total = character.level
