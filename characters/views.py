@@ -93,6 +93,49 @@ def _apply_background_bonuses(character):
         character.intelligence += 1
 
 
+
+def _assign_equipment(character, equipment_preference):
+    """Weist Startgold oder Standardausrüstung zu."""
+    if equipment_preference == 'gold':
+        character.gold = 100
+        character.equipment = 'Nichts (Startgold gewählt)'
+    else:
+        character.gold = 0
+        character.equipment = f'Standard-Ausrüstung für {character.character_class}'
+
+
+def _assign_stats(character):
+    """Weist das Standard-Array basierend auf der Klasse zu."""
+    class_config = _match_keywords(character.character_class, CLASS_CONFIGS)
+    if class_config:
+        stat_order, hit_die = class_config
+    else:
+        stat_order = list(ABILITY_NAMES)
+        hit_die = 'd8'
+
+    for attr, value in zip(stat_order, STANDARD_ARRAY):
+        setattr(character, attr, value)
+    character.hit_dice = f'1{hit_die}'
+    return hit_die
+
+
+def _calculate_hp(character, hit_die, tp_bonus=0):
+    """Berechnet die maximalen und aktuellen Trefferpunkte."""
+    try:
+        hit_die_value = int(hit_die.strip()[1:])
+    except (ValueError, IndexError):
+        hit_die_value = 8  # Fallback
+
+    con_mod = character._ability_modifier(character.constitution)
+    base_hp = hit_die_value + con_mod + tp_bonus
+    hp_per_level = (hit_die_value // 2) + 1 + con_mod + tp_bonus
+
+    if character.level > 1:
+        character.max_hp = base_hp + (hp_per_level * (character.level - 1))
+    else:
+        character.max_hp = base_hp
+    character.current_hp = character.max_hp
+
 def _apply_all_rules(character, hit_die):
     """Wendet alle regelbasierten Werte auf einen neuen Charakter an.
 
@@ -160,22 +203,8 @@ def _apply_all_rules(character, hit_die):
         character.max_experience = xp_thresholds.get(character.level + 1, 355000)
 
     # --- Trefferpunkte ---
-    hit_die_value = int(hit_die[1:])
-    con_mod = character._ability_modifier(character.constitution)
-    base_hp = hit_die_value + con_mod
-    hp_per_level = (hit_die_value // 2) + 1 + con_mod
-
-    # Völker-spezifische TP-Boni
     tp_bonus = spezies_data.get('tp_bonus', 0) if spezies_data else 0
-    if tp_bonus:
-        base_hp += tp_bonus
-        hp_per_level += tp_bonus
-
-    if character.level > 1:
-        character.max_hp = base_hp + (hp_per_level * (character.level - 1))
-    else:
-        character.max_hp = base_hp
-    character.current_hp = character.max_hp
+    _calculate_hp(character, hit_die, tp_bonus)
 
     # --- Rüstungsklasse (klassenspezifisch) ---
     character.armor_class = character.get_unarmored_ac()
@@ -258,24 +287,10 @@ def create_character(request):
             character.user = request.user
 
             # Ausrüstung oder Gold
-            if form.cleaned_data.get('equipment_preference') == 'gold':
-                character.gold = 100
-                character.equipment = 'Nichts (Startgold gewählt)'
-            else:
-                character.gold = 0
-                character.equipment = f'Standard-Ausrüstung für {character.character_class}'
+            _assign_equipment(character, form.cleaned_data.get('equipment_preference'))
 
             # Stat-Zuweisung basierend auf Klasse (Standard-Array)
-            class_config = _match_keywords(character.character_class, CLASS_CONFIGS)
-            if class_config:
-                stat_order, hit_die = class_config
-            else:
-                stat_order = list(ABILITY_NAMES)
-                hit_die = 'd8'
-
-            for attr, value in zip(stat_order, STANDARD_ARRAY):
-                setattr(character, attr, value)
-            character.hit_dice = f'1{hit_die}'
+            hit_die = _assign_stats(character)
 
             # Hintergrund-Boni
             _apply_background_bonuses(character)
@@ -646,28 +661,14 @@ def character_builder_submit(request):
         character.level = 1
 
     # Ausrüstung oder Gold
-    if data.get('equipment_preference') == 'gold':
-        character.gold = 100
-        character.equipment = 'Nichts (Startgold gewählt)'
-    else:
-        character.gold = 0
-        character.equipment = f'Standard-Ausrüstung für {character.character_class}'
+    _assign_equipment(character, data.get('equipment_preference'))
 
     # Bild (komprimiert auf max. 512×512 WebP)
     if 'image' in request.FILES:
         character.image = compress_character_image(request.FILES['image'])
 
     # Stat-Zuweisung basierend auf Klasse
-    class_config = _match_keywords(character.character_class, CLASS_CONFIGS)
-    if class_config:
-        stat_order, hit_die = class_config
-    else:
-        stat_order = list(ABILITY_NAMES)
-        hit_die = 'd8'
-
-    for attr, value in zip(stat_order, STANDARD_ARRAY):
-        setattr(character, attr, value)
-    character.hit_dice = f'1{hit_die}'
+    hit_die = _assign_stats(character)
 
     # Hintergrund-Boni
     _apply_background_bonuses(character)
