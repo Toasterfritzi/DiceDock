@@ -2,6 +2,7 @@ import json
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import Character
+from unittest.mock import patch
 
 class CharacterCreationTest(TestCase):
     def setUp(self):
@@ -201,6 +202,68 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.proficiency_bonus, 6)
         char.level = 30
         self.assertEqual(char.proficiency_bonus, 6)
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            'features': {
+                1: [{'name': 'Feature 1'}],
+                2: [{'name': 'Feature 2'}],
+            }
+        }
+    }, clear=True)
+    def test_get_features_for_level_found(self):
+        char = Character(user=self.user, name="Feature Test", character_class="Testklasse", level=2)
+
+        # Test level 1 features
+        features_l1 = char.get_features_for_level(1)
+        self.assertEqual(len(features_l1), 1)
+        self.assertEqual(features_l1[0]['name'], 'Feature 1')
+
+        # Test level 2 features
+        features_l2 = char.get_features_for_level(2)
+        self.assertEqual(len(features_l2), 1)
+        self.assertEqual(features_l2[0]['name'], 'Feature 2')
+
+        # Test non-existent level
+        features_l3 = char.get_features_for_level(3)
+        self.assertEqual(features_l3, [])
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            # No features defined
+        }
+    }, clear=True)
+    def test_get_features_for_level_no_features_defined(self):
+        char = Character(user=self.user, name="Feature Test", character_class="Testklasse", level=1)
+        features = char.get_features_for_level(1)
+        self.assertEqual(features, [])
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            'features': {
+                1: [{'name': 'Feature 1'}],
+            }
+        }
+    }, clear=True)
+    def test_get_features_for_level_unknown_class(self):
+        char = Character(user=self.user, name="Feature Test", character_class="UnknownClass", level=1)
+        features = char.get_features_for_level(1)
+        self.assertEqual(features, [])
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            'features': {
+                1: [{'name': 'Feature 1'}],
+            }
+        }
+    }, clear=True)
+    def test_get_features_for_level_case_insensitive_substring(self):
+        # Character class is a substring variation of 'Testklasse'
+        char = Character(user=self.user, name="Feature Test", character_class="Edler TESTKLASSE des Nordens", level=1)
+        features = char.get_features_for_level(1)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]['name'], 'Feature 1')
+
 
 from .views import _apply_background_bonuses
 from django.urls import reverse
