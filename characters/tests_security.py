@@ -17,8 +17,19 @@ class SettingsSecurityTest(TestCase):
         self.assertIn('render.com', dicedock_project.settings.ALLOWED_HOSTS)
         self.assertEqual(len(dicedock_project.settings.ALLOWED_HOSTS), 3)
 
+        # Test with spaces and trailing commas
+        os.environ['ALLOWED_HOSTS'] = '  example.com ,  test.com , '
+        importlib.reload(dicedock_project.settings)
+        self.assertIn('example.com', dicedock_project.settings.ALLOWED_HOSTS)
+        self.assertIn('test.com', dicedock_project.settings.ALLOWED_HOSTS)
+        self.assertIn('render.com', dicedock_project.settings.ALLOWED_HOSTS)
+        self.assertEqual(len(dicedock_project.settings.ALLOWED_HOSTS), 3)
+        self.assertNotIn('', dicedock_project.settings.ALLOWED_HOSTS)
+
         # Test empty
-        del os.environ['ALLOWED_HOSTS']
-        del os.environ['RENDER_EXTERNAL_HOSTNAME']
+        if 'ALLOWED_HOSTS' in os.environ:
+            del os.environ['ALLOWED_HOSTS']
+        if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+            del os.environ['RENDER_EXTERNAL_HOSTNAME']
         importlib.reload(dicedock_project.settings)
         self.assertEqual(dicedock_project.settings.ALLOWED_HOSTS, [])
