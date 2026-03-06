@@ -527,8 +527,17 @@
         characterData.equipment_preference = type;
         const eqPanel = document.getElementById('equip-panel-equipment');
         const gdPanel = document.getElementById('equip-panel-gold');
-        eqPanel.className = 'glass-panel p-8 rounded-2xl border-2 transition-all text-center hover:bg-white/5 ' + (type === 'equipment' ? 'equip-active' : 'equip-inactive');
-        gdPanel.className = 'glass-panel p-8 rounded-2xl border-2 transition-all text-center hover:bg-white/5 ' + (type === 'gold' ? 'equip-active-gold' : 'equip-inactive');
+        if (type === 'equipment') {
+            eqPanel.classList.add('equip-active');
+            eqPanel.classList.remove('equip-inactive');
+            gdPanel.classList.add('equip-inactive');
+            gdPanel.classList.remove('equip-active-gold');
+        } else {
+            gdPanel.classList.add('equip-active-gold');
+            gdPanel.classList.remove('equip-inactive');
+            eqPanel.classList.add('equip-inactive');
+            eqPanel.classList.remove('equip-active');
+        }
         document.getElementById('sum-equip').textContent = type === 'gold' ? 'Startgold' : 'Startausrüstung';
     }
 
