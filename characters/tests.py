@@ -264,6 +264,80 @@ class CharacterModelTest(TestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0]['name'], 'Feature 1')
 
+    @patch.dict('characters.rules_data.spezies.SPEZIES_DATEN', {
+        'Elf': {'merkmale': [{'name': 'Dunkelsicht'}, {'name': 'Feenblut'}]},
+        'Zwerg': {'merkmale': [{'name': 'Zwergenzähigkeit'}]},
+        'Drachenblütler': {'merkmale': [{'name': 'Odemwaffe'}]}
+    }, clear=True)
+    def test_get_species_traits_exact_match(self):
+        char = Character(user=self.user, race="Elf")
+        import characters.models
+        original_cache = getattr(characters.models, '_SPEZIES_DATEN_LOWER', None)
+        try:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = {
+                    'elf': {'merkmale': [{'name': 'Dunkelsicht'}, {'name': 'Feenblut'}]},
+                    'zwerg': {'merkmale': [{'name': 'Zwergenzähigkeit'}]},
+                    'drachenblütler': {'merkmale': [{'name': 'Odemwaffe'}]}
+                }
+            traits = char.get_species_traits()
+            self.assertEqual(len(traits), 2)
+            self.assertEqual(traits[0]['name'], 'Dunkelsicht')
+            self.assertEqual(traits[1]['name'], 'Feenblut')
+        finally:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = original_cache
+
+    @patch.dict('characters.rules_data.spezies.SPEZIES_DATEN', {
+        'Elf': {'merkmale': [{'name': 'Dunkelsicht'}]},
+    }, clear=True)
+    def test_get_species_traits_case_insensitive_match(self):
+        char = Character(user=self.user, race="eLf")
+        import characters.models
+        original_cache = getattr(characters.models, '_SPEZIES_DATEN_LOWER', None)
+        try:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = {'elf': {'merkmale': [{'name': 'Dunkelsicht'}]}}
+            traits = char.get_species_traits()
+            self.assertEqual(len(traits), 1)
+            self.assertEqual(traits[0]['name'], 'Dunkelsicht')
+        finally:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = original_cache
+
+    @patch.dict('characters.rules_data.spezies.SPEZIES_DATEN', {
+        'Elf': {'merkmale': [{'name': 'Dunkelsicht'}]},
+    }, clear=True)
+    def test_get_species_traits_substring_match(self):
+        char = Character(user=self.user, race="Waldelf")
+        import characters.models
+        original_cache = getattr(characters.models, '_SPEZIES_DATEN_LOWER', None)
+        try:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = {'elf': {'merkmale': [{'name': 'Dunkelsicht'}]}}
+            traits = char.get_species_traits()
+            self.assertEqual(len(traits), 1)
+            self.assertEqual(traits[0]['name'], 'Dunkelsicht')
+        finally:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = original_cache
+
+    @patch.dict('characters.rules_data.spezies.SPEZIES_DATEN', {
+        'Elf': {'merkmale': [{'name': 'Dunkelsicht'}]},
+    }, clear=True)
+    def test_get_species_traits_no_match(self):
+        char = Character(user=self.user, race="Ork")
+        import characters.models
+        original_cache = getattr(characters.models, '_SPEZIES_DATEN_LOWER', None)
+        try:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = {'elf': {'merkmale': [{'name': 'Dunkelsicht'}]}}
+            traits = char.get_species_traits()
+            self.assertTrue(traits == [] or traits is None)
+        finally:
+            if original_cache is not None:
+                characters.models._SPEZIES_DATEN_LOWER = original_cache
+
 
 from .views import _apply_background_bonuses
 from django.urls import reverse
