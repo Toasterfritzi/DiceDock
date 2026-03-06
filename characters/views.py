@@ -449,7 +449,6 @@ def update_character_stat(request, pk):
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
     try:
-        import json
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
         return JsonResponse(
@@ -692,7 +691,6 @@ def update_character_coin(request, pk):
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
     try:
-        import json
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
         return JsonResponse(
