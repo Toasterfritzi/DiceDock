@@ -7,9 +7,29 @@ from pathlib import Path
 
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+
+def _env_flag(name, default=False):
+    """Read a boolean-like environment variable safely."""
+    raw_value = os.environ.get(name)
+    if raw_value is None:
+        return default
+
+    return raw_value.strip().lower() in {'1', 'true', 't', 'yes', 'y', 'on'}
+
+
+def _env_list(name):
+    """Read a comma-separated environment variable and remove empty values."""
+    raw_value = os.environ.get(name, '')
+    if not raw_value:
+        return []
+
+    return [item.strip() for item in raw_value.split(',') if item.strip()]
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,12 +42,14 @@ if not SECRET_KEY:
     raise ImproperlyConfigured("The SECRET_KEY environment variable is not set")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = _env_flag('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = _env_list('ALLOWED_HOSTS')
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    allowed_host = RENDER_EXTERNAL_HOSTNAME.strip()
+    if allowed_host:
+        ALLOWED_HOSTS.append(allowed_host)
 
 
 # Application definition
