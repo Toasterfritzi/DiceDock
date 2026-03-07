@@ -11,6 +11,13 @@ from django.views.decorators.http import require_POST
 from .forms import CharacterForm, UserRegisterForm
 from .image_utils import compress_character_image
 from .models import Character
+from .rules_data.builder_beschreibungen import (HINTERGRUND_BESCHREIBUNGEN,
+                                                KLASSEN_BESCHREIBUNGEN,
+                                                UNTERKLASSEN_BESCHREIBUNGEN)
+from .rules_data.hintergruende import HINTERGRUND_DATEN
+from .rules_data.klassen import KLASSEN_DATEN
+from .rules_data.spezies import SPEZIES_DATEN
+from .rules_data.waffen import WAFFEN_DATEN, WAFFEN_MEISTERUNGEN
 
 logger = logging.getLogger(__name__)
 
@@ -141,9 +148,6 @@ def _apply_all_rules(character, hit_die):
 
     Muss nach Stat-Zuweisung und Hintergrund-Boni aufgerufen werden.
     """
-    from .rules_data.klassen import KLASSEN_DATEN
-    from .rules_data.hintergruende import HINTERGRUND_DATEN
-    from .rules_data.spezies import SPEZIES_DATEN
 
     # --- Klassen-Daten laden ---
     klasse_data = None
@@ -318,7 +322,6 @@ def character_detail(request, pk):
     """Charakterbogen anzeigen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    from .rules_data.waffen import WAFFEN_DATEN, WAFFEN_MEISTERUNGEN
     waffen_json = json.dumps(WAFFEN_DATEN, ensure_ascii=False)
     meisterung_json = json.dumps(WAFFEN_MEISTERUNGEN, ensure_ascii=False)
 
@@ -353,7 +356,6 @@ def _apply_levelup_hp_increase(character):
         hit_die_value = int(character.hit_dice.split('d')[1])
         hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
 
-        from .rules_data.spezies import SPEZIES_DATEN
         race_lower = character.race.lower()
         for sname, sdata in SPEZIES_DATEN.items():
             if sname.lower() == race_lower or sname.lower() in race_lower:
@@ -365,7 +367,6 @@ def _apply_levelup_hp_increase(character):
         character.max_hp += hp_increase
         character.current_hp = character.max_hp
     except (ValueError, IndexError):
-        import logging
         logger = logging.getLogger(__name__)
         logger.warning(
             'Ungültiges Trefferwürfel-Format "%s" für Charakter %s (ID: %s)',
@@ -449,7 +450,6 @@ def update_character_stat(request, pk):
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
     try:
-        import json
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
         return JsonResponse(
@@ -534,14 +534,6 @@ def update_character_stat(request, pk):
 @login_required
 def character_builder(request):
     """Interaktiver Charakter-Builder – liefert alle Regeldaten als JSON an das Template."""
-    from .rules_data.klassen import KLASSEN_DATEN
-    from .rules_data.hintergruende import HINTERGRUND_DATEN
-    from .rules_data.spezies import SPEZIES_DATEN
-    from .rules_data.builder_beschreibungen import (
-        KLASSEN_BESCHREIBUNGEN,
-        UNTERKLASSEN_BESCHREIBUNGEN,
-        HINTERGRUND_BESCHREIBUNGEN,
-    )
 
     # Klassen-Daten für das Frontend aufbereiten
     klassen_json = {}
@@ -692,7 +684,6 @@ def update_character_coin(request, pk):
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
     try:
-        import json
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
         return JsonResponse(
