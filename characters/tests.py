@@ -338,6 +338,34 @@ class CharacterModelTest(TestCase):
             if original_cache is not None:
                 characters.models._SPEZIES_DATEN_LOWER = original_cache
 
+    def test_spell_properties(self):
+        """Testet die Spellcasting-Properties has_spellcasting, spell_save_dc und spell_attack_bonus."""
+        char = Character.objects.create(
+            user=self.user,
+            name="Spellcaster Test",
+            race="Mensch",
+            character_class="Magier",
+            level=1,
+            intelligence=16  # int_mod = +3
+        )
+
+        # Magier hat has_spellcasting = True
+        self.assertTrue(char.has_spellcasting)
+
+        # prof_bonus für Level 1 = 2. spellcasting_ability_mod = 3
+        self.assertEqual(char.spellcasting_ability_mod, 3)
+        self.assertEqual(char.spell_save_dc, 8 + 2 + 3)
+        self.assertEqual(char.spell_attack_bonus, 2 + 3)
+
+        # Fighter hat has_spellcasting = False
+        char.character_class="Kämpfer"
+        char.save()
+
+        self.assertFalse(char.has_spellcasting)
+        self.assertEqual(char.spellcasting_ability_mod, 0)
+        self.assertEqual(char.spell_save_dc, 0)
+        self.assertEqual(char.spell_attack_bonus, 0)
+
 
 from .views import _apply_background_bonuses
 from django.urls import reverse

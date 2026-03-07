@@ -265,14 +265,17 @@ class Character(models.Model):
         return 10 + self.dexterity_mod
 
     @property
+    def has_spellcasting(self):
+        """Gibt zurück, ob der Charakter zaubern kann (hat ein Zauberattribut)."""
+        klasse = self._get_klasse_data()
+        return bool(klasse and klasse.get('zauberattribut'))
+
+    @property
     def spellcasting_ability_mod(self):
         """Gibt den Modifikator des Zauberattributs zurück."""
-        klasse = self._get_klasse_data()
-        if not klasse:
+        if not self.has_spellcasting:
             return 0
-        attr = klasse.get('zauberattribut')
-        if not attr:
-            return 0
+        attr = self._get_klasse_data().get('zauberattribut')
         mapping = {
             'charisma': self.charisma_mod,
             'wisdom': self.wisdom_mod,
@@ -283,19 +286,13 @@ class Character(models.Model):
     @property
     def spell_save_dc(self):
         """Zauber-SG = 8 + Übungsbonus + Zauberattribut-Mod."""
-        mod = self.spellcasting_ability_mod
-        if mod == 0:
-            klasse = self._get_klasse_data()
-            if not klasse or not klasse.get('zauberattribut'):
-                return 0
+        if not self.has_spellcasting:
+            return 0
         return 8 + self.proficiency_bonus + self.spellcasting_ability_mod
 
     @property
     def spell_attack_bonus(self):
         """Zauber-Angriffswurf = Übungsbonus + Zauberattribut-Mod."""
-        mod = self.spellcasting_ability_mod
-        if mod == 0:
-            klasse = self._get_klasse_data()
-            if not klasse or not klasse.get('zauberattribut'):
-                return 0
+        if not self.has_spellcasting:
+            return 0
         return self.proficiency_bonus + self.spellcasting_ability_mod
