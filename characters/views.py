@@ -78,6 +78,18 @@ def _match_keywords(text, keyword_table):
     return None
 
 
+
+def _parse_json_request(request):
+    """Parst den JSON-Body der Anfrage und gibt (data, error_response) zurück."""
+    try:
+        data = json.loads(request.body)
+        return data, None
+    except (json.JSONDecodeError, ValueError):
+        return None, JsonResponse(
+            {'success': False, 'error': 'Ungültige Anfragedaten.'},
+            status=400,
+        )
+
 def _apply_background_bonuses(character):
     """Wendet Hintergrund-Boni auf das Charakterobjekt an."""
     bonuses = _match_keywords(character.background, BACKGROUND_BONUSES)
@@ -449,13 +461,9 @@ def update_character_stat(request, pk):
     """AJAX-Endpunkt: Einzelnes Attribut erhöhen oder senken."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    try:
-        data = json.loads(request.body)
-    except (json.JSONDecodeError, ValueError):
-        return JsonResponse(
-            {'success': False, 'error': 'Ungültige Anfragedaten.'},
-            status=400,
-        )
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
 
     stat = data.get('stat')
     action = data.get('action')
@@ -683,13 +691,9 @@ def update_character_coin(request, pk):
     """AJAX-Endpunkt: Einzelnes Münz-Attribut erhöhen oder senken."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    try:
-        data = json.loads(request.body)
-    except (json.JSONDecodeError, ValueError):
-        return JsonResponse(
-            {'success': False, 'error': 'Ungültige Anfragedaten.'},
-            status=400,
-        )
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
 
     coin = data.get('coin')
     action = data.get('action')
@@ -732,10 +736,9 @@ def add_character_weapon(request, pk):
     """AJAX-Endpunkt: Waffe zum Charakter hinzufügen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    try:
-        data = json.loads(request.body)
-    except (json.JSONDecodeError, ValueError):
-        return JsonResponse({'success': False, 'error': 'Ungültige Anfragedaten.'}, status=400)
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
 
     weapon_name = data.get('name')
     weapon_type = data.get('type')
