@@ -636,3 +636,8 @@ ZAUBERLISTEN = {
         'Paladin', 'Waldläufer', 'Hexenmeister', 'Zauberer',
     ]
 }
+
+ZAUBER_OHNE_KLASSEN = {
+    name: {k: v for k, v in data.items() if k != 'klassen'}
+    for name, data in ZAUBER.items()
+}
