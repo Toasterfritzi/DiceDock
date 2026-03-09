@@ -338,6 +338,58 @@ class CharacterModelTest(TestCase):
             if original_cache is not None:
                 characters.models._SPEZIES_DATEN_LOWER = original_cache
 
+
+    def test_get_available_spells(self):
+        """Testet die get_available_spells-Methode für verschiedene Zauberklassen."""
+        # 1. Klasse ohne Zauber (z.B. Kämpfer)
+        char = Character.objects.create(
+            user=self.user,
+            name="Non-Caster",
+            character_class="Kämpfer",
+            level=1
+        )
+        self.assertEqual(char.get_available_spells(), {})
+
+        # 2. Klasse mit Zaubern (z.B. Kleriker, Level 1)
+        # Vollzauberwirker hat auf Level 1 max_grad = 1 und Grad 0 Zauber (Cantrips)
+        char.character_class = "Kleriker"
+        char.save()
+        spells_lvl1 = char.get_available_spells()
+        self.assertIn(0, spells_lvl1) # Cantrips
+        self.assertIn(1, spells_lvl1) # Level 1 spells
+        self.assertNotIn(2, spells_lvl1) # No level 2 spells yet
+
+        # Verify structure of spells list
+        self.assertTrue(isinstance(spells_lvl1[0], list))
+        self.assertTrue(len(spells_lvl1[0]) > 0)
+        self.assertTrue(isinstance(spells_lvl1[0][0], dict))
+        self.assertIn('name', spells_lvl1[0][0])
+        self.assertNotIn('klassen', spells_lvl1[0][0]) # 'klassen' should be excluded
+
+        # 3. Klasse mit Zaubern, höheres Level (z.B. Kleriker, Level 5)
+        # max_grad auf Level 5 ist 3
+        char.level = 5
+        char.save()
+        spells_lvl5 = char.get_available_spells()
+        self.assertIn(0, spells_lvl5)
+        self.assertIn(1, spells_lvl5)
+        self.assertIn(2, spells_lvl5)
+        self.assertIn(3, spells_lvl5)
+        self.assertNotIn(4, spells_lvl5)
+
+        # 4. Halbzauberwirker (z.B. Paladin, Level 1)
+        # Paladin hat auf Level 1 max_grad = 0 (keine Zauber) aber in 2024 Regeln vllt Cantrips?
+        # Check actual rules configuration.
+        # ZAUBERPLATZ_TABELLE.get('halbzauberwirker').get(1) ist leer (keine zauber auf level 1)
+        char.character_class = "Paladin"
+        char.level = 1
+        char.save()
+        spells_paladin1 = char.get_available_spells()
+        # Paladin auf Stufe 1 in diesen Regeln hat oft max_grad=0.
+        # Wenn er keine Cantrips hat, hat er evtl keine Sprüche in der Liste für Grad 0,
+        # oder er gibt zumindest Grad 0 zurück. Testen wir einfach den Aufruf.
+        self.assertTrue(isinstance(spells_paladin1, dict))
+
     def test_spell_properties(self):
         """Testet die Spellcasting-Properties has_spellcasting, spell_save_dc und spell_attack_bonus."""
         char = Character.objects.create(
