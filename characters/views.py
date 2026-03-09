@@ -156,12 +156,7 @@ def _calculate_hp(character, hit_die, tp_bonus=0):
         character.max_hp = base_hp
     character.current_hp = character.max_hp
 
-def _apply_all_rules(character, hit_die):
-    """Wendet alle regelbasierten Werte auf einen neuen Charakter an.
-
-    Muss nach Stat-Zuweisung und Hintergrund-Boni aufgerufen werden.
-    """
-
+def _apply_class_data(character):
     # --- Klassen-Daten laden ---
     klasse_data = None
     for k, v in KLASSEN_DATEN.items():
@@ -173,6 +168,8 @@ def _apply_all_rules(character, hit_die):
     if klasse_data:
         character.saving_throw_proficiencies = klasse_data.get('rettungswuerfe', [])
 
+
+def _apply_background_data(character):
     # --- Fertigkeits-Übungen aus Hintergrund ---
     bg_data = HINTERGRUND_DATEN.get(character.background)
     skill_profs = []
@@ -188,6 +185,8 @@ def _apply_all_rules(character, hit_die):
             character.tool_proficiencies = [werkzeug]
     character.skill_proficiencies = skill_profs
 
+
+def _apply_species_data(character):
     # --- Spezies-Daten: Geschwindigkeit & TP-Bonus ---
     spezies_data = None
     race_lower = character.race.lower()
@@ -206,6 +205,10 @@ def _apply_all_rules(character, hit_die):
     else:
         character.speed = 9.0
 
+    return spezies_data.get('tp_bonus', 0) if spezies_data else 0
+
+
+def _apply_experience_data(character):
     # --- XP-Schwellen ---
     xp_thresholds = {
         1: 0, 2: 300, 3: 900, 4: 2700, 5: 6500,
@@ -219,8 +222,9 @@ def _apply_all_rules(character, hit_die):
     else:
         character.max_experience = xp_thresholds.get(character.level + 1, 355000)
 
+
+def _apply_combat_and_magic_data(character, hit_die, tp_bonus):
     # --- Trefferpunkte ---
-    tp_bonus = spezies_data.get('tp_bonus', 0) if spezies_data else 0
     _calculate_hp(character, hit_die, tp_bonus)
 
     # --- Rüstungsklasse (klassenspezifisch) ---
@@ -241,6 +245,18 @@ def _apply_all_rules(character, hit_die):
         for s in spells:
             all_spell_names.append(s['name'])
     character.known_spells = all_spell_names
+
+
+def _apply_all_rules(character, hit_die):
+    """Wendet alle regelbasierten Werte auf einen neuen Charakter an.
+
+    Muss nach Stat-Zuweisung und Hintergrund-Boni aufgerufen werden.
+    """
+    _apply_class_data(character)
+    _apply_background_data(character)
+    tp_bonus = _apply_species_data(character)
+    _apply_experience_data(character)
+    _apply_combat_and_magic_data(character, hit_die, tp_bonus)
 
 
 
