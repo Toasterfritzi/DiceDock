@@ -1353,3 +1353,96 @@ class AddCharacterWeaponTest(TestCase):
         self.assertEqual(weapons[0]['typ'], "")
         self.assertEqual(weapons[0]['angriffsbonus'], "+0")
         self.assertEqual(weapons[0]['schaden'], "0")
+
+class CharacterBuilderSubmitTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='buildsubmituser', password='password123')
+        self.url = reverse('character_builder_submit')
+        self.client.login(username='buildsubmituser', password='password123')
+
+    def test_submit_unauthenticated(self):
+        self.client.logout()
+        response = self.client.post(self.url, data={'name': 'Test'})
+        self.assertRedirects(response, f'/login/?next={self.url}')
+
+    def test_submit_get_request(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)  # Method Not Allowed
+
+    def test_submit_success(self):
+        payload = {
+            'name': 'Gimli',
+            'character_class': 'Kämpfer',
+            'subclass': '',
+            'background': 'Soldat',
+            'race': 'Zwerg',
+            'level': '3',
+            'equipment_preference': 'gold'
+        }
+        response = self.client.post(self.url, data=payload)
+
+        # Should redirect to character detail
+        self.assertEqual(response.status_code, 302)
+
+        # Verify character was created
+        character = Character.objects.get(name='Gimli')
+        self.assertEqual(character.user, self.user)
+        self.assertEqual(character.character_class, 'Kämpfer')
+        self.assertEqual(character.race, 'Zwerg')
+        self.assertEqual(character.level, 3)
+        self.assertEqual(response.url, reverse('character_detail', kwargs={'pk': character.pk}))
+
+    def test_submit_invalid_level(self):
+        payload = {
+            'name': 'Legolas',
+            'level': 'invalid_level'
+        }
+        response = self.client.post(self.url, data=payload)
+        self.assertEqual(response.status_code, 302)
+
+        character = Character.objects.get(name='Legolas')
+        self.assertEqual(character.level, 1) # Fallback
+
+        # Test out of bounds
+        self.client.post(self.url, data={'name': 'Over 9000', 'level': '9000'})
+        character = Character.objects.get(name='Over 9000')
+        self.assertEqual(character.level, 20) # Max 20
+
+        self.client.post(self.url, data={'name': 'Negative', 'level': '-5'})
+        character = Character.objects.get(name='Negative')
+        self.assertEqual(character.level, 1) # Min 1
+
+    @patch('characters.views.compress_character_image')
+    def test_submit_with_image(self, mock_compress):
+        # Create a dummy image file
+        img = PILImage.new('RGB', (100, 100), color='blue')
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        buf.seek(0)
+        upload = SimpleUploadedFile('test.png', buf.read(), content_type='image/png')
+
+        mock_compress.return_value = 'compressed_image_path.webp'
+
+        payload = {
+            'name': 'Image Hero',
+            'image': upload
+        }
+        response = self.client.post(self.url, data=payload)
+        self.assertEqual(response.status_code, 302)
+
+        mock_compress.assert_called_once()
+        character = Character.objects.get(name='Image Hero')
+        self.assertEqual(character.image, 'compressed_image_path.webp')
+
+    def test_submit_missing_data(self):
+        # Empty POST request
+        response = self.client.post(self.url, data={})
+        self.assertEqual(response.status_code, 302)
+
+        # Should take the very first character created by this user
+        character = Character.objects.filter(user=self.user).last()
+        self.assertEqual(character.name, 'Unbenannt')
+        self.assertEqual(character.character_class, '')
+        self.assertEqual(character.race, 'Mensch')
+        self.assertEqual(character.level, 1)
