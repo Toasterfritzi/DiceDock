@@ -434,6 +434,45 @@ class CharacterModelTest(TestCase):
                 characters.models._SPEZIES_DATEN_LOWER = original_cache
 
 
+
+    def test_get_max_spell_grade(self):
+        """Testet get_max_spell_grade für verschiedene Klassen und Stufen."""
+        char = Character.objects.create(user=self.user, name="Spell Grade Test", character_class="Kämpfer", level=5)
+        # Kämpfer (ohne Unterklasse) hat keine Zauber
+        self.assertEqual(char.get_max_spell_grade(), 0)
+
+        # Magier Stufe 5 hat Grad 3 als Maximum
+        char.character_class = "Magier"
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 3)
+
+        # Magier Stufe 17 hat Grad 9
+        char.level = 17
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 9)
+
+        # Hexenmeister (Paktmagie) Stufe 5 hat Pakt_grad 3
+        char.character_class = "Hexenmeister"
+        char.level = 5
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 3)
+
+        # Hexenmeister Stufe 1 hat Pakt_grad 1
+        char.level = 1
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 1)
+
+        # Paladin Stufe 5 hat Grad 2
+        char.character_class = "Paladin"
+        char.level = 5
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 2)
+
+        # Paladin Stufe 1 hat Grad 0 (keine Slots) in den Basisregeln, oder leeres dict
+        char.level = 1
+        char.save()
+        self.assertEqual(char.get_max_spell_grade(), 0)
+
     def test_get_available_spells(self):
         """Testet die get_available_spells-Methode für verschiedene Zauberklassen."""
         # 1. Klasse ohne Zauber (z.B. Kämpfer)
