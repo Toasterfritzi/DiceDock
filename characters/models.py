@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .rules_data.spezies import SPEZIES_DATEN
-from .rules_data.zauber import ZAUBER, ZAUBERLISTEN
+from .rules_data.zauber import ZAUBER, ZAUBERLISTEN, ZAUBER_OHNE_KLASSEN
 from .rules_data.zauberplaetze import ZAUBERPLATZ_TABELLE
 
 _SPEZIES_DATEN_LOWER = {k.lower(): v for k, v in SPEZIES_DATEN.items()}
@@ -216,7 +216,7 @@ class Character(models.Model):
         for grad, namen in alle_zauber.items():
             if grad <= max_grad or grad == 0:
                 result[grad] = [
-                    {'name': n, **{k: v for k, v in ZAUBER[n].items() if k != 'klassen'}}
+                    {'name': n, **ZAUBER_OHNE_KLASSEN[n]}
                     for n in namen
                 ]
         return result
