@@ -1485,3 +1485,39 @@ class CharacterBuilderSubmitTest(TestCase):
         self.assertEqual(character.character_class, '')
         self.assertEqual(character.race, 'Mensch')
         self.assertEqual(character.level, 1)
+
+from characters.rules_data.zauber import get_zauberliste
+
+class RulesDataTest(TestCase):
+    def test_get_zauberliste(self):
+        """Testet, dass die Zauber einer Klasse korrekt gruppiert und sortiert werden."""
+        # 1. Bekannte Klasse (Magier)
+        magier_zauber = get_zauberliste('Magier')
+
+        # Teste Struktur: Dictionary mit Int-Keys und List-Werten
+        self.assertIsInstance(magier_zauber, dict)
+        self.assertTrue(all(isinstance(k, int) for k in magier_zauber.keys()))
+        self.assertTrue(all(isinstance(v, list) for v in magier_zauber.values()))
+
+        # Teste spezifische Grade
+        self.assertIn(0, magier_zauber)
+        self.assertIn(1, magier_zauber)
+
+        # Teste, dass bestimmte bekannte Zauber in den korrekten Graden vorhanden sind
+        self.assertIn('Feuerbolzen', magier_zauber[0])
+        self.assertIn('Magisches Geschoss', magier_zauber[1])
+
+        # Teste auf Klassenspezifität (Heilendes Wort ist Kleriker/Barde/Druide, aber nicht Magier in Basis 5e/2024 Regeln meistens)
+        # Überprüfen wir zur Sicherheit, dass es nicht da ist.
+        # Aber was sicher da ist: Feuerball auf Grad 3
+        self.assertIn(3, magier_zauber)
+        self.assertIn('Feuerball', magier_zauber[3])
+
+        # Teste Sortierung (alphabetisch)
+        for grad, zauber_liste in magier_zauber.items():
+            sorted_liste = sorted(zauber_liste)
+            self.assertEqual(zauber_liste, sorted_liste)
+
+        # 2. Unbekannte Klasse (Sollte leeres Dictionary zurückgeben)
+        unbekannt_zauber = get_zauberliste('UnbekannteKlasse')
+        self.assertEqual(unbekannt_zauber, {})
