@@ -264,6 +264,66 @@ class CharacterModelTest(TestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0]['name'], 'Feature 1')
 
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            'features': {
+                1: [{'name': 'Feature 1'}],
+                2: [{'name': 'Feature 2'}],
+            },
+            'unterklassen': {
+                'TestUnterklasse': {
+                    1: [{'name': 'UK Feature 1'}],
+                    2: [{'name': 'UK Feature 2'}],
+                }
+            }
+        }
+    }, clear=True)
+    def test_get_all_features_up_to_level_with_subclass(self):
+        char = Character(user=self.user, name="All Features Test", character_class="Testklasse", subclass="TestUnterklasse", level=2)
+        features = char.get_all_features_up_to_level()
+        self.assertEqual(len(features), 4)
+
+        # Verify specific feature attributes
+        feature_names = [f['name'] for f in features]
+        self.assertIn('Feature 1', feature_names)
+        self.assertIn('Feature 2', feature_names)
+        self.assertIn('UK Feature 1', feature_names)
+        self.assertIn('UK Feature 2', feature_names)
+
+        # Verify 'stufe' and 'unterklasse' fields
+        uk_feature_1 = next(f for f in features if f['name'] == 'UK Feature 1')
+        self.assertEqual(uk_feature_1['stufe'], 1)
+        self.assertTrue(uk_feature_1.get('unterklasse'))
+
+        class_feature_2 = next(f for f in features if f['name'] == 'Feature 2')
+        self.assertEqual(class_feature_2['stufe'], 2)
+        self.assertNotIn('unterklasse', class_feature_2)
+
+    @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
+        'Testklasse': {
+            'features': {
+                1: [{'name': 'Feature 1'}],
+                2: [{'name': 'Feature 2'}],
+                3: [{'name': 'Feature 3'}],
+            }
+        }
+    }, clear=True)
+    def test_get_all_features_up_to_level_no_subclass(self):
+        char = Character(user=self.user, name="All Features Test", character_class="Testklasse", level=2)
+        features = char.get_all_features_up_to_level()
+
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0]['name'], 'Feature 1')
+        self.assertEqual(features[0]['stufe'], 1)
+        self.assertEqual(features[1]['name'], 'Feature 2')
+        self.assertEqual(features[1]['stufe'], 2)
+
+    def test_get_all_features_up_to_level_unknown_class(self):
+        char = Character(user=self.user, name="All Features Test", character_class="UnknownClass", level=1)
+        features = char.get_all_features_up_to_level()
+        self.assertEqual(features, [])
+
     @patch.dict('characters.rules_data.spezies.SPEZIES_DATEN', {
         'Elf': {'merkmale': [{'name': 'Dunkelsicht'}, {'name': 'Feenblut'}]},
         'Zwerg': {'merkmale': [{'name': 'Zwergenzähigkeit'}]},
