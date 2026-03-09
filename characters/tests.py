@@ -203,6 +203,41 @@ class CharacterModelTest(TestCase):
         char.level = 30
         self.assertEqual(char.proficiency_bonus, 6)
 
+
+    @patch.dict('characters.models.ZAUBER', {
+        'Feuerball': {'grad': 3, 'schule': 'Hervorrufung', 'beschreibung': 'Ein heller Feuerball.'},
+        'Unsichtbarkeit': {'grad': 2, 'schule': 'Illusion', 'beschreibung': 'Du wirst unsichtbar.'},
+        'Magisches Geschoss': {'grad': 1, 'schule': 'Hervorrufung', 'beschreibung': 'Zielsichere magische Pfeile.'},
+        'Brennende Hände': {'grad': 1, 'schule': 'Hervorrufung', 'beschreibung': 'Ein Kegel aus Feuer.'}
+    }, clear=True)
+    def test_get_known_spells_detail(self):
+        char = Character(
+            user=self.user,
+            name="Spell Test Character",
+            known_spells=['Feuerball', 'Unsichtbarkeit', 'Unbekannter Zauber', 'Magisches Geschoss', 'Brennende Hände']
+        )
+
+        details = char.get_known_spells_detail()
+
+        # Unbekannter Zauber should be ignored.
+        # We should have groups for grad 1, 2, and 3.
+        self.assertIn(1, details)
+        self.assertIn(2, details)
+        self.assertIn(3, details)
+
+        # Test grad 1 sorting (Brennende Hände before Magisches Geschoss)
+        self.assertEqual(len(details[1]), 2)
+        self.assertEqual(details[1][0]['name'], 'Brennende Hände')
+        self.assertEqual(details[1][1]['name'], 'Magisches Geschoss')
+
+        # Test grad 2
+        self.assertEqual(len(details[2]), 1)
+        self.assertEqual(details[2][0]['name'], 'Unsichtbarkeit')
+
+        # Test grad 3
+        self.assertEqual(len(details[3]), 1)
+        self.assertEqual(details[3][0]['name'], 'Feuerball')
+
     @patch.dict('characters.rules_data.klassen.KLASSEN_DATEN', {
         'Testklasse': {
             'features': {
