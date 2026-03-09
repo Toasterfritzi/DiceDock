@@ -419,8 +419,53 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.spell_attack_bonus, 0)
 
 
+    def test_get_unarmored_ac(self):
+        # Base setup: Dex 14 (+2), Con 16 (+3), Wis 12 (+1), Cha 18 (+4)
+        char = Character(
+            user=self.user,
+            name="AC Test",
+            level=1,
+            dexterity=14,
+            constitution=16,
+            wisdom=12,
+            charisma=18
+        )
+
+        # Default (Kämpfer / Fighter)
+        char.character_class = "Kämpfer"
+        self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex)
+
+        # Barbar
+        char.character_class = "Barbar"
+        self.assertEqual(char.get_unarmored_ac(), 15)  # 10 + 2 (Dex) + 3 (Con)
+
+        # Mönch
+        char.character_class = "Mönch"
+        self.assertEqual(char.get_unarmored_ac(), 13)  # 10 + 2 (Dex) + 1 (Wis)
+
+        # Zauberer Drachenblut-Linie
+        char.character_class = "Zauberer"
+        char.subclass = "Drachenblut-Linie"
+        char.level = 3
+        self.assertEqual(char.get_unarmored_ac(), 15)  # 13 + 2 (Dex)
+
+        char.level = 2
+        self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex) (Level too low)
+
+        # Barde Schule des Tanzes
+        char.character_class = "Barde"
+        char.subclass = "Schule des Tanzes"
+        char.level = 3
+        self.assertEqual(char.get_unarmored_ac(), 16)  # 10 + 2 (Dex) + 4 (Cha)
+
+        char.level = 2
+        self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex) (Level too low)
+
+
 from .views import _apply_background_bonuses
 from django.urls import reverse
+
+
 
 class DashboardViewTest(TestCase):
     def setUp(self):
