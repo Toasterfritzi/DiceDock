@@ -1,3 +1,4 @@
+import functools
 import json
 import logging
 
@@ -539,10 +540,9 @@ def update_character_stat(request, pk):
 # Charakter-Builder (Wizard)
 # ---------------------------------------------------------------------------
 
-@login_required
-def character_builder(request):
-    """Interaktiver Charakter-Builder – liefert alle Regeldaten als JSON an das Template."""
-
+@functools.lru_cache(maxsize=1)
+def _get_builder_json_data():
+    """Cached static JSON data for character builder."""
     # Klassen-Daten für das Frontend aufbereiten
     klassen_json = {}
     for name, data in KLASSEN_DATEN.items():
@@ -626,11 +626,16 @@ def character_builder(request):
             'abstammungen': abstammungen,
         }
 
-    context = {
+    return {
         'klassen_json': json.dumps(klassen_json, ensure_ascii=False),
         'hintergruende_json': json.dumps(hintergruende_json, ensure_ascii=False),
         'spezies_json': json.dumps(spezies_json, ensure_ascii=False),
     }
+
+@login_required
+def character_builder(request):
+    """Interaktiver Charakter-Builder – liefert alle Regeldaten als JSON an das Template."""
+    context = _get_builder_json_data()
     return render(request, 'characters/character_builder.html', context)
 
 
