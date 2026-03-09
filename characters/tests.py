@@ -1250,3 +1250,106 @@ class CharacterBuilderViewTest(TestCase):
             self.assertTrue(len(spezies) > 0)
         except json.JSONDecodeError:
             self.fail("spezies_json is not valid JSON")
+
+class AddCharacterWeaponTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='weapontester', password='password123')
+        self.other_user = User.objects.create_user(username='otheruser', password='password123')
+        self.character = Character.objects.create(
+            user=self.user,
+            name="Test Weapon Hero",
+            character_class="Kämpfer",
+            race="Mensch",
+            level=1
+        )
+        self.url = reverse('add_character_weapon', kwargs={'pk': self.character.pk})
+        self.client.login(username='weapontester', password='password123')
+
+    def test_add_weapon_unauthenticated(self):
+        self.client.logout()
+        response = self.client.post(
+            self.url,
+            data='{"name": "Schwert"}',
+            content_type='application/json'
+        )
+        self.assertRedirects(response, f'/login/?next={self.url}')
+
+    def test_add_weapon_other_user(self):
+        self.client.logout()
+        self.client.login(username='otheruser', password='password123')
+        response = self.client.post(
+            self.url,
+            data='{"name": "Schwert"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_weapon_get_request(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_add_weapon_invalid_json(self):
+        response = self.client.post(
+            self.url,
+            data='invalid json',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Ungültige Anfragedaten.')
+
+    def test_add_weapon_missing_name(self):
+        response = self.client.post(
+            self.url,
+            data='{"type": "Nahkampf"}',
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Waffenname fehlt.')
+
+    def test_add_weapon_success(self):
+        payload = {
+            "name": "Langschwert",
+            "type": "Nahkampf-Kriegswaffe",
+            "hit": "+5",
+            "damage": "1d8+3"
+        }
+        response = self.client.post(
+            self.url,
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+
+        self.character.refresh_from_db()
+        weapons = self.character.weapons
+        self.assertEqual(len(weapons), 1)
+        self.assertEqual(weapons[0]['name'], "Langschwert")
+        self.assertEqual(weapons[0]['typ'], "Nahkampf-Kriegswaffe")
+        self.assertEqual(weapons[0]['angriffsbonus'], "+5")
+        self.assertEqual(weapons[0]['schaden'], "1d8+3")
+
+    def test_add_weapon_default_values(self):
+        payload = {"name": "Dolch"}
+        response = self.client.post(
+            self.url,
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+
+        self.character.refresh_from_db()
+        weapons = self.character.weapons
+        self.assertEqual(len(weapons), 1)
+        self.assertEqual(weapons[0]['name'], "Dolch")
+        self.assertEqual(weapons[0]['typ'], "")
+        self.assertEqual(weapons[0]['angriffsbonus'], "+0")
+        self.assertEqual(weapons[0]['schaden'], "0")
