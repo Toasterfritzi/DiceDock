@@ -1250,3 +1250,68 @@ class CharacterBuilderViewTest(TestCase):
             self.assertTrue(len(spezies) > 0)
         except json.JSONDecodeError:
             self.fail("spezies_json is not valid JSON")
+
+class CharacterBuilderSubmitTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='submittestuser', password='password123')
+        self.url = reverse('character_builder_submit')
+        self.client.login(username='submittestuser', password='password123')
+
+    def test_access_logged_out(self):
+        self.client.logout()
+        response = self.client.post(self.url, data={}, secure=True)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('login')))
+
+    def test_get_request_not_allowed(self):
+        response = self.client.get(self.url, secure=True)
+        self.assertEqual(response.status_code, 405)
+
+    def test_successful_submit_minimal_data(self):
+        data = {
+            'name': 'TestChar',
+            'character_class': 'Kämpfer',
+            'level': '1'
+        }
+        response = self.client.post(self.url, data=data, secure=True)
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(Character.objects.count(), 1)
+        char = Character.objects.first()
+        self.assertEqual(char.name, 'TestChar')
+        self.assertEqual(char.character_class, 'Kämpfer')
+        self.assertEqual(char.level, 1)
+        self.assertTrue(response.url.endswith(reverse('character_detail', args=[char.pk])))
+
+    def test_submit_with_invalid_level(self):
+        data = {
+            'name': 'TestChar',
+            'character_class': 'Kämpfer',
+            'level': 'invalid'
+        }
+        response = self.client.post(self.url, data=data, secure=True)
+
+        self.assertEqual(Character.objects.count(), 1)
+        char = Character.objects.first()
+        self.assertEqual(char.level, 1)
+
+    @patch('characters.views.compress_character_image')
+    def test_submit_with_image(self, mock_compress):
+        mock_compress.return_value = 'mocked_image.webp'
+
+        img_io = io.BytesIO(b'fake_image_data')
+        img_file = SimpleUploadedFile('test.jpg', img_io.getvalue(), content_type='image/jpeg')
+
+        data = {
+            'name': 'ImageChar',
+            'character_class': 'Kämpfer',
+            'image': img_file,
+            'level': '1'
+        }
+        response = self.client.post(self.url, data=data, secure=True)
+
+        char = Character.objects.first()
+        mock_compress.assert_called_once()
+        self.assertEqual(char.image, 'mocked_image.webp')
