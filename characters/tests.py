@@ -1205,3 +1205,48 @@ class ImageCompressionTest(TestCase):
         img = PILImage.open(io.BytesIO(result.read()))
         self.assertEqual(img.width, 512)
         self.assertEqual(img.height, 256)
+
+class CharacterBuilderViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='buildertestuser', password='password123')
+        self.url = reverse('character_builder')
+
+    def test_character_builder_access_logged_out(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('login')))
+
+    def test_character_builder_access_logged_in(self):
+        self.client.login(username='buildertestuser', password='password123')
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/character_builder.html')
+
+        # Check if the JSON strings are in the context
+        self.assertIn('klassen_json', response.context)
+        self.assertIn('hintergruende_json', response.context)
+        self.assertIn('spezies_json', response.context)
+
+        # Verify that they are valid JSON
+        try:
+            klassen = json.loads(response.context['klassen_json'])
+            self.assertIsInstance(klassen, dict)
+            self.assertTrue(len(klassen) > 0)
+        except json.JSONDecodeError:
+            self.fail("klassen_json is not valid JSON")
+
+        try:
+            hintergruende = json.loads(response.context['hintergruende_json'])
+            self.assertIsInstance(hintergruende, dict)
+            self.assertTrue(len(hintergruende) > 0)
+        except json.JSONDecodeError:
+            self.fail("hintergruende_json is not valid JSON")
+
+        try:
+            spezies = json.loads(response.context['spezies_json'])
+            self.assertIsInstance(spezies, dict)
+            self.assertTrue(len(spezies) > 0)
+        except json.JSONDecodeError:
+            self.fail("spezies_json is not valid JSON")
