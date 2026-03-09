@@ -124,11 +124,19 @@ class Character(models.Model):
         return 2
 
     def _get_klasse_data(self):
+        if getattr(self, '_klasse_class_cache', None) == self.character_class:
+            return self._klasse_data_cache
+
         from .rules_data.klassen import KLASSEN_DATEN
+        result = None
         for k in KLASSEN_DATEN:
             if k.lower() in self.character_class.lower():
-                return KLASSEN_DATEN[k]
-        return None
+                result = KLASSEN_DATEN[k]
+                break
+
+        self._klasse_class_cache = self.character_class
+        self._klasse_data_cache = result
+        return result
 
     def get_features_for_level(self, level):
         """Gibt alle Klassen-Features für eine bestimmte Stufe zurück."""
