@@ -1521,3 +1521,53 @@ class RulesDataTest(TestCase):
         # 2. Unbekannte Klasse (Sollte leeres Dictionary zurückgeben)
         unbekannt_zauber = get_zauberliste('UnbekannteKlasse')
         self.assertEqual(unbekannt_zauber, {})
+
+from .views import _calculate_hp
+
+class CalculateHPTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='hptestuser', password='password123')
+        self.char = Character.objects.create(
+            user=self.user,
+            name="HP Test Hero",
+            constitution=14,  # +2 mod
+            level=1
+        )
+
+    def test_calculate_hp_valid_hit_die(self):
+        _calculate_hp(self.char, 'd10', tp_bonus=0)
+        # 10 + 2 (con mod) = 12
+        self.assertEqual(self.char.max_hp, 12)
+        self.assertEqual(self.char.current_hp, 12)
+
+        self.char.level = 2
+        _calculate_hp(self.char, 'd10', tp_bonus=0)
+        # base_hp = 10 + 2 = 12
+        # hp_per_level = (10 // 2) + 1 + 2 = 8
+        # max_hp = 12 + 8 * 1 = 20
+        self.assertEqual(self.char.max_hp, 20)
+        self.assertEqual(self.char.current_hp, 20)
+
+    def test_calculate_hp_invalid_hit_die_fallback(self):
+        # tests ValueError exception
+        _calculate_hp(self.char, 'invalid', tp_bonus=0)
+        # Fallback to hit_die_value = 8
+        # base_hp = 8 + 2 (con mod) = 10
+        self.assertEqual(self.char.max_hp, 10)
+        self.assertEqual(self.char.current_hp, 10)
+
+        self.char.level = 2
+        _calculate_hp(self.char, 'invalid', tp_bonus=0)
+        # base_hp = 8 + 2 = 10
+        # hp_per_level = (8 // 2) + 1 + 2 = 7
+        # max_hp = 10 + 7 * 1 = 17
+        self.assertEqual(self.char.max_hp, 17)
+        self.assertEqual(self.char.current_hp, 17)
+
+    def test_calculate_hp_empty_hit_die_fallback(self):
+        # tests IndexError exception (''.strip()[1:])
+        _calculate_hp(self.char, '', tp_bonus=0)
+        # Fallback to hit_die_value = 8
+        # base_hp = 8 + 2 (con mod) = 10
+        self.assertEqual(self.char.max_hp, 10)
+        self.assertEqual(self.char.current_hp, 10)
