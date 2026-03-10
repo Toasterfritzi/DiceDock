@@ -29,3 +29,9 @@ page_*.png
 extract_pages.py
 cookies.txt
 .coverage
+D-D spielregeln/
+extracted_tesseract/
+extract_*.py
+tmp_*.py
+full_rules_pymupdf.md
+zauber_regeln.md
