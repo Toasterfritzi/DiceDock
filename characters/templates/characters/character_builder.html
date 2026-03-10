@@ -246,10 +246,13 @@
 {% endblock %}
 
 {% block extra_scripts %}
+{{ klassen_json|json_script:"klassen-data" }}
+{{ hintergruende_json|json_script:"hintergruende-data" }}
+{{ spezies_json|json_script:"spezies-data" }}
 <script>
-    const KLASSEN = {{ klassen_json| safe }};
-    const HINTERGRUENDE = {{ hintergruende_json| safe }};
-    const SPEZIES = {{ spezies_json| safe }};
+    const KLASSEN = JSON.parse(document.getElementById("klassen-data").textContent);
+    const HINTERGRUENDE = JSON.parse(document.getElementById("hintergruende-data").textContent);
+    const SPEZIES = JSON.parse(document.getElementById("spezies-data").textContent);
 
     const STEP_TITLES = ['Klasse wählen', 'Unterklasse wählen', 'Hintergrund wählen', 'Volk wählen', 'Ausrüstung wählen', 'Details & Abschluss'];
     const TOTAL_STEPS = 6;
