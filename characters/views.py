@@ -380,10 +380,13 @@ def _get_new_subclass_features(character, new_level):
                     break
     return new_subclass_features
 
-def _apply_levelup_hp_increase(character):
+def _apply_levelup_hp_increase(character, rolled_hp=None):
     try:
         hit_die_value = int(character.hit_dice.split('d')[1])
-        hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
+        if rolled_hp is not None:
+            hp_increase = rolled_hp + character.constitution_mod
+        else:
+            hp_increase = (hit_die_value // 2) + 1 + character.constitution_mod
 
         race_lower = character.race.lower()
         for sname, sdata in SPEZIES_DATEN.items():
@@ -432,11 +435,21 @@ def character_levelup(request, pk):
     # Unterklassen-Features für die neue Stufe laden
     new_subclass_features = _get_new_subclass_features(character, new_level)
 
+    try:
+        hit_die_value = int(character.hit_dice.split('d')[1])
+    except (ValueError, IndexError):
+        hit_die_value = 0
+
     if request.method == 'POST':
         character.level = new_level
 
-        # TP-Erhöhung: Durchschnitt des Trefferwürfels + KON-Modifikator
-        _apply_levelup_hp_increase(character)
+        rolled_hp_str = request.POST.get('rolled_hp')
+        rolled_hp = None
+        if rolled_hp_str and rolled_hp_str.isdigit():
+            rolled_hp = int(rolled_hp_str)
+
+        # TP-Erhöhung: Eingegebener Wert oder Durchschnitt des Trefferwürfels + KON-Modifikator
+        _apply_levelup_hp_increase(character, rolled_hp)
 
         # Attributsverbesserung (ASI) prüfen
         asi_levels = _get_asi_levels(character.character_class)
@@ -469,6 +482,7 @@ def character_levelup(request, pk):
         'new_level': new_level,
         'new_features': new_features,
         'new_subclass_features': new_subclass_features,
+        'hit_die_value': hit_die_value,
     })
 
 

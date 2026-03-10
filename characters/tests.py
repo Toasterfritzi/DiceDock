@@ -1046,6 +1046,15 @@ class CharacterLevelupTest(TestCase):
         self.assertEqual(self.character.current_hp, 20)
         self.assertEqual(self.character.hit_dice_total, 2)
 
+    def test_levelup_post_with_rolled_hp(self):
+        response = self.client.post(self.url, data={'rolled_hp': '8'})
+        self.assertRedirects(response, reverse('character_detail', args=[self.character.pk]))
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.level, 2)
+        # hit_dice='1d10', con=14(+2). hp_increase = 8 + 2 = 10
+        self.assertEqual(self.character.max_hp, 22)
+        self.assertEqual(self.character.current_hp, 22)
+
     def test_levelup_dwarf_hp_bonus(self):
         dwarf_char = Character.objects.create(
             user=self.user,
