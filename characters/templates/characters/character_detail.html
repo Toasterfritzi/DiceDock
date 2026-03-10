@@ -36,14 +36,12 @@
                 <div class="min-w-0">
                     <h1
                         class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight text-glow-purple mb-1 truncate">
-                        {{
-                        character.name }}</h1>
+                        {{ character.name }}</h1>
                     <div
                         class="flex items-center gap-2 md:gap-3 text-gray-300 text-xs sm:text-sm md:text-base font-light flex-wrap">
                         <span
                             class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-purple-300 whitespace-nowrap">Stufe
-                            {{
-                            character.level }}</span>
+                            {{ character.level }}</span>
                         <span class="text-gray-500">•</span>
                         <span class="truncate">{{ character.race }} {{ character.character_class }}</span>
                         <span class="text-gray-500">•</span>
@@ -59,8 +57,7 @@
                             style="width: {% widthratio character.experience character.max_experience 100 %}%">
                         </div>
                     </div>
-                    <span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{
-                        character.max_experience }} EP</span>
+                    <span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{ character.max_experience }} EP</span>
                 </div>
                 <a href="{% url 'character_levelup' character.pk %}"
                     class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg font-bold shadow-[0_0_15px_#a855f766] transition-all hover:scale-105 hover:shadow-[0_0_25px_#a855f799]">
@@ -95,8 +92,7 @@
                         <span id="stat-mod-strength" class="text-lg font-bold text-white">
                             {% if character.strength_mod >= 0 %}+{% endif %}{{ character.strength_mod }}
                         </span>
-                        <span id="stat-score-strength" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.strength }}</span>
+                        <span id="stat-score-strength" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.strength }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-red-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -116,8 +112,7 @@
                         <span id="stat-mod-dexterity" class="text-lg font-bold text-white">
                             {% if character.dexterity_mod >= 0 %}+{% endif %}{{ character.dexterity_mod }}
                         </span>
-                        <span id="stat-score-dexterity" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.dexterity }}</span>
+                        <span id="stat-score-dexterity" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.dexterity }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-green-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -137,8 +132,7 @@
                         <span id="stat-mod-constitution" class="text-lg font-bold text-white">
                             {% if character.constitution_mod >= 0 %}+{% endif %}{{ character.constitution_mod }}
                         </span>
-                        <span id="stat-score-constitution" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.constitution }}</span>
+                        <span id="stat-score-constitution" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.constitution }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-orange-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -158,8 +152,7 @@
                         <span id="stat-mod-intelligence" class="text-lg font-bold text-white">
                             {% if character.intelligence_mod >= 0 %}+{% endif %}{{ character.intelligence_mod }}
                         </span>
-                        <span id="stat-score-intelligence" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.intelligence }}</span>
+                        <span id="stat-score-intelligence" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.intelligence }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-blue-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -179,8 +172,7 @@
                         <span id="stat-mod-wisdom" class="text-lg font-bold text-white">
                             {% if character.wisdom_mod >= 0 %}+{% endif %}{{ character.wisdom_mod }}
                         </span>
-                        <span id="stat-score-wisdom" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.wisdom }}</span>
+                        <span id="stat-score-wisdom" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.wisdom }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-teal-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -200,8 +192,7 @@
                         <span id="stat-mod-charisma" class="text-lg font-bold text-white">
                             {% if character.charisma_mod >= 0 %}+{% endif %}{{ character.charisma_mod }}
                         </span>
-                        <span id="stat-score-charisma" class="text-[10px] text-gray-500 font-mono block">WERT {{
-                            character.charisma }}</span>
+                        <span id="stat-score-charisma" class="text-[10px] text-gray-500 font-mono block">WERT {{ character.charisma }}</span>
                     </div>
                     <div
                         class="absolute inset-0 border border-purple-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -214,8 +205,7 @@
                 </h3>
                 <div class="flex flex-wrap gap-2">
                     {% for prof in character.proficiencies %}
-                    <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300 border border-white/10">{{ prof
-                        }}</span>
+                    <span class="px-2 py-1 rounded bg-white/5 text-xs text-gray-300 border border-white/10">{{ prof }}</span>
                     {% empty %}
                     <span class="text-xs text-gray-500 italic">Keine Übungen vorhanden.</span>
                     {% endfor %}
@@ -232,8 +222,7 @@
                     <div class="p-2 rounded-lg bg-white/5 border border-white/5">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-purple-300">{{ feature.name }}</span>
-                            <span class="text-[10px] text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">St. {{
-                                feature.stufe }}</span>
+                            <span class="text-[10px] text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">St. {{ feature.stufe }}</span>
                         </div>
                         <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">{{ feature.beschreibung }}</p>
                     </div>
@@ -272,8 +261,7 @@
                             class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-2 group-hover:border-blue-500/50 group-hover:shadow-neon-blue transition-all flex-shrink-0">
                             <span class="material-symbols-outlined text-xl md:text-3xl text-blue-400">shield</span>
                         </div>
-                        <span id="base-ac" class="text-2xl md:text-3xl font-bold text-white text-glow-blue">{{
-                            character.armor_class }}</span>
+                        <span id="base-ac" class="text-2xl md:text-3xl font-bold text-white text-glow-blue">{{ character.armor_class }}</span>
                         <span
                             class="text-[9px] md:text-xs uppercase tracking-widest text-gray-500 font-bold text-center leading-tight">R&shy;üstungs&shy;klasse</span>
                     </div>
@@ -293,10 +281,8 @@
                             <div class="text-center">
                                 <div id="base-current-hp"
                                     class="text-2xl md:text-4xl font-black text-white text-glow-green tracking-tighter">
-                                    {{
-                                    character.current_hp }}</div>
-                                <div id="base-max-hp" class="text-[10px] md:text-xs text-gray-400">/ {{ character.max_hp
-                                    }} TP</div>
+                                    {{ character.current_hp }}</div>
+                                <div id="base-max-hp" class="text-[10px] md:text-xs text-gray-400">/ {{ character.max_hp }} TP</div>
                             </div>
                         </div>
                         <span
@@ -309,8 +295,7 @@
                             <span
                                 class="material-symbols-outlined text-xl md:text-3xl text-cyan-400">directions_run</span>
                         </div>
-                        <span class="text-2xl md:text-3xl font-bold text-white text-glow-cyan">{{ character.speed
-                            }}</span>
+                        <span class="text-2xl md:text-3xl font-bold text-white text-glow-cyan">{{ character.speed }}</span>
                         <span
                             class="text-[9px] md:text-xs uppercase tracking-widest text-gray-500 font-bold text-center leading-tight">Bewegung
                             (m)</span>
@@ -359,8 +344,7 @@
                                 <span class="material-symbols-outlined">colorize</span>
                             </div>
                             <div>
-                                <div class="font-bold text-white group-hover:text-purple-300 transition-colors">{{
-                                    weapon.name }}</div>
+                                <div class="font-bold text-white group-hover:text-purple-300 transition-colors">{{ weapon.name }}</div>
                                 <div class="flex items-center gap-2">
                                     <div class="text-[10px] text-gray-500 uppercase">{{ weapon.type }}</div>
                                     {% if weapon.meisterung %}
@@ -458,8 +442,7 @@
                             class="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all cursor-pointer list-none">
                             <div class="flex items-center gap-2">
                                 <span
-                                    class="text-sm font-medium text-white group-hover/spell:text-blue-300 transition-colors">{{
-                                    zauber.name }}</span>
+                                    class="text-sm font-medium text-white group-hover/spell:text-blue-300 transition-colors">{{ zauber.name }}</span>
                                 <span class="text-[10px] text-gray-500">{{ zauber.schule }}</span>
                             </div>
                             <span
@@ -516,8 +499,7 @@
                         <span class="material-symbols-outlined text-[14px] text-yellow-400">monetization_on</span>
                     </div>
                     <span id="coin-val-gold"
-                        class="text-xs font-bold text-yellow-400 mt-1 truncate w-full text-center">{{ character.gold
-                        }}</span>
+                        class="text-xs font-bold text-yellow-400 mt-1 truncate w-full text-center">{{ character.gold }}</span>
                     <span class="text-[9px] text-gray-600 uppercase tracking-wider">Gold</span>
                 </div>
                 <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110 min-w-0 border-x border-white/10"
@@ -527,8 +509,7 @@
                         <span class="material-symbols-outlined text-[14px] text-slate-300">monetization_on</span>
                     </div>
                     <span id="coin-val-silver"
-                        class="text-xs font-bold text-slate-300 mt-1 truncate w-full text-center">{{ character.silver
-                        }}</span>
+                        class="text-xs font-bold text-slate-300 mt-1 truncate w-full text-center">{{ character.silver }}</span>
                     <span class="text-[9px] text-gray-600 uppercase tracking-wider">Silber</span>
                 </div>
                 <div class="flex flex-col items-center cursor-pointer transition-transform hover:scale-110 min-w-0"
@@ -538,8 +519,7 @@
                         <span class="material-symbols-outlined text-[14px] text-orange-600">monetization_on</span>
                     </div>
                     <span id="coin-val-copper"
-                        class="text-xs font-bold text-orange-600 mt-1 truncate w-full text-center">{{ character.copper
-                        }}</span>
+                        class="text-xs font-bold text-orange-600 mt-1 truncate w-full text-center">{{ character.copper }}</span>
                     <span class="text-[9px] text-gray-600 uppercase tracking-wider">Kupfer</span>
                 </div>
             </div>
