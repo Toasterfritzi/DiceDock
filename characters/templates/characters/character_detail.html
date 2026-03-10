@@ -665,9 +665,7 @@
     </div>
 </div>
 
-<script id="weapon-data" type="application/json">
-{{ waffen_json|safe }}
-</script>
+{{ waffen_json|json_script:"weapon-data" }}
 <script>
     const WAFFEN_DATEN = JSON.parse(document.getElementById('weapon-data').textContent);
     const charStats = {
