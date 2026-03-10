@@ -596,6 +596,39 @@ class CharacterModelTest(TestCase):
         self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex) (Level too low)
 
 
+    def test_get_spell_slots_for_level(self):
+        char = Character(
+            user=self.user,
+            name="Spell Slot Test",
+            level=5,
+        )
+
+        # Vollzauberwirker (Magier) Level 5
+        char.character_class = "Magier"
+        self.assertEqual(char.get_spell_slots_for_level(), {1: 4, 2: 3, 3: 2})
+
+        # Halbzauberwirker (Paladin) Level 5
+        char.character_class = "Paladin"
+        self.assertEqual(char.get_spell_slots_for_level(), {1: 4, 2: 2})
+
+        # Halbzauberwirker (Paladin) Level 1 (No slots)
+        char.level = 1
+        self.assertEqual(char.get_spell_slots_for_level(), {})
+
+        # Paktmagie (Hexenmeister) Level 3
+        char.character_class = "Hexenmeister"
+        char.level = 3
+        self.assertEqual(char.get_spell_slots_for_level(), {'pakt_anzahl': 2, 'pakt_grad': 2})
+
+        # Non-spellcaster (Kämpfer)
+        char.character_class = "Kämpfer"
+        char.level = 5
+        self.assertEqual(char.get_spell_slots_for_level(), {})
+
+        # Unknown/Missing class
+        char.character_class = "UnknownClass123"
+        self.assertEqual(char.get_spell_slots_for_level(), {})
+
 from .views import _apply_background_bonuses
 from django.urls import reverse
 
