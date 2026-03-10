@@ -1,0 +1,25 @@
+### WOGE DER WILDEN MAGIE
+| 1W100 | Effekt |
+| :---: | :--- |
+| 1–4 | Würfle in der nächsten Minute zu Beginn jedes deiner Züge anhand dieser Tabelle und ignoriere bei nachfolgenden Würfen dieses Ergebnis. |
+| 5–8 | Eine Kreatur, die dir freundlich gesinnt ist, erscheint in einem zufälligen freien Bereich im Abstand von bis zu 18 Metern von dir. Die Kreatur steht unter der Kontrolle des SL und verschwindet eine Minute später. Würfle mit 1W4, um die Kreatur zu bestimmen: Bei einer **1** erscheint ein **Modronen-Duodrone**. Bei einer **2** erscheint ein **Flumph**. Bei einer **3** erscheint ein **Modronen-Monodrone**. Bei einer **4** erscheint ein **Einhorn**. Den Wertekasten der Kreatur findest du im *Monsterhandbuch*. |
+| 9–12 | In der nächsten Minute erhältst du zu Beginn jedes deiner Züge 5 Trefferpunkte zurück. |
+| 13–16 | Kreaturen sind bei ihren Rettungswürfen gegen den nächsten Zauber im Nachteil, den du in der nächsten Minute wirkst und der einen Rettungswurf erfordert. |
+| 17–20 | Ein Effekt wirkt eine Minute lang auf dich, sofern in seiner Beschreibung nicht anders vermerkt. Würfle mit 1W8, um den Effekt zu bestimmen: Bei einer **1** bist du von leiser ätherischer Musik umgeben, die nur für dich und Kreaturen im Abstand von bis zu 1,5 Metern von dir zu hören ist. Bei einer **2** nimmt deine Größe um eine Kategorie zu. Bei einer **3** wächst dir ein langer Bart aus Federn, der erhalten bleibt, bis du niest – dann explodieren die Federn und verschwinden aus deinem Gesicht. Bei einer **4** musst du schreiend sprechen. Bei einer **5** wirst du von Illusionen von Schmetterlingen im Abstand von bis zu drei Metern von dir umflattert. Bei einer **6** erscheint ein Auge auf deiner Stirn, das deine Weisheitswürfe (Wahrnehmung) im Vorteil sein lässt. Bei einer **7** schweben rosafarbene Blasen aus deinem Mund, wann immer du sprichst. Bei einer **8** nimmt deine Haut für 24 Stunden – oder bis der Effekt durch den Zauber *Fluch brechen* beendet wird – einen strahlend blauen Farbton an. |
+| 21–24 | In der nächsten Minute haben alle deine Zauber mit dem Zeitaufwand von einer Aktion den Zeitaufwand einer Bonusaktion. |
+| 25–28 | Du gelangst auf die Astralebene, wo du bis zum Ende deines nächsten Zugs bleibst. Dann gelangst du in den Bereich zurück, den du verlassen hast, oder in den nächsten freien Bereich, sofern der ursprüngliche besetzt ist. |
+| 29–32 | Würfle beim nächsten Schadenszauber, den du in der nächsten Minute wirkst, den Schaden des Zaubers nicht aus. Verwende stattdessen für jeden Schadenswürfel das höchstmögliche Ergebnis. |
+| 33–36 | Du bist in der nächsten Minute gegen alle Schadensarten resistent. |
+| 37–40 | Du verwandelst dich bis zum Beginn deines nächsten Zugs in eine Topfpflanze. Als diese bist du kampfunfähig und anfällig für alle Schadensarten. Wenn deine Trefferpunkte auf 0 sinken, zerbricht dein Topf, und du nimmst wieder deine ursprüngliche Gestalt an. |
+| 41–44 | In der nächsten Minute kannst du dich in jedem deiner Züge als Bonusaktion bis zu sechs Meter weit teleportieren. |
+| 45–48 | Du und bis zu drei Kreaturen deiner Wahl im Abstand von bis zu neun Metern von dir seid eine Minute lang unsichtbar. Diese Unsichtbarkeit endet bei einer Kreatur sofort, nachdem sie einen Angriffswurf ausgeführt, Schaden bewirkt oder einen Zauber gewirkt hat. |
+| 49–52 | Ein geisterhafter Schild schwebt in der nächsten Minute bei dir. Er gewährt dir einen Bonus von +2 auf deine RK sowie Immunität gegen *Magisches Geschoss*. |
+| 53–56 | Du kannst in diesem Zug eine zusätzliche Aktion ausführen. |
+| 57–60 | Du wirkst einen zufälligen Zauber. Wenn der Zauber normalerweise Konzentration erfordert, so tut er das in diesem Fall nicht. Er behält seine volle Wirkungsdauer bei. Würfle mit 1W10, um den Zauber zu bestimmen: Bei einer **1** wirkst du *Verwirrung*. Bei einer **2** wirkst du *Feuerball*. Bei einer **3** wirkst du *Nebelwolke*. Bei einer **4** wirkst du *Fliegen* auf eine zufällige Kreatur im Abstand von bis zu 18 Metern von dir. Bei einer **5** wirkst du *Schmieren* auf dich selbst. Bei einer **6** wirkst du *Schweben* auf dich selbst. Bei einer **7** wirkst du *Magisches Geschoss* als Zauber des 5. Grades. Bei einer **8** wirkst du *Spiegelbilder*. Bei einer **9** wirkst du *Verwandlung* auf dich selbst, und wenn dein Rettungswurf scheitert, verwandelst du dich in eine Ziege (siehe Anhang B). Bei einer **10** wirkst du *Unsichtbares sehen*. |
+| 61–64 | In der nächsten Minute geht jeder brennbare nichtmagische Gegenstand, der nicht von einer anderen Kreatur getragen oder gehalten wird und den du berührst, in Flammen auf, erleidet 1W4 Feuerschaden und brennt. |
+| 65–68 | Wenn du innerhalb der nächsten Stunde stirbst, wirst du wie durch den Zauber *Wiedergeburt* sofort wiederbelebt. |
+| 69–72 | Du bist bis zum Ende deines nächsten Zugs verängstigt. Der SL bestimmt die Ursache deiner Furcht. |
+| 73–76 | Du teleportierst dich bis zu 18 Meter weit in einen freien Bereich, den du sehen kannst. |
+| 77–80 | Eine zufällige Kreatur im Abstand von bis zu 18 Metern von dir ist 1W4 Stunden lang vergiftet. |
+
+174 | KAPITEL 3 | CHARAKTERKLASSEN
