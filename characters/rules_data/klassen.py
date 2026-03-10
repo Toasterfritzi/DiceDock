@@ -93,7 +93,7 @@ KLASSEN_DATEN = {
         'zaubertyp': 'vollzauberwirker',
         'features': {
             1: [
-                {'name': 'Bardische Inspiration', 'beschreibung': 'Bonusaktion. Gib Verbündetem 1W6. Kann auf Attributswürfe, Angriffe oder Rettungswürfe addiert werden. Anzahl = Übungsbonus pro Langer Rast.'},
+                {'name': 'Bardische Inspiration', 'beschreibung': 'Bonusaktion. Gib Verbündetem 1W6. Kann auf Attributswürfe, Angriffe oder Rettungswürfe addiert werden. Anzahl = Charismamodifikator (mind. 1) pro Langer Rast.'},
                 {'name': 'Zauberwirken', 'beschreibung': 'Zauberattribut: Charisma. Fokus: Musikinstrument.'},
             ],
             2: [
@@ -148,12 +148,12 @@ KLASSEN_DATEN = {
         'features': {
             1: [
                 {'name': 'Zauberwirken', 'beschreibung': 'Zauberattribut: Weisheit. Fokus: Heiliges Symbol.'},
-                {'name': 'Göttlicher Orden', 'beschreibung': 'Wähle Beschützer (Schwere Rüstung & Kriegswaffen) oder Gelehrter (2 Wissen-Fertigkeiten).'},
+                {'name': 'Göttlicher Orden', 'beschreibung': 'Wähle Beschützer (Schwere Rüstung & Kriegswaffen) oder Thaumaturg (2 Wissen-Fertigkeiten).'},
             ],
-            2: [{'name': 'Göttliche Macht kanalisieren', 'beschreibung': '2 Nutzungen. Göttliches Scheitern (Heilen/Schaden) oder Untote vertreiben.'}],
+            2: [{'name': 'Göttliche Macht kanalisieren', 'beschreibung': '2 Nutzungen. Göttlicher Funke (Heilen/Schaden) oder Untote vertreiben.'}],
             3: [{'name': 'Kleriker-Unterklasse', 'beschreibung': 'Wähle eine Domäne (Unterklasse).'}],
             4: [{'name': 'Attributsverbesserung', 'beschreibung': '+2 auf ein Attribut, +1 auf zwei Attribute oder ein Talent.'}],
-            5: [{'name': 'Zerschlagen von Untoten', 'beschreibung': 'Vertriebene Untote erleiden zusätzlichen Schaden.'}],
+            5: [{'name': 'Untote versengen', 'beschreibung': 'Vertriebene Untote erleiden zusätzlichen Schaden.'}],
             6: [{'name': 'Gesegnetes Schlagen', 'beschreibung': 'Bonus auf Zauber-Zaubertricks oder Waffenangriffe.'}],
             8: [{'name': 'Attributsverbesserung', 'beschreibung': '+2 auf ein Attribut, +1 auf zwei Attribute oder ein Talent.'}],
             10: [{'name': 'Göttliche Intervention', 'beschreibung': 'Rufe deine Gottheit um Hilfe an (Spezialeffekt ohne Kosten).'}],
@@ -198,9 +198,9 @@ KLASSEN_DATEN = {
             1: [
                 {'name': 'Zauberwirken', 'beschreibung': 'Zauberattribut: Weisheit. Fokus: Druidischer Fokus.'},
                 {'name': 'Druidisch', 'beschreibung': 'Geheimsprache der Druiden.'},
-                {'name': 'Urgestalt', 'beschreibung': 'Bonusaktion: Verwandle dich in ein Tier (NS ¼). Hält Übungsbonus Stunden.'},
+                {'name': 'Tiergestalt', 'beschreibung': 'Bonusaktion: Verwandle dich in ein Tier (NS ¼). Hält Übungsbonus Stunden.'},
             ],
-            2: [{'name': 'Wilder Gefährte', 'beschreibung': 'Nutze Urgestalt, um „Vertrauten finden" zu wirken.'}],
+            2: [{'name': 'Wilder Gefährte', 'beschreibung': 'Nutze Tiergestalt, um „Vertrauten finden" zu wirken.'}],
             3: [{'name': 'Druiden-Unterklasse', 'beschreibung': 'Wähle einen Zirkel (Unterklasse).'}],
             4: [{'name': 'Attributsverbesserung', 'beschreibung': '+2 auf ein Attribut, +1 auf zwei Attribute oder ein Talent.'}],
             5: [{'name': 'Urschlag', 'beschreibung': 'Schaden in Tierform zählt als magisch.'}],
@@ -213,11 +213,11 @@ KLASSEN_DATEN = {
         },
         'unterklassen': {
             'Zirkel des Landes': {
-                3: [{'name': 'Land-Region', 'beschreibung': 'Wähle Region (Arktis, Wüste etc.) für Zusatz-Zauber. Urgestalt regeneriert Zauberplätze.'}],
+                3: [{'name': 'Land-Region', 'beschreibung': 'Wähle Region (Arktis, Wüste etc.) für Zusatz-Zauber. Tiergestalt regeneriert Zauberplätze.'}],
                 6: [{'name': 'Landschreiter', 'beschreibung': 'Schwieriges Gelände kostet keine zusätzliche Bewegung.'}],
             },
             'Zirkel des Mondes': {
-                3: [{'name': 'Kampf-Urgestalt', 'beschreibung': 'Bonusaktion-Verwandlung. Erhöhte RK. Heilung mit Zauberplätzen.'}],
+                3: [{'name': 'Kampf-Tiergestalt', 'beschreibung': 'Bonusaktion-Verwandlung. Erhöhte RK. Heilung mit Zauberplätzen.'}],
                 6: [{'name': 'Urschlag (Mond)', 'beschreibung': 'Angriffe in Tierform zählen als magisch.'}],
             },
             'Zirkel des Meeres': {
