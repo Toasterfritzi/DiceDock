@@ -94,8 +94,8 @@ ZAUBER = {
     'Göttliche Führung': {
         'grad': 0, 'schule': 'Divination',
         'klassen': ['Kleriker', 'Druide'],
-        'wirkzeit': 'Reaktion (wenn Verbündeter in 3m einen Wurf ablegt)', 'reichweite': '3m', 'dauer': 'Sofort',
-        'beschreibung': 'Der Verbündete addiert 1W4 auf seinen soeben abgelegten Attributswurf, Angriffswurf oder Rettungswurf.',
+        'wirkzeit': 'Aktion', 'reichweite': '3m', 'dauer': '1 Minute (Konz.)',
+        'beschreibung': 'Der Verbündete addiert 1W4 auf Attributswürfe. Endet, wenn der Würfelwurf gemacht wurde.',
     },
     'Licht': {
         'grad': 0, 'schule': 'Hervorrufung',
@@ -118,8 +118,8 @@ ZAUBER = {
     'Resistenz': {
         'grad': 0, 'schule': 'Bannmagie',
         'klassen': ['Kleriker', 'Druide'],
-        'wirkzeit': 'Reaktion (wenn Verbündeter in 3m einen RW ablegt)', 'reichweite': '3m', 'dauer': 'Sofort',
-        'beschreibung': 'Der Verbündete addiert 1W4 auf seinen soeben abgelegten Rettungswurf.',
+        'wirkzeit': 'Aktion', 'reichweite': '3m', 'dauer': '1 Minute (Konz.)',
+        'beschreibung': 'Der Verbündete addiert 1W4 auf Rettungswürfe. Endet, wenn der Würfelwurf gemacht wurde.',
     },
     'Säurespritzer': {
         'grad': 0, 'schule': 'Beschwörung',
