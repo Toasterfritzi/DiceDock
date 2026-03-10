@@ -13,7 +13,7 @@ SCHULEN = [
 # ── Vollständige Zauberbeschreibungen ─────────────────────────────────────────
 ZAUBER = {
     # ── GRAD 0 (Zaubertricks) ─────────────────────────────────────────────────
-    'Boshafter Spott': {
+    'Gehässiger Spott': {
         'grad': 0, 'schule': 'Verzauberung',
         'klassen': ['Barde'],
         'wirkzeit': 'Aktion', 'reichweite': '18m', 'dauer': 'Sofort',
@@ -37,7 +37,7 @@ ZAUBER = {
         'wirkzeit': 'Aktion', 'reichweite': '18m', 'dauer': 'Sofort',
         'beschreibung': 'Trefferwurf: 1W10 Kälteschaden. Schaden steigt auf 2W10 (St.5), 3W10 (St.11), 4W10 (St.17).',
     },
-    'Elementarismus': {
+    'Elementalismus': {
         'grad': 0, 'schule': 'Verwandlung',
         'klassen': ['Druide', 'Zauberer'],
         'wirkzeit': 'Aktion', 'reichweite': '9m', 'dauer': 'Sofort/1 Minute',
@@ -85,13 +85,13 @@ ZAUBER = {
         'wirkzeit': 'Bonusaktion', 'reichweite': 'Selbst', 'dauer': '1 Runde',
         'beschreibung': 'Bis Beginn deines nächsten Zuges: Wenn dich eine Kreatur in 1,5m mit einem Nahkampfangriff trifft, erleidet sie 1W6+CHA-Mod psychischen Schaden (Barde) oder nekrotischen/Kälteschaden (Hexenmeister).',
     },
-    'Langstricher': {
+    'Lange Schritte': {
         'grad': 0, 'schule': 'Verwandlung',
         'klassen': ['Druide', 'Waldläufer'],
         'wirkzeit': 'Aktion', 'reichweite': 'Berührung', 'dauer': '1 Stunde',
         'beschreibung': 'Eine Kreatur die du berührst bewegt sich heute durch unwegsames Gelände ohne Malus und lässt keine Spuren zurück. Schlechte Voraussetzungen (Wasser) hinterlassen keine Spur mehr.',
     },
-    'Leitung': {
+    'Göttliche Führung': {
         'grad': 0, 'schule': 'Divination',
         'klassen': ['Kleriker', 'Druide'],
         'wirkzeit': 'Reaktion (wenn Verbündeter in 3m einen Wurf ablegt)', 'reichweite': '3m', 'dauer': 'Sofort',
@@ -145,13 +145,13 @@ ZAUBER = {
         'wirkzeit': 'Bonusaktion', 'reichweite': 'Selbst', 'dauer': '1 Minute',
         'beschreibung': 'Dein Stab wird magisch. Nutze WEI statt STR für Angriff und Schaden. Schaden wird W8 (statt W6). Gilt als magisch.',
     },
-    'Sorcerous Burst': {
+    'Explosion der Zauberei': {
         'grad': 0, 'schule': 'Hervorrufung',
         'klassen': ['Zauberer'],
         'wirkzeit': 'Aktion', 'reichweite': '18m', 'dauer': 'Sofort',
         'beschreibung': 'Trefferwurf: 1W8 Schaden (Schadenstyp nach Wahl: Säure, Blitz, Feuer, Kälte, Gift, Donner). Bei Ergebnis 8 auf einem Würfel: weiteren W8 hinzufügen. Schaden steigt mit Stufe.',
     },
-    'Sternenstaub': {
+    'Sternenfunke': {
         'grad': 0, 'schule': 'Hervorrufung',
         'klassen': ['Barde', 'Druide'],
         'wirkzeit': 'Aktion', 'reichweite': '18m', 'dauer': 'Sofort',
@@ -169,25 +169,25 @@ ZAUBER = {
         'wirkzeit': 'Aktion', 'reichweite': '9m', 'dauer': '1 Minute',
         'beschreibung': 'Erzeuge einen kleinen göttlichen Effekt: laute Stimme, flackernde Flammen, Boden beben, Augen leuchten, Türen auf-/zuschlagen, oder verändere Aussehen.',
     },
-    'Totenberührung': {
+    'Totenläuten': {
         'grad': 0, 'schule': 'Nekromantie',
         'klassen': ['Hexenmeister', 'Magier', 'Zauberer'],
         'wirkzeit': 'Aktion', 'reichweite': '18m', 'dauer': 'Sofort',
         'beschreibung': 'Trefferwurf: 1W10 nekrotischen Schaden. Ziel kann bis Ende seines nächsten Zuges keine TP regenerieren. Schaden steigt mit Stufe.',
     },
-    'True Strike': {
+    'Zielsicherer Schlag': {
         'grad': 0, 'schule': 'Divination',
         'klassen': ['Barde', 'Magier', 'Zauberer', 'Hexenmeister'],
         'wirkzeit': 'Aktion', 'reichweite': 'Selbst', 'dauer': 'Sofort',
         'beschreibung': 'Nahkampf- oder Fernkampfangriff mit deinem Zauberattribut (statt STR/GES). Trefferwurf: 1W6 Strahlenschaden. Schaden steigt mit Stufe.',
     },
-    'Verschone die Toten': {
+    'Verschonung der Sterbenden': {
         'grad': 0, 'schule': 'Nekromantie',
         'klassen': ['Kleriker'],
         'wirkzeit': 'Aktion', 'reichweite': '9m', 'dauer': '1 Minute',
         'beschreibung': 'Bis zu 3 Untote mit NS 0 in Reichweite müssen WEI-Rettungswurf bestehen oder sind für die Dauer bezaubert (können dich nicht angreifen).',
     },
-    'Wort des Glanzes': {
+    'Wort des Strahlens': {
         'grad': 0, 'schule': 'Hervorrufung',
         'klassen': ['Kleriker'],
         'wirkzeit': 'Aktion', 'reichweite': '9m', 'dauer': 'Sofort',
@@ -268,12 +268,12 @@ ZAUBER = {
         'beschreibung': 'Nächster Fernkampftreffer: Dornen schießen heraus. Ziel und Kreaturen in 1,5m – GES-RW oder 1W10 Stichschaden (halb bei Erfolg). +1W10 pro höherem Grad.',
     },
     'Heilendes Wort': {
-        'grad': 1, 'schule': 'Hervorrufung',
+        'grad': 1, 'schule': 'Bannmagie',
         'klassen': ['Barde', 'Kleriker', 'Druide'],
         'wirkzeit': 'Bonusaktion', 'reichweite': '18m', 'dauer': 'Sofort',
         'beschreibung': 'Heile eine Kreatur um 2W4 + Zauberattributmod. TP. +2W4 pro höherem Grad.',
     },
-    'Heldentum': {
+    'Heldenmut': {
         'grad': 1, 'schule': 'Verzauberung',
         'klassen': ['Barde', 'Paladin'],
         'wirkzeit': 'Aktion', 'reichweite': 'Berührung', 'dauer': '1 Minute (Konz.)',
@@ -358,7 +358,7 @@ ZAUBER = {
         'beschreibung': 'Verstehe und kommuniziere mit Tieren. Tiere sind nicht zwangsläufig hilfsbereit.',
     },
     'Wunden heilen': {
-        'grad': 1, 'schule': 'Hervorrufung',
+        'grad': 1, 'schule': 'Bannmagie',
         'klassen': ['Barde', 'Kleriker', 'Druide', 'Paladin', 'Waldläufer'],
         'wirkzeit': 'Aktion', 'reichweite': 'Berührung', 'dauer': 'Sofort',
         'beschreibung': 'Berührte Kreatur erhält 2W8 + Zauberattributmod. TP. Funktioniert nicht an Untoten/Konstrukten. +2W8 pro höherem Grad.',
@@ -431,7 +431,7 @@ ZAUBER = {
         'wirkzeit': 'Aktion', 'reichweite': 'Berührung', 'dauer': '8 Stunden',
         'beschreibung': 'RK des Ziels wird mindestens 16 (wenn keine Rüstung). Gibt zusätzlich temporäre TP (WEI-Mod × PB, min 1).',
     },
-    'Scorching Ray (Sengende Strahlen)': {
+    'Sengender Strahl': {
         'grad': 2, 'schule': 'Hervorrufung',
         'klassen': ['Magier', 'Zauberer'],
         'wirkzeit': 'Aktion', 'reichweite': '36m', 'dauer': 'Sofort',
@@ -481,13 +481,13 @@ ZAUBER = {
         'wirkzeit': 'Aktion', 'reichweite': '45m', 'dauer': '1 Minute (Konz.)',
         'beschreibung': 'Schwarze Kugel (1,8m Radius) aus dem Nichts: totale Dunkelheit, eisige Tentakel. Kreaturen im Bereich: KON-RW am Ende ihres Zuges oder 2W6 Kälteschaden (halb bei Erfolg). Start im Bereich: GES-RW oder 2W6 Säureschaden.',
     },
-    'Massenheilung Wort': {
-        'grad': 3, 'schule': 'Hervorrufung',
+    'Massen-Heilendes Wort': {
+        'grad': 3, 'schule': 'Bannmagie',
         'klassen': ['Kleriker', 'Barde'],
         'wirkzeit': 'Bonusaktion', 'reichweite': '18m', 'dauer': 'Sofort',
         'beschreibung': 'Bis zu 6 Kreaturen heilen 2W4+Zauberattributmod. TP. +1W4 pro höherem Grad.',
     },
-    'Revivify': {
+    'Wiederbelebung': {
         'grad': 3, 'schule': 'Nekromantie',
         'klassen': ['Kleriker', 'Paladin'],
         'wirkzeit': 'Aktion', 'reichweite': 'Berührung', 'dauer': 'Sofort',
@@ -559,7 +559,7 @@ ZAUBER = {
         'wirkzeit': 'Aktion', 'reichweite': '27m', 'dauer': 'Sofort',
         'beschreibung': 'Blitz springt zwischen 4 Zielen: Trefferwurf je 10W8 Blitzschaden.',
     },
-    'Sunbeam': {
+    'Sonnenstrahl': {
         'grad': 6, 'schule': 'Hervorrufung',
         'klassen': ['Druide', 'Magier', 'Zauberer'],
         'wirkzeit': 'Aktion', 'reichweite': 'Selbst (18m Linie)', 'dauer': '1 Minute (Konz.)',
