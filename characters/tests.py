@@ -293,7 +293,7 @@ class CharacterModelTest(TestCase):
         }
     }, clear=True)
     def test_get_features_for_level_case_insensitive_substring(self):
-        # Character class is a substring variation of 'Testklasse'
+        # Character class is a substring variation of 'Testklasse'  # noqa: E800
         char = Character(user=self.user, name="Feature Test", character_class="Edler TESTKLASSE des Nordens", level=1)
         features = char.get_features_for_level(1)
         self.assertEqual(len(features), 1)
