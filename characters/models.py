@@ -7,6 +7,9 @@ from .rules_data.zauberplaetze import ZAUBERPLATZ_TABELLE
 _SPEZIES_DATEN_LOWER = {k.lower(): v for k, v in SPEZIES_DATEN.items()}
 
 
+
+_PRECOMPUTED_SPELL_LISTS = {}
+
 class Character(models.Model):
     """A D&D player character with stats, equipment, and personality."""
 
@@ -218,16 +221,21 @@ class Character(models.Model):
         klasse_name = self.character_class
         if klasse_name not in ZAUBERLISTEN:
             return {}
-        alle_zauber = ZAUBERLISTEN[klasse_name]
+
+        if klasse_name not in _PRECOMPUTED_SPELL_LISTS:
+            _PRECOMPUTED_SPELL_LISTS[klasse_name] = {
+                grad: [{'name': n, **ZAUBER_OHNE_KLASSEN[n]} for n in namen]
+                for grad, namen in ZAUBERLISTEN[klasse_name].items()
+            }
+
+        alle_zauber = _PRECOMPUTED_SPELL_LISTS[klasse_name]
         max_grad = self.get_max_spell_grade()
-        result = {}
-        for grad, namen in alle_zauber.items():
-            if grad <= max_grad or grad == 0:
-                result[grad] = [
-                    {'name': n, **ZAUBER_OHNE_KLASSEN[n]}
-                    for n in namen
-                ]
-        return result
+
+        return {
+            grad: zauber_liste
+            for grad, zauber_liste in alle_zauber.items()
+            if grad <= max_grad or grad == 0
+        }
 
     def get_known_spells_detail(self):
         """Gibt die Details der bekannten Zauber zurück, gruppiert nach Grad."""
