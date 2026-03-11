@@ -1,5 +1,4 @@
 import fitz
-import sys
 
 def extract_text(pdf_path, output_txt):
     try:
