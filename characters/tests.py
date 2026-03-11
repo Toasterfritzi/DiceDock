@@ -565,7 +565,7 @@ class CharacterModelTest(TestCase):
             charisma=18
         )
 
-        # Default (Kämpfer / Fighter)
+        # Default (Kämpfer / Fighter)  # noqa: E800
         char.character_class = "Kämpfer"
         self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex)
 
@@ -620,7 +620,7 @@ class CharacterModelTest(TestCase):
         char.level = 3
         self.assertEqual(char.get_spell_slots_for_level(), {'pakt_anzahl': 2, 'pakt_grad': 2})
 
-        # Non-spellcaster (Kämpfer)
+        # Non-spellcaster (Kämpfer)  # noqa: E800
         char.character_class = "Kämpfer"
         char.level = 5
         self.assertEqual(char.get_spell_slots_for_level(), {})
