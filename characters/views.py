@@ -683,7 +683,17 @@ def character_builder_submit(request):
 
     form = CharacterForm(data, request.FILES)
     if not form.is_valid():
-        messages.error(request, "Fehler bei der Charaktererstellung. Bitte überprüfe deine Eingaben.")
+        error_msgs = []
+        for field, errors in form.errors.items():
+            for error in errors:
+                error_msgs.append(f"{field}: {error}")
+        
+        if error_msgs:
+            error_text = "Fehler bei der Charaktererstellung: " + " | ".join(error_msgs)
+        else:
+            error_text = "Fehler bei der Charaktererstellung. Bitte überprüfe deine Eingaben."
+            
+        messages.error(request, error_text)
         return redirect('character_builder')
 
     character = form.save(commit=False)
