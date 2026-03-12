@@ -1,11 +1,3 @@
-🎯 **What:** The code health issue addressed
-Appended `# noqa: E800` to a comment in `characters/image_utils.py` to suppress a false positive where linter tools like `flake8-eradicate` incorrectly flagged valid documentation as commented-out code.
-
-💡 **Why:** How this improves maintainability
-This fixes a false linter positive, ensuring that valid comments that explain "why" (in this case, why 512x512 is used) are preserved, while also maintaining clean CI/CD checks.
-
-✅ **Verification:** How you confirmed the change is safe
-Ran `flake8` and `eradicate` manually, which both previously flagged the code. Verified that `# noqa: E800` resolves the issue. Ran the full `python manage.py test` suite to ensure no syntax errors or functionality breakages.
-
-✨ **Result:** The improvement achieved
-The codebase is now clean of false linter warnings in `image_utils.py` without losing valuable code context documentation.
+🎯 **What:** The testing gap addressed was that the error handling in `_apply_levelup_hp_increase` for parsing `hit_dice` (handling `ValueError` and `IndexError`) was previously untested.
+📊 **Coverage:** A new test case `test_levelup_invalid_hit_dice_logs_warning` was added to `CharacterLevelupTest`, ensuring that invalid hit dice formats trigger a warning log and do not crash the application or increment HP inappropriately.
+✨ **Result:** Test coverage for `_apply_levelup_hp_increase` is now complete regarding exceptions parsing `hit_dice`, with 100% test pass rates across the suite.
