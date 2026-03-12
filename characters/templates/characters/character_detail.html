@@ -338,8 +338,8 @@
                 <div class="space-y-3">
                     {% for weapon in character.weapons %}
                     <div
-                        class="group flex flex-col md:flex-row items-start md:items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-all">
-                        <div class="flex items-center gap-3 cursor-pointer w-full md:w-auto mb-2 md:mb-0" onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')">
+                        class="group flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-all cursor-pointer">
+                        <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-white">
                                 <span class="material-symbols-outlined">colorize</span>
                             </div>
@@ -352,29 +352,20 @@
                                         class="px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[9px] text-purple-400 font-bold uppercase tracking-wider flex items-center gap-1 group/m relative">
                                         {{ weapon.meisterung }}
                                         <span class="material-symbols-outlined text-[10px]">info</span>
+                                        <!-- Tooltip placeholder - real descriptions would ideally come from the meisterung_json -->
                                     </div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 text-right w-full md:w-auto justify-between md:justify-end">
-                            <div class="flex gap-4 cursor-pointer" onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')">
-                                <div>
-                                    <div class="text-xs text-gray-500 uppercase">Treffer</div>
-                                    <div class="font-bold text-neon-purple">{{ weapon.hit }}</div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-gray-500 uppercase">Schaden</div>
-                                    <div class="font-bold text-white">{{ weapon.damage }}</div>
-                                </div>
+                        <div class="flex items-center gap-4 text-right">
+                            <div>
+                                <div class="text-xs text-gray-500 uppercase">Treffer</div>
+                                <div class="font-bold text-neon-purple">{{ weapon.hit }}</div>
                             </div>
-                            <div class="flex items-center gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded transition-colors" title="Bearbeiten">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </button>
-                                <button onclick="removeWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}')" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors" title="Entfernen">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                </button>
+                            <div>
+                                <div class="text-xs text-gray-500 uppercase">Schaden</div>
+                                <div class="font-bold text-white">{{ weapon.damage }}</div>
                             </div>
                         </div>
                     </div>
@@ -495,7 +486,7 @@
                         <span class="material-symbols-outlined text-[14px]">add</span>
                         <div
                             class="absolute top-8 left-0 w-[200px] z-20 glass-panel rounded-lg p-2 opacity-0 group-focus-within:opacity-100 pointer-events-none group-focus-within:pointer-events-auto transition-opacity shadow-xl">
-                            <input id="new-item-input" class="glass-input w-full" placeholder="Gegenstand hinzufügen... (Enter drücken)" type="text" onkeypress="if(event.key === 'Enter') addItem(this.value)" />
+                            <input class="glass-input w-full" placeholder="Gegenstand hinzufügen..." type="text" />
                         </div>
                     </button>
                 </div>
@@ -534,21 +525,9 @@
             </div>
             <ul class="space-y-3 overflow-y-auto max-h-[400px]">
                 {% for item in character.inventory %}
-                <li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 group">
-                    <div class="flex-grow cursor-pointer" onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})">
-                        <span class="text-gray-300 group-hover:text-white">{{ item.name }}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded cursor-pointer" onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})">x{{ item.quantity }}</span>
-                        <div class="opacity-0 group-hover:opacity-100 transition-opacity flex">
-                            <button onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})" class="p-1 text-blue-400 hover:bg-blue-500/20 rounded transition-colors" title="Bearbeiten">
-                                <span class="material-symbols-outlined text-[16px]">edit</span>
-                            </button>
-                            <button onclick="removeItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}')" class="p-1 text-red-400 hover:bg-red-500/20 rounded transition-colors" title="Entfernen">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
-                        </div>
-                    </div>
+                <li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 cursor-pointer group">
+                    <span class="text-gray-300 group-hover:text-white">{{ item.name }}</span>
+                    <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded">x{{ item.quantity }}</span>
                 </li>
                 {% empty %}
                 {% if character.equipment %}
@@ -617,56 +596,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
-
-<!-- Item Edit Modal -->
-<div id="itemEditModal" class="hidden fixed inset-0 z-[100] flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="glass-panel p-6 rounded-2xl border border-blue-500/30 shadow-[0_0_10px_#3b82f64d,0_0_20px_#3b82f61a] w-80 transform transition-all text-center relative max-w-[90vw]">
-        <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-widest">Gegenstand bearbeiten</h3>
-        <input type="hidden" id="editItemIndex">
-        <div class="mb-4 text-left">
-            <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Name</label>
-            <input type="text" id="editItemName" class="glass-input w-full text-white text-sm">
-        </div>
-        <div class="mb-6 text-left">
-            <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Anzahl</label>
-            <input type="number" id="editItemQuantity" class="glass-input w-full text-white text-sm" min="1">
-        </div>
-        <div class="flex gap-2">
-            <button onclick="closeItemModal()" class="flex-1 py-2 rounded-lg bg-gray-600/20 hover:bg-gray-600/40 text-gray-300 font-bold transition-colors border border-gray-500/30 uppercase text-xs tracking-wider cursor-pointer">Abbrechen</button>
-            <button onclick="saveItemEdit()" class="flex-1 py-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 font-bold transition-colors border border-blue-500/30 uppercase text-xs tracking-wider cursor-pointer">Speichern</button>
-        </div>
-    </div>
-</div>
-
-<!-- Weapon Edit Modal -->
-<div id="weaponEditModal" class="hidden fixed inset-0 z-[100] flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 shadow-[0_0_10px_#a855f74d,0_0_20px_#a855f71a] w-80 transform transition-all text-center relative max-w-[90vw]">
-        <h3 class="text-xl font-bold text-white mb-4 uppercase tracking-widest">Waffe bearbeiten</h3>
-        <input type="hidden" id="editWeaponIndex">
-        <div class="mb-3 text-left">
-            <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Name</label>
-            <input type="text" id="editWeaponName" class="glass-input w-full text-white text-sm">
-        </div>
-        <div class="mb-3 text-left">
-            <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Typ</label>
-            <input type="text" id="editWeaponType" class="glass-input w-full text-white text-sm">
-        </div>
-        <div class="flex gap-3 mb-6">
-            <div class="flex-1 text-left">
-                <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Treffer</label>
-                <input type="text" id="editWeaponHit" class="glass-input w-full text-white text-sm">
-            </div>
-            <div class="flex-1 text-left">
-                <label class="block text-xs text-gray-400 uppercase tracking-widest mb-1">Schaden</label>
-                <input type="text" id="editWeaponDamage" class="glass-input w-full text-white text-sm">
-            </div>
-        </div>
-        <div class="flex gap-2">
-            <button onclick="closeWeaponModal()" class="flex-1 py-2 rounded-lg bg-gray-600/20 hover:bg-gray-600/40 text-gray-300 font-bold transition-colors border border-gray-500/30 uppercase text-xs tracking-wider cursor-pointer">Abbrechen</button>
-            <button onclick="saveWeaponEdit()" class="flex-1 py-2 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 font-bold transition-colors border border-purple-500/30 uppercase text-xs tracking-wider cursor-pointer">Speichern</button>
-        </div>
-    </div>
-</div>
 
 <!-- Coin Edit Modal (Analog zu Attributen) -->
 <div id="coinEditModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
@@ -788,144 +717,6 @@
                     alert('Fehler beim Hinzufügen der Waffe: ' + resData.error);
                 }
             });
-    }
-
-    function editWeapon(index, name, type, hit, damage) {
-        document.getElementById('editWeaponIndex').value = index;
-        document.getElementById('editWeaponName').value = name;
-        document.getElementById('editWeaponType').value = type;
-        document.getElementById('editWeaponHit').value = hit;
-        document.getElementById('editWeaponDamage').value = damage;
-        document.getElementById('weaponEditModal').classList.remove('hidden');
-        document.getElementById('weaponEditModal').classList.add('flex');
-    }
-
-    function closeWeaponModal() {
-        document.getElementById('weaponEditModal').classList.add('hidden');
-        document.getElementById('weaponEditModal').classList.remove('flex');
-    }
-
-    function saveWeaponEdit() {
-        const index = parseInt(document.getElementById('editWeaponIndex').value);
-        const name = document.getElementById('editWeaponName').value;
-        const type = document.getElementById('editWeaponType').value;
-        const hit = document.getElementById('editWeaponHit').value;
-        const damage = document.getElementById('editWeaponDamage').value;
-
-        fetch(`/character/{{ character.pk }}/edit_weapon/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ index, name, type, hit, damage })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Fehler beim Bearbeiten der Waffe: ' + data.error);
-            }
-        });
-    }
-
-    function removeWeapon(index, name) {
-        if (confirm(`Möchtest du die Waffe "${name}" wirklich entfernen?`)) {
-            fetch(`/character/{{ character.pk }}/remove_weapon/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({ index })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Fehler beim Entfernen der Waffe: ' + data.error);
-                }
-            });
-        }
-    }
-
-    function addItem(name) {
-        if (!name.trim()) return;
-        fetch(`/character/{{ character.pk }}/add_item/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ name: name.trim(), quantity: 1 })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Fehler beim Hinzufügen: ' + data.error);
-            }
-        });
-    }
-
-    function editItem(index, name, quantity) {
-        document.getElementById('editItemIndex').value = index;
-        document.getElementById('editItemName').value = name;
-        document.getElementById('editItemQuantity').value = quantity;
-        document.getElementById('itemEditModal').classList.remove('hidden');
-        document.getElementById('itemEditModal').classList.add('flex');
-    }
-
-    function closeItemModal() {
-        document.getElementById('itemEditModal').classList.add('hidden');
-        document.getElementById('itemEditModal').classList.remove('flex');
-    }
-
-    function saveItemEdit() {
-        const index = parseInt(document.getElementById('editItemIndex').value);
-        const name = document.getElementById('editItemName').value;
-        const quantity = parseInt(document.getElementById('editItemQuantity').value) || 1;
-
-        fetch(`/character/{{ character.pk }}/edit_item/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ index, name, quantity })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Fehler beim Bearbeiten des Gegenstands: ' + data.error);
-            }
-        });
-    }
-
-    function removeItem(index, name) {
-        if (confirm(`Möchtest du den Gegenstand "${name}" wirklich aus deinem Inventar entfernen?`)) {
-            fetch(`/character/{{ character.pk }}/remove_item/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({ index })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Fehler beim Entfernen: ' + data.error);
-                }
-            });
-        }
     }
 
     let currentEditingStat = '';
