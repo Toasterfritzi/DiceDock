@@ -1514,30 +1514,39 @@ class CharacterBuilderSubmitTest(TestCase):
 
         # Verify no character was created
         self.assertFalse(Character.objects.filter(name='Invalid Hero').exists())
-
     def test_submit_invalid_level(self):
         # Since character_class, race and background are required by the form, we provide them
         base_payload = {
             'character_class': 'Kämpfer',
             'race': 'Zwerg',
-            'background': 'Soldat'
+            'background': 'Soldat',
+            'equipment_preference': 'gold'
         }
 
-        payload = {**base_payload, 'name': 'Legolas', 'level': 'invalid_level'}
+        # Test invalid string level -> should fallback to level 1 and succeed
+        payload = {**base_payload, 'name': 'Legolas', 'level': 'xyz'}
         response = self.client.post(self.url, data=payload)
-        # Form should be invalid due to 'invalid_level' and redirect back to builder
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('character_builder'))
-        self.assertFalse(Character.objects.filter(name='Legolas').exists())
+        character = Character.objects.get(name='Legolas')
+        self.assertEqual(character.level, 1)
 
-        # Test out of bounds
+        # Test out of bounds (too high) -> should clamp to 20
         payload = {**base_payload, 'name': 'Over 9000', 'level': '9000'}
-        self.client.post(self.url, data=payload)
-        self.assertFalse(Character.objects.filter(name='Over 9000').exists())
+        response = self.client.post(self.url, data=payload)
+        self.assertEqual(response.status_code, 302)
+        character_high = Character.objects.get(name='Over 9000')
+        self.assertEqual(character_high.level, 20)
 
+        # Test out of bounds (negative) -> should clamp to 1
         payload = {**base_payload, 'name': 'Negative', 'level': '-5'}
-        self.client.post(self.url, data=payload)
-        self.assertFalse(Character.objects.filter(name='Negative').exists())
+        response = self.client.post(self.url, data=payload)
+        self.assertEqual(response.status_code, 302)
+        character_neg = Character.objects.get(name='Negative')
+        self.assertEqual(character_neg.level, 1)
+
+
+
+
 
     @patch('characters.views.compress_character_image')
     def test_submit_with_image(self, mock_compress):

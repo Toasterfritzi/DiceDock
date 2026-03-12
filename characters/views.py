@@ -673,6 +673,11 @@ def character_builder_submit(request):
     if not data.get('name'):
         data['name'] = 'Unbenannt'
 
+    try:
+        data['level'] = max(1, min(20, int(data.get('level', 1))))
+    except (ValueError, TypeError):
+        data['level'] = 1
+
     form = CharacterForm(data, request.FILES)
     if not form.is_valid():
         messages.error(request, "Fehler bei der Charaktererstellung. Bitte überprüfe deine Eingaben.")
