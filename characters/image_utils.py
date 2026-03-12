@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 
 # Maximum dimensions for character images.
 # The largest display in the UI is w-24 h-24 (96×96 CSS pixels).
-# We use 512×512 to keep enough quality for retina displays. # noqa: E800
+# We use 512×512 to keep enough quality for retina displays.
 MAX_IMAGE_SIZE = (512, 512)
 WEBP_QUALITY = 80
 
