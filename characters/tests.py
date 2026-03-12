@@ -1328,32 +1328,23 @@ class CharacterBuilderViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'characters/character_builder.html')
 
-        # Check if the JSON strings are in the context
+        # Check if the data dicts are in the context
         self.assertIn('klassen_json', response.context)
         self.assertIn('hintergruende_json', response.context)
         self.assertIn('spezies_json', response.context)
 
-        # Verify that they are valid JSON
-        try:
-            klassen = json.loads(response.context['klassen_json'])
-            self.assertIsInstance(klassen, dict)
-            self.assertTrue(len(klassen) > 0)
-        except json.JSONDecodeError:
-            self.fail("klassen_json is not valid JSON")
+        # Verify that they are valid dicts (no longer JSON strings after double-encoding fix)
+        klassen = response.context['klassen_json']
+        self.assertIsInstance(klassen, dict)
+        self.assertTrue(len(klassen) > 0)
 
-        try:
-            hintergruende = json.loads(response.context['hintergruende_json'])
-            self.assertIsInstance(hintergruende, dict)
-            self.assertTrue(len(hintergruende) > 0)
-        except json.JSONDecodeError:
-            self.fail("hintergruende_json is not valid JSON")
+        hintergruende = response.context['hintergruende_json']
+        self.assertIsInstance(hintergruende, dict)
+        self.assertTrue(len(hintergruende) > 0)
 
-        try:
-            spezies = json.loads(response.context['spezies_json'])
-            self.assertIsInstance(spezies, dict)
-            self.assertTrue(len(spezies) > 0)
-        except json.JSONDecodeError:
-            self.fail("spezies_json is not valid JSON")
+        spezies = response.context['spezies_json']
+        self.assertIsInstance(spezies, dict)
+        self.assertTrue(len(spezies) > 0)
 
 class AddCharacterWeaponTest(TestCase):
     def setUp(self):

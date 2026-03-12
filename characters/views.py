@@ -84,12 +84,17 @@ def _parse_json_request(request):
     """Parst den JSON-Body der Anfrage und gibt (data, error_response) zurück."""
     try:
         data = json.loads(request.body)
-        return data, None
     except (json.JSONDecodeError, ValueError):
         return None, JsonResponse(
             {'success': False, 'error': 'Ungültige Anfragedaten.'},
             status=400,
         )
+    if not isinstance(data, dict):
+        return None, JsonResponse(
+            {'success': False, 'error': 'Ungültiges JSON-Format. Ein Objekt wird erwartet.'},
+            status=400,
+        )
+    return data, None
 
 def _apply_background_bonuses(character):
     """Wendet Hintergrund-Boni auf das Charakterobjekt an."""
@@ -351,19 +356,22 @@ def character_detail(request, pk):
     """Charakterbogen anzeigen."""
     character = get_object_or_404(Character, pk=pk, user=request.user)
 
-    waffen_json = json.dumps(WAFFEN_DATEN, ensure_ascii=False)
-    meisterung_json = json.dumps(WAFFEN_MEISTERUNGEN, ensure_ascii=False)
-
     # Zauber-Daten
     spell_slots = character.get_spell_slots_for_level()
     known_spells_detail = character.get_known_spells_detail()
 
     return render(request, 'characters/character_detail.html', {
         'character': character,
-        'waffen_json': waffen_json,
-        'meisterung_json': meisterung_json,
         'spell_slots': spell_slots,
         'known_spells_detail': known_spells_detail,
+    })
+
+@login_required
+def api_waffen(request):
+    """Gibt die Waffendaten als JSON für das PWA Caching zurück."""
+    return JsonResponse({
+        'waffen': WAFFEN_DATEN,
+        'meisterungen': WAFFEN_MEISTERUNGEN
     })
 
 
@@ -398,7 +406,7 @@ def _apply_levelup_hp_increase(character, rolled_hp=None):
 
         character.max_hp += hp_increase
         character.current_hp = character.max_hp
-    except (ValueError, IndexError):
+    except (ValueError, IndexError, AttributeError):
         logger = logging.getLogger(__name__)
         logger.warning(
             'Ungültiges Trefferwürfel-Format "%s" für Charakter %s (ID: %s)',
@@ -653,9 +661,9 @@ def _get_builder_json_data():
         }
 
     return {
-        'klassen_json': json.dumps(klassen_json, ensure_ascii=False),
-        'hintergruende_json': json.dumps(hintergruende_json, ensure_ascii=False),
-        'spezies_json': json.dumps(spezies_json, ensure_ascii=False),
+        'klassen_json': klassen_json,
+        'hintergruende_json': hintergruende_json,
+        'spezies_json': spezies_json,
     }
 
 @login_required
@@ -762,18 +770,18 @@ def add_character_weapon(request, pk):
         return error_response
 
     weapon_name = data.get('name')
-    weapon_type = data.get('type')
-    hit = data.get('hit')
-    damage = data.get('damage')
+    weapon_type = data.get('type', '')
+    hit = data.get('hit', '+0')
+    damage = data.get('damage', '0')
 
     if not weapon_name:
         return JsonResponse({'success': False, 'error': 'Waffenname fehlt.'}, status=400)
 
     new_weapon = {
         'name': weapon_name,
-        'type': weapon_type or '',
-        'hit': hit or '+0',
-        'damage': damage or '0'
+        'typ': weapon_type or '',
+        'angriffsbonus': hit or '+0',
+        'schaden': damage or '0'
     }
 
     current_weapons = character.weapons or []
@@ -808,11 +816,11 @@ def edit_character_weapon(request, pk):
     if 'name' in data:
         weapon['name'] = data['name']
     if 'type' in data:
-        weapon['type'] = data['type']
+        weapon['typ'] = data['type']
     if 'hit' in data:
-        weapon['hit'] = data['hit']
+        weapon['angriffsbonus'] = data['hit']
     if 'damage' in data:
-        weapon['damage'] = data['damage']
+        weapon['schaden'] = data['damage']
 
     character.weapons = current_weapons
     character.save()
@@ -936,3 +944,31 @@ def remove_character_item(request, pk):
     character.save()
 
     return JsonResponse({'success': True, 'inventory': character.inventory})
+
+
+# ---------------------------------------------------------------------------
+# PWA: Manifest & Service Worker (must be served from root scope)
+# ---------------------------------------------------------------------------
+
+def pwa_manifest(request):
+    """Serves the PWA manifest.json from the static folder with correct MIME type."""
+    from django.contrib.staticfiles import finders
+    manifest_path = finders.find('characters/manifest.json')
+    if manifest_path:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            return JsonResponse(json.loads(f.read()), safe=False,
+                                content_type='application/manifest+json')
+    return JsonResponse({'error': 'Manifest not found'}, status=404)
+
+
+def pwa_service_worker(request):
+    """Serves sw.js from the root scope with correct MIME type and Service-Worker-Allowed header."""
+    from django.contrib.staticfiles import finders
+    from django.http import HttpResponse
+    sw_path = finders.find('characters/sw.js')
+    if sw_path:
+        with open(sw_path, 'r', encoding='utf-8') as f:
+            response = HttpResponse(f.read(), content_type='application/javascript')
+            response['Service-Worker-Allowed'] = '/'
+            return response
+    return JsonResponse({'error': 'Service Worker not found'}, status=404)

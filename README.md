@@ -57,3 +57,17 @@ Erstelle dein eigenes Benutzerkonto. Deine Charaktere sind sicher aufbewahrt und
 *Bereit für das nächste Abenteuer? Dein Charakter wartet auf dich!*
 
 – **Das DiceDock Team**
+
+---
+
+## 🛠️ Entwickler-Hinweise & Bekannte Bugs (Troubleshooting)
+
+Falls du am Code von DiceDock arbeitest oder Fehler suchst, beachte die folgenden historisch relevanten Bugs, die behoben wurden:
+
+*   **Der "1 2 3 4 5" / iPad Crash Bug:**
+    *   *Symptom:* Das iPad stürzte ab, der PC lud extrem langsam, und Charakterklassen/Waffen wurden nur als Zahlen wie 1, 2, 3 dargestellt.
+    *   *Ursache (Double JSON Encoding):* In `views.py` wurde `json.dumps()` verwendet, um Dictionaries an das Template zu senden, wo dann erneut der Django-Filter `|json_script` angewendet wurde. Das JavaScript parste daraufhin einen String statt eines Objekts und renderte für jedes der 50.000 Zeichen im Regelwerk eine eigene unsichtbare HTML-Karte in den DOM, was das iPad zum Crash brachte und die Indizes (Zahlen) in die Datenbank schrieb.
+    *   *Lösung:* Nutze niemals `json.dumps()` in der View, wenn du die Variable im Template mit `|json_script` in einen `<script>`-Block injizierst.
+*   **NoneType Server Crashes (HTTP 500):**
+    *   Klassen und Spezies, die in der Datenbank stehen, aber nicht mehr in den Regeldaten (z.B. `KLASSEN_DATEN`) existieren, führten beim Aufrufen von `.get('rettungswuerfe')` zu fatalen Backend-Abstürzen. Dies wurde durch sichere Typ-Überprüfungen in `views.py` behoben.
+    *   AJAX-Requests erwarten strikte Validierung (`isinstance(data, dict)`), um list-basierte Payloads abzufangen.

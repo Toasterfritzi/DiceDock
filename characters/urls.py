@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
@@ -21,4 +22,12 @@ urlpatterns = [
     path('character/<int:pk>/remove_item/', views.remove_character_item, name='remove_character_item'),
     path('build/', views.character_builder, name='character_builder'),
     path('build/submit/', views.character_builder_submit, name='character_builder_submit'),
+
+    # API endpoints for frontend
+    path('api/waffen/', views.api_waffen, name='api_waffen'),
+
+    # PWA: Manifest and Service Worker served from root scope
+    path('manifest.json', views.pwa_manifest, name='pwa_manifest'),
+    path('sw.js', views.pwa_service_worker, name='pwa_sw'),
 ]
+

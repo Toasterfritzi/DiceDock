@@ -60,7 +60,7 @@
                     <span class="text-xs text-gray-400 mt-1 block">{{ character.experience }} / {{ character.max_experience }} EP</span>
                 </div>
                 <a href="{% url 'character_levelup' character.pk %}"
-                    class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg font-bold shadow-[0_0_15px_#a855f766] transition-all hover:scale-105 hover:shadow-[0_0_25px_#a855f799]">
+                    class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg font-bold shadow-[0_0_15px_#a855f766] transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_25px_#a855f799]">
                     <span class="material-symbols-outlined">upgrade</span>
                     <span>Stufenaufstieg</span>
                 </a>
@@ -80,7 +80,7 @@
                     </span>
                 </div>
                 <div id="stat-row-strength" onclick="openStatModal('strength', {{ character.strength }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
@@ -100,7 +100,7 @@
                 </div>
 
                 <div id="stat-row-dexterity" onclick="openStatModal('dexterity', {{ character.dexterity }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
@@ -120,7 +120,7 @@
                 </div>
 
                 <div id="stat-row-constitution" onclick="openStatModal('constitution', {{ character.constitution }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
@@ -140,7 +140,7 @@
                 </div>
 
                 <div id="stat-row-intelligence" onclick="openStatModal('intelligence', {{ character.intelligence }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
@@ -160,7 +160,7 @@
                 </div>
 
                 <div id="stat-row-wisdom" onclick="openStatModal('wisdom', {{ character.wisdom }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 border border-teal-500/20 shadow-[0_0_10px_rgba(20,184,166,0.2)]">
@@ -180,7 +180,7 @@
                 </div>
 
                 <div id="stat-row-charisma" onclick="openStatModal('charisma', {{ character.charisma }})"
-                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer relative">
+                    class="group flex items-center justify-between p-2 rounded-lg hover:bg-white/5 active:bg-white/10 active:scale-[0.98] transition-colors cursor-pointer relative">
                     <div class="flex items-center gap-3">
                         <div
                             class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
@@ -217,7 +217,7 @@
                 <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm text-purple-400">auto_awesome</span> Klassenmerkmale
                 </h3>
-                <div class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                <div class="space-y-2 max-h-[400px] overflow-y-auto overflow-x-auto pr-1">
                     {% for feature in character.get_all_features_up_to_level %}
                     <div class="p-2 rounded-lg bg-white/5 border border-white/5">
                         <div class="flex items-center justify-between">
@@ -250,7 +250,7 @@
             </div>
         </div>
         <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
-            <div class="glass-panel glass-highlight rounded-3xl p-8 relative overflow-hidden flex flex-col items-center justify-center text-center animate-float"
+            <div class="glass-panel glass-highlight rounded-3xl p-8 relative overflow-hidden flex flex-col items-center justify-center text-center animate-float will-change-transform"
                 style="animation-duration: 10s;">
                 <div
                     class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50 shadow-[0_0_15px_rgba(34,197,94,0.5)]">
@@ -323,10 +323,10 @@
                 </div>
                 <div class="relative group/add z-20">
                     <button
-                        class="w-full mb-4 flex items-center justify-center gap-2 text-xs text-primary hover:text-white transition-colors uppercase font-bold tracking-wider border border-primary/30 px-3 py-2 rounded-lg hover:bg-primary/20">+
+                        class="w-full min-h-[44px] mb-4 flex items-center justify-center gap-2 text-xs text-primary hover:text-white transition-colors uppercase font-bold tracking-wider border border-primary/30 px-3 py-2 rounded-lg hover:bg-primary/20 active:bg-primary/30 active:scale-[0.98]">+
                         Waffe hinzufügen</button>
                     <div
-                        class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-2xl border border-white/10">
+                        class="absolute top-12 left-0 w-full z-50 glass-panel rounded-xl p-3 opacity-0 group-focus-within/add:opacity-100 group-hover/add:opacity-100 pointer-events-none group-focus-within/add:pointer-events-auto group-hover/add:pointer-events-auto transition-all duration-300 transform translate-y-2 group-focus-within/add:translate-y-0 group-hover/add:translate-y-0 shadow-2xl backdrop-blur-md md:backdrop-blur-2xl will-change-transform border border-white/10">
                         <input id="weapon-search-input"
                             class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 mb-2"
                             placeholder="Waffen suchen..." type="text" autocomplete="off" />
@@ -369,10 +369,10 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded transition-colors" title="Bearbeiten">
+                                <button onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </button>
-                                <button onclick="removeWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}')" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors" title="Entfernen">
+                                <button onclick="removeWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </div>
@@ -431,7 +431,7 @@
 
                 <!-- Bekannte Zauber -->
                 {% if known_spells_detail %}
-                <div class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                <div class="space-y-3 max-h-[400px] overflow-y-auto overflow-x-auto pr-1">
             {% for grad, zauber_liste in known_spells_detail.items %}
             <div>
                 <div class="flex items-center gap-2 mb-2">
@@ -490,7 +490,7 @@
                         <span class="material-symbols-outlined text-sm">backpack</span> Inventar
                     </h3>
                     <button
-                        class="w-5 h-5 rounded flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors group relative"
+                        class="w-11 h-11 rounded flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 active:scale-90 text-white transition-colors group relative"
                         title="Gegenstand hinzufügen">
                         <span class="material-symbols-outlined text-[14px]">add</span>
                         <div
@@ -532,19 +532,19 @@
                     <span class="text-[9px] text-gray-600 uppercase tracking-wider">Kupfer</span>
                 </div>
             </div>
-            <ul class="space-y-3 overflow-y-auto max-h-[400px]">
+            <ul class="space-y-3 overflow-y-auto overflow-x-auto max-h-[400px]">
                 {% for item in character.inventory %}
-                <li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 group">
+                <li class="flex items-center justify-between text-sm p-2 rounded hover:bg-white/5 active:bg-white/10 active:scale-[0.98] group">
                     <div class="flex-grow cursor-pointer" onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})">
                         <span class="text-gray-300 group-hover:text-white">{{ item.name }}</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded cursor-pointer" onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})">x{{ item.quantity }}</span>
                         <div class="opacity-0 group-hover:opacity-100 transition-opacity flex">
-                            <button onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})" class="p-1 text-blue-400 hover:bg-blue-500/20 rounded transition-colors" title="Bearbeiten">
+                            <button onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten">
                                 <span class="material-symbols-outlined text-[16px]">edit</span>
                             </button>
-                            <button onclick="removeItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}')" class="p-1 text-red-400 hover:bg-red-500/20 rounded transition-colors" title="Entfernen">
+                            <button onclick="removeItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen">
                                 <span class="material-symbols-outlined text-[16px]">delete</span>
                             </button>
                         </div>
@@ -565,10 +565,10 @@
             </div>
 
             <div
-                class="absolute bottom-0 left-0 w-full glass-highlight expandable-panel border-t border-white/20 rounded-t-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] h-[60px] group hover:h-[350px] cursor-pointer bg-glass-bg backdrop-blur-xl animate-glass-pulse overflow-hidden">
+                class="absolute bottom-0 left-0 w-full glass-highlight expandable-panel border-t border-white/20 rounded-t-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] h-[60px] group hover:h-[350px] cursor-pointer bg-glass-bg backdrop-blur-md md:backdrop-blur-xl animate-glass-pulse overflow-hidden">
                 <div class="liquid-edge transition-opacity duration-300 group-hover:opacity-100 opacity-30"></div>
                 <div
-                    class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl pointer-events-none transition-transform duration-500 group-hover:scale-150">
+                    class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl pointer-events-none transition-transform duration-500 group-hover:scale-150 will-change-transform">
                 </div>
                 <div class="p-4 relative z-10 flex flex-col h-full">
                     <div class="flex items-center justify-between mb-2">
@@ -716,16 +716,48 @@
     </div>
 </div>
 
-{{ waffen_json|json_script:"weapon-data" }}
 <script>
-    const WAFFEN_DATEN = JSON.parse(document.getElementById('weapon-data').textContent);
+    let WAFFEN_DATEN = {};
+    let WAFFEN_MEISTERUNGEN = {};
+    
+    // Daten asynchron laden (LocalStorage Cache oder API Fetch)
+    async function initWeaponData() {
+        const cachedWaffen = localStorage.getItem('WAFFEN_DATEN');
+        const cachedMeisterungen = localStorage.getItem('WAFFEN_MEISTERUNGEN');
+        
+        if (cachedWaffen && cachedMeisterungen) {
+            try {
+                WAFFEN_DATEN = JSON.parse(cachedWaffen);
+                WAFFEN_MEISTERUNGEN = JSON.parse(cachedMeisterungen);
+                return;
+            } catch (e) {
+                console.error("Cache Error", e);
+            }
+        }
+        
+        try {
+            const res = await fetch('/api/waffen/');
+            if (res.ok) {
+                const data = await res.json();
+                WAFFEN_DATEN = data.waffen;
+                WAFFEN_MEISTERUNGEN = data.meisterungen;
+                localStorage.setItem('WAFFEN_DATEN', JSON.stringify(WAFFEN_DATEN));
+                localStorage.setItem('WAFFEN_MEISTERUNGEN', JSON.stringify(WAFFEN_MEISTERUNGEN));
+            }
+        } catch(e) {
+            console.error("API Fetch Error", e);
+        }
+    }
+
     const charStats = {
         strMod: parseInt('{{ character.strength_mod }}') || 0,
         dexMod: parseInt('{{ character.dexterity_mod }}') || 0,
         profBonus: parseInt('{{ character.proficiency_bonus }}') || 2
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
+        await initWeaponData();
+        
         const searchInput = document.getElementById('weapon-search-input');
         const suggestionsBox = document.getElementById('weapon-suggestions');
 
@@ -798,11 +830,13 @@
         document.getElementById('editWeaponDamage').value = damage;
         document.getElementById('weaponEditModal').classList.remove('hidden');
         document.getElementById('weaponEditModal').classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
 
     function closeWeaponModal() {
         document.getElementById('weaponEditModal').classList.add('hidden');
         document.getElementById('weaponEditModal').classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
     }
 
     function saveWeaponEdit() {
@@ -877,11 +911,13 @@
         document.getElementById('editItemQuantity').value = quantity;
         document.getElementById('itemEditModal').classList.remove('hidden');
         document.getElementById('itemEditModal').classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
 
     function closeItemModal() {
         document.getElementById('itemEditModal').classList.add('hidden');
         document.getElementById('itemEditModal').classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
     }
 
     function saveItemEdit() {
@@ -966,11 +1002,13 @@
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
 
     function closeCoinModal() {
         document.getElementById('coinEditModal').classList.add('hidden');
         document.getElementById('coinEditModal').classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
     }
 
     function changeCoin(action) {
@@ -1017,11 +1055,13 @@
         document.getElementById('editModalStatValue').innerText = currentVal;
         document.getElementById('statEditModal').classList.remove('hidden');
         document.getElementById('statEditModal').classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
 
     function closeStatModal() {
         document.getElementById('statEditModal').classList.add('hidden');
         document.getElementById('statEditModal').classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
     }
 
     function changeStat(action) {

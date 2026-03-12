@@ -12,13 +12,13 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
             <a href="{% url 'character_builder' %}"
-                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
-                <span class="material-symbols-outlined transition-transform group-hover:rotate-90">add</span>
+                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group">
+                <span class="material-symbols-outlined transition-transform group-hover:rotate-90 group-active:scale-90">add</span>
                 Charakter erstellen
             </a>
             <a href="{% url 'create_character' %}"
-                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold transition-all hover:scale-105 group">
-                <span class="material-symbols-outlined transition-transform group-hover:rotate-12">upload</span>
+                class="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 active:bg-white/20 border border-white/10 text-gray-300 hover:text-white font-bold transition-all hover:scale-105 active:scale-95 group">
+                <span class="material-symbols-outlined transition-transform group-hover:rotate-12 group-active:scale-90">upload</span>
                 Charakter importieren
             </a>
         </div>
@@ -28,7 +28,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for char in characters %}
         <div
-            class="glass-panel glass-highlight rounded-2xl p-6 relative group hover:-translate-y-2 transition-transform duration-300">
+            class="glass-panel glass-highlight rounded-2xl p-6 relative group hover:-translate-y-2 active:translate-y-0 active:scale-[0.98] transition-all duration-300 cursor-pointer">
             <div
                 class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
             </div>
@@ -63,7 +63,7 @@
 
             <div class="mt-6 flex justify-end gap-3 relative z-10">
                 <a href="{% url 'character_detail' char.pk %}"
-                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
+                    class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 active:bg-white/20 active:scale-95 border border-white/10 text-white transition-all text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">visibility</span> Bogen ansehen
                 </a>
             </div>
@@ -80,7 +80,7 @@
         <p class="text-gray-400 text-lg max-w-md mx-auto mb-8">Du hast noch keine Charaktere erstellt, um dein
             Abenteuer zu beginnen. Schmiede jetzt deine erste Legende!</p>
         <a href="{% url 'create_character' %}"
-            class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105">
+            class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 active:scale-95 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all hover:scale-105">
             Beginne dein Abenteuer
         </a>
     </div>
