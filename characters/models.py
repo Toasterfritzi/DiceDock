@@ -154,37 +154,27 @@ class Character(models.Model):
         if not klasse:
             return []
 
-        level = self.level
         all_features = []
-
         # Klassen-Features
         features_dict = klasse.get('features', {})
-        for lvl in range(1, level + 1):
-            if lvl in features_dict:
-                for f in features_dict[lvl]:
-                    all_features.append({'stufe': lvl, **f})
+        for lvl in range(1, self.level + 1):
+            features = features_dict.get(lvl, [])
+            for f in features:
+                all_features.append({'stufe': lvl, **f})
 
         # Unterklassen-Features
-        subclass = self.subclass
-        if subclass:
+        if self.subclass:
             unterklassen = klasse.get('unterklassen', {})
-
-            # Direct lookup first
-            uk_features = unterklassen.get(subclass)
-
-            # Fallback to case-insensitive lookup
-            if not uk_features:
-                subclass_lower = subclass.lower()
-                for uk_name, uk_data in unterklassen.items():
-                    if uk_name.lower() == subclass_lower:
-                        uk_features = uk_data
-                        break
-
+            uk_features = None
+            for uk_name, uk_data in unterklassen.items():
+                if uk_name.lower() == self.subclass.lower() or uk_name == self.subclass:
+                    uk_features = uk_data
+                    break
             if uk_features:
-                for lvl in range(1, level + 1):
-                    if lvl in uk_features:
-                        for f in uk_features[lvl]:
-                            all_features.append({'stufe': lvl, 'unterklasse': True, **f})
+                for lvl in range(1, self.level + 1):
+                    features = uk_features.get(lvl, [])
+                    for f in features:
+                        all_features.append({'stufe': lvl, 'unterklasse': True, **f})
 
         return all_features
 
