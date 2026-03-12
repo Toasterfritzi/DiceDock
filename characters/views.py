@@ -575,25 +575,32 @@ def _get_builder_json_data():
     """Cached static JSON data for character builder."""
     # Klassen-Daten für das Frontend aufbereiten
     klassen_json = {}
-    empty_dict = {}
-    k_beschr_get = KLASSEN_BESCHREIBUNGEN.get
-    uk_beschr_get = UNTERKLASSEN_BESCHREIBUNGEN.get
-
     for name, data in KLASSEN_DATEN.items():
-        beschr = k_beschr_get(name, empty_dict)
-
+        beschr = KLASSEN_BESCHREIBUNGEN.get(name, {})
         unterklassen = {}
-        for uk_name, uk_features in data.get('unterklassen', empty_dict).items():
-            uk_beschr = uk_beschr_get(uk_name, empty_dict)
-
+        for uk_name in data.get('unterklassen', {}):
+            uk_beschr = UNTERKLASSEN_BESCHREIBUNGEN.get(uk_name, {})
+            # Alle Features der Unterklasse (alle Stufen)
+            uk_features = data['unterklassen'][uk_name]
+            alle_features = {}
+            for lvl in sorted(uk_features.keys()):
+                alle_features[str(lvl)] = [
+                    {'name': f['name'], 'beschreibung': f.get('beschreibung', '')}
+                    for f in uk_features[lvl]
+                ]
             unterklassen[uk_name] = {
                 'beschreibung': uk_beschr.get('beschreibung', ''),
                 'bild': uk_beschr.get('bild', ''),
-                'features': {
-                    str(lvl): [{'name': f['name'], 'beschreibung': f.get('beschreibung', '')} for f in uk_features[lvl]]
-                    for lvl in sorted(uk_features.keys())
-                },
+                'features': alle_features,
             }
+
+        # Alle Klassen-Features für Detail-Ansicht
+        alle_klassen_features = {}
+        for lvl, feats in data.get('features', {}).items():
+            alle_klassen_features[str(lvl)] = [
+                {'name': f['name'], 'beschreibung': f.get('beschreibung', '')}
+                for f in feats
+            ]
 
         klassen_json[name] = {
             'beschreibung': beschr.get('beschreibung', ''),
@@ -604,10 +611,7 @@ def _get_builder_json_data():
             'ruestungen': data.get('ruestungen', []),
             'waffen': data.get('waffen', []),
             'zauberattribut': data.get('zauberattribut'),
-            'features': {
-                str(lvl): [{'name': f['name'], 'beschreibung': f.get('beschreibung', '')} for f in feats]
-                for lvl, feats in data.get('features', empty_dict).items()
-            },
+            'features': alle_klassen_features,
             'unterklassen': unterklassen,
         }
 
