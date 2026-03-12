@@ -1474,25 +1474,47 @@ class CharacterBuilderSubmitTest(TestCase):
         self.assertEqual(character.level, 3)
         self.assertEqual(response.url, reverse('character_detail', kwargs={'pk': character.pk}))
 
-    def test_submit_invalid_level(self):
+    def test_submit_invalid(self):
         payload = {
-            'name': 'Legolas',
-            'level': 'invalid_level'
+            'name': 'Invalid Hero',
+            'character_class': '',  # Missing class, which is required
+            'background': 'Soldat',
+            'race': 'Zwerg',
+            'level': '3',
+            'equipment_preference': 'gold'
         }
         response = self.client.post(self.url, data=payload)
-        self.assertEqual(response.status_code, 302)
 
-        character = Character.objects.get(name='Legolas')
-        self.assertEqual(character.level, 1) # Fallback
+        # Should redirect back to the builder form
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('character_builder'))
+
+        # Verify no character was created
+        self.assertFalse(Character.objects.filter(name='Invalid Hero').exists())
+
+    def test_submit_invalid_level(self):
+        # Since character_class, race and background are required by the form, we provide them
+        base_payload = {
+            'character_class': 'Kämpfer',
+            'race': 'Zwerg',
+            'background': 'Soldat'
+        }
+
+        payload = {**base_payload, 'name': 'Legolas', 'level': 'invalid_level'}
+        response = self.client.post(self.url, data=payload)
+        # Form should be invalid due to 'invalid_level' and redirect back to builder
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('character_builder'))
+        self.assertFalse(Character.objects.filter(name='Legolas').exists())
 
         # Test out of bounds
-        self.client.post(self.url, data={'name': 'Over 9000', 'level': '9000'})
-        character = Character.objects.get(name='Over 9000')
-        self.assertEqual(character.level, 20) # Max 20
+        payload = {**base_payload, 'name': 'Over 9000', 'level': '9000'}
+        self.client.post(self.url, data=payload)
+        self.assertFalse(Character.objects.filter(name='Over 9000').exists())
 
-        self.client.post(self.url, data={'name': 'Negative', 'level': '-5'})
-        character = Character.objects.get(name='Negative')
-        self.assertEqual(character.level, 1) # Min 1
+        payload = {**base_payload, 'name': 'Negative', 'level': '-5'}
+        self.client.post(self.url, data=payload)
+        self.assertFalse(Character.objects.filter(name='Negative').exists())
 
     @patch('characters.views.compress_character_image')
     def test_submit_with_image(self, mock_compress):
@@ -1507,7 +1529,12 @@ class CharacterBuilderSubmitTest(TestCase):
 
         payload = {
             'name': 'Image Hero',
-            'image': upload
+            'image': upload,
+            'character_class': 'Kämpfer',
+            'race': 'Zwerg',
+            'background': 'Soldat',
+            'level': '1',
+            'equipment_preference': 'gold'
         }
         response = self.client.post(self.url, data=payload)
         self.assertEqual(response.status_code, 302)
@@ -1520,13 +1547,11 @@ class CharacterBuilderSubmitTest(TestCase):
         # Empty POST request
         response = self.client.post(self.url, data={})
         self.assertEqual(response.status_code, 302)
+        # Should redirect back to builder since form is invalid
+        self.assertEqual(response.url, reverse('character_builder'))
 
-        # Should take the very first character created by this user
-        character = Character.objects.filter(user=self.user).last()
-        self.assertEqual(character.name, 'Unbenannt')
-        self.assertEqual(character.character_class, '')
-        self.assertEqual(character.race, 'Mensch')
-        self.assertEqual(character.level, 1)
+        # Verify no character was created
+        self.assertFalse(Character.objects.filter(user=self.user).exists())
 
 from characters.rules_data.zauber import get_zauberliste
 
