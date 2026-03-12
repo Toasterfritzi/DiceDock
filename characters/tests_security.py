@@ -3,8 +3,6 @@ import os
 
 from django.test import TestCase
 
-import dicedock_project.settings
-
 
 class SettingsSecurityTest(TestCase):
     def setUp(self):
@@ -17,6 +15,8 @@ class SettingsSecurityTest(TestCase):
     def test_allowed_hosts_parsing(self):
         os.environ['ALLOWED_HOSTS'] = 'example.com,test.com'
         os.environ['RENDER_EXTERNAL_HOSTNAME'] = 'render.com'
+
+        import dicedock_project.settings
         importlib.reload(dicedock_project.settings)
 
         self.assertIn('example.com', dicedock_project.settings.ALLOWED_HOSTS)
@@ -32,6 +32,8 @@ class SettingsSecurityTest(TestCase):
     def test_allowed_hosts_ignores_whitespace_and_empty_values(self):
         os.environ['ALLOWED_HOSTS'] = ' example.com, ,test.com ,, '
         os.environ['RENDER_EXTERNAL_HOSTNAME'] = ' render.com '
+
+        import dicedock_project.settings
         importlib.reload(dicedock_project.settings)
 
         self.assertEqual(
@@ -41,6 +43,8 @@ class SettingsSecurityTest(TestCase):
 
     def test_debug_accepts_common_truthy_values(self):
         os.environ['DEBUG'] = '1'
+
+        import dicedock_project.settings
         importlib.reload(dicedock_project.settings)
 
         self.assertTrue(dicedock_project.settings.DEBUG)
