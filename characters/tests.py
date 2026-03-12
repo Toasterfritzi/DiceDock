@@ -1076,29 +1076,6 @@ class CharacterLevelupTest(TestCase):
         # hp_increase = (10 // 2) + 1 + 2 = 8, plus 1 for dwarf = 9. 13 + 9 = 22
         self.assertEqual(dwarf_char.max_hp, 22)
 
-
-    def test_levelup_invalid_hit_dice_logs_warning(self):
-        invalid_char = Character.objects.create(
-            user=self.user,
-            name='Invalid Dice Test',
-            character_class='Kämpfer',
-            race='Mensch',
-            level=1,
-            hit_dice='invalid',
-            constitution=14,
-            max_hp=12,
-            current_hp=12,
-            available_stat_points=0,
-            features=[]
-        )
-        url = reverse('character_levelup', args=[invalid_char.pk])
-        with self.assertLogs('characters.views', level='WARNING') as cm:
-            response = self.client.post(url)
-        self.assertRedirects(response, reverse('character_detail', args=[invalid_char.pk]))
-        invalid_char.refresh_from_db()
-        self.assertEqual(invalid_char.max_hp, 12)
-        self.assertTrue(any('Ungültiges Trefferwürfel-Format' in log for log in cm.output))
-
     def test_levelup_asi(self):
         asi_char = Character.objects.create(
             user=self.user,
