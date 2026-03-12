@@ -771,9 +771,9 @@ def add_character_weapon(request, pk):
 
     new_weapon = {
         'name': weapon_name,
-        'typ': weapon_type or '',
-        'angriffsbonus': hit or '+0',
-        'schaden': damage or '0'
+        'type': weapon_type or '',
+        'hit': hit or '+0',
+        'damage': damage or '0'
     }
 
     current_weapons = character.weapons or []
@@ -782,3 +782,157 @@ def add_character_weapon(request, pk):
     character.save()
 
     return JsonResponse({'success': True, 'weapons': character.weapons})
+
+@login_required
+@require_POST
+def edit_character_weapon(request, pk):
+    """AJAX-Endpunkt: Bestehende Waffe bearbeiten."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
+
+    index = data.get('index')
+    
+    if index is None or not isinstance(index, int):
+        return JsonResponse({'success': False, 'error': 'Ungültiger oder fehlender Index.'}, status=400)
+
+    current_weapons = character.weapons or []
+    if index < 0 or index >= len(current_weapons):
+        return JsonResponse({'success': False, 'error': 'Waffe an diesem Index existiert nicht.'}, status=404)
+
+    weapon = current_weapons[index]
+    
+    # Update fields if provided
+    if 'name' in data:
+        weapon['name'] = data['name']
+    if 'type' in data:
+        weapon['type'] = data['type']
+    if 'hit' in data:
+        weapon['hit'] = data['hit']
+    if 'damage' in data:
+        weapon['damage'] = data['damage']
+
+    character.weapons = current_weapons
+    character.save()
+
+    return JsonResponse({'success': True, 'weapons': character.weapons})
+    
+@login_required
+@require_POST
+def remove_character_weapon(request, pk):
+    """AJAX-Endpunkt: Waffe vom Charakter entfernen."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
+
+    index = data.get('index')
+    
+    if index is None or not isinstance(index, int):
+        return JsonResponse({'success': False, 'error': 'Ungültiger oder fehlender Index.'}, status=400)
+
+    current_weapons = character.weapons or []
+    if index < 0 or index >= len(current_weapons):
+        return JsonResponse({'success': False, 'error': 'Waffe an diesem Index existiert nicht.'}, status=404)
+
+    current_weapons.pop(index)
+    character.weapons = current_weapons
+    character.save()
+
+    return JsonResponse({'success': True, 'weapons': character.weapons})
+
+@login_required
+@require_POST
+def add_character_item(request, pk):
+    """AJAX-Endpunkt: Gegenstand zum Inventar hinzufügen."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
+
+    item_name = data.get('name')
+    quantity = data.get('quantity', 1)
+
+    if not item_name:
+        return JsonResponse({'success': False, 'error': 'Gegenstandsname fehlt.'}, status=400)
+
+    try:
+        quantity = int(quantity)
+    except ValueError:
+        quantity = 1
+
+    new_item = {
+        'name': item_name,
+        'quantity': quantity
+    }
+
+    current_inventory = character.inventory or []
+    current_inventory.append(new_item)
+    character.inventory = current_inventory
+    character.save()
+
+    return JsonResponse({'success': True, 'inventory': character.inventory})
+
+@login_required
+@require_POST
+def edit_character_item(request, pk):
+    """AJAX-Endpunkt: Bestehenden Gegenstand im Inventar bearbeiten."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
+
+    index = data.get('index')
+    
+    if index is None or not isinstance(index, int):
+        return JsonResponse({'success': False, 'error': 'Ungültiger oder fehlender Index.'}, status=400)
+
+    current_inventory = character.inventory or []
+    if index < 0 or index >= len(current_inventory):
+        return JsonResponse({'success': False, 'error': 'Gegenstand an diesem Index existiert nicht.'}, status=404)
+
+    item = current_inventory[index]
+    
+    # Update fields if provided
+    if 'name' in data:
+        item['name'] = data['name']
+    if 'quantity' in data:
+        try:
+            item['quantity'] = int(data['quantity'])
+        except ValueError:
+            pass # ignore invalid quantity
+
+    character.inventory = current_inventory
+    character.save()
+
+    return JsonResponse({'success': True, 'inventory': character.inventory})
+
+@login_required
+@require_POST
+def remove_character_item(request, pk):
+    """AJAX-Endpunkt: Gegenstand aus Inventar entfernen."""
+    character = get_object_or_404(Character, pk=pk, user=request.user)
+
+    data, error_response = _parse_json_request(request)
+    if error_response:
+        return error_response
+
+    index = data.get('index')
+    
+    if index is None or not isinstance(index, int):
+        return JsonResponse({'success': False, 'error': 'Ungültiger oder fehlender Index.'}, status=400)
+
+    current_inventory = character.inventory or []
+    if index < 0 or index >= len(current_inventory):
+        return JsonResponse({'success': False, 'error': 'Gegenstand an diesem Index existiert nicht.'}, status=404)
+
+    current_inventory.pop(index)
+    character.inventory = current_inventory
+    character.save()
+
+    return JsonResponse({'success': True, 'inventory': character.inventory})
