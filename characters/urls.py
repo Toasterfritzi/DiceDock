@@ -14,11 +14,6 @@ urlpatterns = [
     path('character/<int:pk>/update_stat/', views.update_character_stat, name='update_character_stat'),
     path('character/<int:pk>/update_coin/', views.update_character_coin, name='update_character_coin'),
     path('character/<int:pk>/add_weapon/', views.add_character_weapon, name='add_character_weapon'),
-    path('character/<int:pk>/edit_weapon/', views.edit_character_weapon, name='edit_character_weapon'),
-    path('character/<int:pk>/remove_weapon/', views.remove_character_weapon, name='remove_character_weapon'),
-    path('character/<int:pk>/add_item/', views.add_character_item, name='add_character_item'),
-    path('character/<int:pk>/edit_item/', views.edit_character_item, name='edit_character_item'),
-    path('character/<int:pk>/remove_item/', views.remove_character_item, name='remove_character_item'),
     path('build/', views.character_builder, name='character_builder'),
     path('build/submit/', views.character_builder_submit, name='character_builder_submit'),
 ]
