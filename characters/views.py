@@ -673,34 +673,24 @@ def character_builder(request):
 @require_POST
 def character_builder_submit(request):
     """Verarbeitet die Daten aus dem Charakter-Builder Wizard."""
-    data = request.POST
-    character = Character(user=request.user)
+    data = request.POST.copy()
+    if not data.get('name'):
+        data['name'] = 'Unbenannt'
 
-    # Grunddaten
-    character.name = data.get('name', 'Unbenannt')
-    character.character_class = data.get('character_class', '')
-    character.subclass = data.get('subclass', '')
-    character.background = data.get('background', '')
-    character.race = data.get('race', 'Mensch')
-    character.abstammung = data.get('abstammung', '')
-    character.alignment = data.get('alignment', '')
-    character.personality_traits = data.get('personality_traits', '')
-    character.ideals = data.get('ideals', '')
-    character.bonds = data.get('bonds', '')
-    character.flaws = data.get('flaws', '')
+    form = CharacterForm(data, request.FILES)
+    if not form.is_valid():
+        messages.error(request, "Fehler bei der Charaktererstellung. Bitte überprüfe deine Eingaben.")
+        return redirect('character_builder')
 
-    # Level
-    try:
-        character.level = max(1, min(20, int(data.get('level', 1))))
-    except (ValueError, TypeError):
-        character.level = 1
+    character = form.save(commit=False)
+    character.user = request.user
 
     # Ausrüstung oder Gold
-    _assign_equipment(character, data.get('equipment_preference'))
+    _assign_equipment(character, form.cleaned_data.get('equipment_preference'))
 
     # Bild (komprimiert auf max. 512×512 WebP)
-    if 'image' in request.FILES:
-        character.image = compress_character_image(request.FILES['image'])
+    if character.image:
+        character.image = compress_character_image(character.image)
 
     # Stat-Zuweisung basierend auf Klasse
     hit_die = _assign_stats(character)
