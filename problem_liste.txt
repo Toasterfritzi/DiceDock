@@ -1,0 +1,26 @@
+Die--- PROBLEM-ANALYSE: DIE WAHRE URSACHE FÜR ABSTÜRZE UND "1 2 3 4 5" ---
+
+Ich habe den wahren und enormen Fehler gefunden, der sowohl das iPad zum Abstürzen bringt als auch auf dem PC zu Anzeigefehlern ("half of it doesn't load") und falschen Klassen ("1 2 3 4 5") führt. Die aufwendige CSS-Gestaltung des iPads war NICHT die Hauptursache, sondern ein massiver Logik-Fehler im Backend bei der Datenübergabe an das Frontend.
+
+URSACHE 1: Der "Double-JSON-Encoding" Bug im Charakter-Builder
+---------------------------------------------------------------------
+In `characters/views.py` (in der Funktion `_get_builder_json_data`) wurden die Regeldaten (Klassen, Hintergründe, Spezies) mit `json.dumps()` in einen JSON-String umgewandelt und an das Template übergeben. 
+Im HTML-Template (`character_builder.html`) wurde dann jedoch der Django-Filter `|json_script` verwendet. Dieser Filter nimmt eine Python-Datenstruktur (Dictionary) und wandelt sie in JSON um. Da er jedoch von `views.py` bereits einen fertigen JSON-String erhalten hat, hat er diesen String "doppelt encodiert" (d.h. er hat den String als literalen Text behandelt, anstatt als Objekt).
+
+Folgen im Frontend:
+- Als das JavaScript (`JSON.parse(...)`) die Daten geladen hat, war das Ergebnis kein Javascript-Objekt mehr, sondern ein riesiger fortlaufender Text (String).
+- Der Code `for (const [name, data] of Object.entries(KLASSEN))` hat daraufhin nicht über die Klassen ("Barbar", "Barde" etc.) iteriert, sondern über JEDES EINZELNE ZEICHEN des extrem langen Textes (Index "0", "1", "2", "3", "4", "5", usw.).
+- Das Skript hat tausende (!) unsichtbare Karten in den Speicher und das HTML (DOM) des Browsers generiert – für jeden Index eine eigene Karte.
+- Das iPad ist durch die unglaubliche Last zehntausender HTML-Elemente zusammengebrochen und abgestürzt (Performance Crash).
+- Auf dem PC führte das dazu, dass nur Teile geladen wurden und das UI extrem laggy war.
+- Wurde daraufhin ein falscher Eintrag angeklickt, speicherte das System die Indizes "1", "2", "3", "4", "5" in der Datenbank statt der tatsächlichen Klassen.
+
+URSACHE 2: Ähnlicher Bug bei den Waffen im Charakterbogen
+---------------------------------------------------------------------
+Derselbe Fehler passierte in `views.py` bei der Funktion `character_detail()`. Dort wurden `WAFFEN_DATEN` und `WAFFEN_MEISTERUNGEN` ebenfalls vorher mit `json.dumps()` encodiert und anschließend im Template mit `|json_script` an das Frontend (z.B. für Modals) weitergereicht. Dies führte beim Interagieren mit Ausrüstung und Waffen zu weiteren schweren Fehlern im Browser.
+
+LÖSUNG
+---------------------------------------------------------------------
+Ich habe die `json.dumps()`-Aufrufe in `views.py` entfernt, sofern die Variablen anschließend mit `|json_script` gerendert werden. Django übernimmt nun das sichere und korrekte Umwandeln in JSON. 
+
+Die Klassen "1 2 3 4 5" sollten jetzt verschwinden, der Charakter-Builder wird wieder die echten Namen wie "Barbar" und "Barde" nutzen und die Webseite wird nicht mehr von zehntausenden "Geister-Elementen" überlastet. Das iPad sollte wieder flüssig laufen und keine Abstürze mehr aufweisen! Auch hier droht ein Absturz des Backends).

@@ -4,14 +4,26 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>{% block title %}DiceDock{% endblock %}</title>
     <link href="{% static 'characters/css/tailwind.css' %}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+
+    <!-- PWA: Manifest & Icons -->
+    <link rel="manifest" href="{% url 'pwa_manifest' %}" />
+    <link rel="icon" href="{% static 'characters/icons/icon-192x192.png' %}" />
+    <link rel="apple-touch-icon" href="{% static 'characters/icons/icon-192x192.png' %}" />
+
+    <!-- PWA: Apple-spezifische Meta-Tags für Standalone-Modus auf iPad/iPhone -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DiceDock" />
+    <meta name="theme-color" content="#0a0a1a" />
+    <meta name="description" content="Dein ultimativer digitaler Begleiter für D&D – Charaktere erstellen und verwalten." />
 </head>
 
 <body class="bg-obsidian min-h-screen flex flex-col font-sans selection:bg-neon-purple selection:text-white">
@@ -169,6 +181,17 @@
                 rain.appendChild(el);
                 setTimeout(() => el.remove(), (dur + 1) * 1000);
             }, 60);
+        }
+    </script>
+
+    <!-- PWA: Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+                    .catch(err => console.warn('[PWA] Service Worker registration failed:', err));
+            });
         }
     </script>
 </body>

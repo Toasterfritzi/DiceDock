@@ -31,10 +31,12 @@ Welcome, Agent! This file contains important guidelines and architectural contex
     *   The `Character` model uses `JSONField` to store `inventory`, `weapons`, `proficiencies`, and `spell_slots`.
     *   Ability modifiers (e.g., `strength_mod`) are calculated dynamically via `@property` methods using the D&D 5e formula: `(score - 10) // 2`.
 *   **Business Logic:**
-    *   **Leveling:** `character.experience` must strictly be checked against `character.max_experience` before allowing a level up increment.
+    *   **Leveling:** `character.experience` must strictly be checked against `character.max_experience` before allowing a level up increment. Be careful when reading `character.hit_dice` for HP increases; it can be `None`, so always handle `AttributeError`.
     *   **ASI Levels:** The `_get_asi_levels` function determines Ability Score Improvement levels using case-insensitive substring matching for classes like 'fighter'/'kämpfer' and 'rogue'/'schurke'.
     *   **Backgrounds:** The 'Soldier' background grants a +2 Strength bonus and sets starting Gold to 0.
-*   **AJAX:** Endpoints (like `update_character_stat`) process JSON payloads parsed via `json.loads(request.body)` and return `JsonResponse` objects.
+*   **AJAX & JSON Handling:**
+    *   Endpoints (like `update_character_stat`) process JSON payloads parsed via `json.loads(request.body)`. **Always** validate that the result `isinstance(data, dict)` to prevent `AttributeError` crashes if a user sends a JSON list `[]` or string.
+    *   **Template JSON Injection (`|json_script`):** When passing dictionaries to templates for JavaScript use via the `{{ my_dict|json_script:"id" }}` filter, **do not** pre-encode the dictionary with `json.dumps()` in `views.py`. This causes "Double JSON Encoding", resulting in JS parsing a string instead of an object. This bug previously caused iPads to crash by rendering 50,000 hidden nodes because the JS iterated over every character index ("0", "1", "2"...) instead of object keys.
 
 ## 4. Security & Configuration
 
