@@ -19,7 +19,7 @@ Tauche tief in deine Abenteuer ein mit unserer **einzigartigen Benutzeroberfläc
 
 ## ✨ Was bietet dir DiceDock?
 
-DiceDock wurde von Spielern für Spieler entwickelt, um das Charakter-Management so einfach und intuitiv wie möglich zu gestalten.
+DiceDock wurde entwickelt, um das Charakter-Management so einfach und intuitiv wie möglich zu gestalten.
 
 ### 📝 **Vollständige Charakterverwaltung**
 Erstelle und bearbeite deine Helden mit allen wichtigen Details:
@@ -38,36 +38,3 @@ Ein Held ist mehr als nur Zahlen. DiceDock bietet Platz für:
 *   📚 Eine ausführliche **Hintergrundgeschichte**.
 *   👁️ Die Beschreibung deines **Aussehens**.
 
-### 🖼️ **Visualisiere deinen Helden**
-Lade ein **Bild deines Charakters** hoch, damit jeder am Tisch genau weiß, wie dein Abenteurer aussieht und deine Gruppe inspiriert wird.
-
-### 🔒 **Sicher & Privat**
-Erstelle dein eigenes Benutzerkonto. Deine Charaktere sind sicher aufbewahrt und nur für dich sichtbar. Logge dich von jedem Gerät ein und greife jederzeit auf deine Daten zu.
-
----
-
-## 🚀 So legst du los
-
-1.  **Registrieren:** Erstelle dir in wenigen Sekunden ein kostenloses Konto.
-2.  **Charakter erstellen:** Klicke im Dashboard auf "Neuer Charakter" und fülle die Felder aus. Keine Sorge, du kannst alles später noch anpassen!
-3.  **Ab ins Abenteuer:** Nutze die Übersicht während deiner Spielsitzung, um Lebenspunkte anzupassen oder epische Notizen zu machen.
-
----
-
-*Bereit für das nächste Abenteuer? Dein Charakter wartet auf dich!*
-
-– **Das DiceDock Team**
-
----
-
-## 🛠️ Entwickler-Hinweise & Bekannte Bugs (Troubleshooting)
-
-Falls du am Code von DiceDock arbeitest oder Fehler suchst, beachte die folgenden historisch relevanten Bugs, die behoben wurden:
-
-*   **Der "1 2 3 4 5" / iPad Crash Bug:**
-    *   *Symptom:* Das iPad stürzte ab, der PC lud extrem langsam, und Charakterklassen/Waffen wurden nur als Zahlen wie 1, 2, 3 dargestellt.
-    *   *Ursache (Double JSON Encoding):* In `views.py` wurde `json.dumps()` verwendet, um Dictionaries an das Template zu senden, wo dann erneut der Django-Filter `|json_script` angewendet wurde. Das JavaScript parste daraufhin einen String statt eines Objekts und renderte für jedes der 50.000 Zeichen im Regelwerk eine eigene unsichtbare HTML-Karte in den DOM, was das iPad zum Crash brachte und die Indizes (Zahlen) in die Datenbank schrieb.
-    *   *Lösung:* Nutze niemals `json.dumps()` in der View, wenn du die Variable im Template mit `|json_script` in einen `<script>`-Block injizierst.
-*   **NoneType Server Crashes (HTTP 500):**
-    *   Klassen und Spezies, die in der Datenbank stehen, aber nicht mehr in den Regeldaten (z.B. `KLASSEN_DATEN`) existieren, führten beim Aufrufen von `.get('rettungswuerfe')` zu fatalen Backend-Abstürzen. Dies wurde durch sichere Typ-Überprüfungen in `views.py` behoben.
-    *   AJAX-Requests erwarten strikte Validierung (`isinstance(data, dict)`), um list-basierte Payloads abzufangen.
