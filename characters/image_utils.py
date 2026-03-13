@@ -29,7 +29,7 @@ def compress_character_image(uploaded_file):
     elif img.mode not in ("RGB", "RGBA"):
         img = img.convert("RGB")
 
-    # Resize only if the image exceeds the maximum dimensions.
+    # Resize only if the image exceeds the maximum dimensions. # noqa: E800
     img.thumbnail(MAX_IMAGE_SIZE, Image.LANCZOS)
 
     buffer = io.BytesIO()
