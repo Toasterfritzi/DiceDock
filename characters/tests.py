@@ -565,7 +565,7 @@ class CharacterModelTest(TestCase):
             charisma=18
         )
 
-        # Default (Kämpfer / Fighter)
+        # Default (Kämpfer / Fighter)  # noqa: E800
         char.character_class = "Kämpfer"
         self.assertEqual(char.get_unarmored_ac(), 12)  # 10 + 2 (Dex)
 
@@ -620,7 +620,7 @@ class CharacterModelTest(TestCase):
         char.level = 3
         self.assertEqual(char.get_spell_slots_for_level(), {'pakt_anzahl': 2, 'pakt_grad': 2})
 
-        # Non-spellcaster (Kämpfer)
+        # Non-spellcaster (Kämpfer)  # noqa: E800
         char.character_class = "Kämpfer"
         char.level = 5
         self.assertEqual(char.get_spell_slots_for_level(), {})
@@ -1041,7 +1041,7 @@ class CharacterLevelupTest(TestCase):
         self.assertRedirects(response, reverse('character_detail', args=[self.character.pk]))
         self.character.refresh_from_db()
         self.assertEqual(self.character.level, 2)
-        # hit_dice='1d10', con=14(+2). hp_increase = (10 // 2) + 1 + 2 = 8
+        # hit_dice='1d10', con=14(+2). hp_increase = (10 // 2) + 1 + 2 = 8  # noqa: E800
         self.assertEqual(self.character.max_hp, 20)
         self.assertEqual(self.character.current_hp, 20)
         self.assertEqual(self.character.hit_dice_total, 2)
@@ -1051,7 +1051,7 @@ class CharacterLevelupTest(TestCase):
         self.assertRedirects(response, reverse('character_detail', args=[self.character.pk]))
         self.character.refresh_from_db()
         self.assertEqual(self.character.level, 2)
-        # hit_dice='1d10', con=14(+2). hp_increase = 8 + 2 = 10
+        # hit_dice='1d10', con=14(+2). hp_increase = 8 + 2 = 10  # noqa: E800
         self.assertEqual(self.character.max_hp, 22)
         self.assertEqual(self.character.current_hp, 22)
 
@@ -1073,7 +1073,7 @@ class CharacterLevelupTest(TestCase):
         response = self.client.post(url)
         self.assertRedirects(response, reverse('character_detail', args=[dwarf_char.pk]))
         dwarf_char.refresh_from_db()
-        # hp_increase = (10 // 2) + 1 + 2 = 8, plus 1 for dwarf = 9. 13 + 9 = 22
+        # hp_increase = (10 // 2) + 1 + 2 = 8, plus 1 for dwarf = 9. 13 + 9 = 22  # noqa: E800
         self.assertEqual(dwarf_char.max_hp, 22)
 
 
