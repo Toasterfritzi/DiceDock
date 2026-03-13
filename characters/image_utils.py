@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 
 # Maximum dimensions for character images.
 # The largest display in the UI is w-24 h-24 (96×96 CSS pixels).
-# We use 512×512 to keep enough quality for retina displays. # noqa: E800
+# We use a resolution of 512 by 512 to keep enough quality for retina displays.
 MAX_IMAGE_SIZE = (512, 512)
 WEBP_QUALITY = 80
 
@@ -29,7 +29,7 @@ def compress_character_image(uploaded_file):
     elif img.mode not in ("RGB", "RGBA"):
         img = img.convert("RGB")
 
-    # Resize only if the image exceeds the maximum dimensions. # noqa: E800
+    # Images are only resized if their dimensions exceed the maximum.
     img.thumbnail(MAX_IMAGE_SIZE, Image.LANCZOS)
 
     buffer = io.BytesIO()
