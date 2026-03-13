@@ -1652,3 +1652,42 @@ class CalculateHPTest(TestCase):
         # base_hp = 8 + 2 (con mod) = 10
         self.assertEqual(self.char.max_hp, 10)
         self.assertEqual(self.char.current_hp, 10)
+
+class RegisterViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('register')
+
+    def test_register_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/register.html')
+        self.assertIsInstance(response.context['form'], UserRegisterForm)
+
+    def test_register_post_success(self):
+        payload = {
+            'username': 'newuser',
+            'email': 'newuser@example.com',
+            'password': 'StrongPassword123!',
+            'password_confirm': 'StrongPassword123!',
+        }
+        response = self.client.post(self.url, data=payload)
+        self.assertRedirects(response, reverse('dashboard'))
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+        user = User.objects.get(username='newuser')
+        self.assertTrue(user.check_password('StrongPassword123!'))
+        # Check if logged in
+        self.assertTrue('_auth_user_id' in self.client.session)
+
+    def test_register_post_invalid(self):
+        payload = {
+            'username': 'baduser',
+            'email': 'baduser@example.com',
+            'password': 'StrongPassword123!',
+            'password_confirm': 'WrongPassword321!',
+        }
+        response = self.client.post(self.url, data=payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/register.html')
+        self.assertFalse(User.objects.filter(username='baduser').exists())
+        self.assertTrue(response.context['form'].errors)
