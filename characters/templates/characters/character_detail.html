@@ -369,10 +369,10 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten">
+                                <button onclick="editWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}', '{{ weapon.type|escapejs }}', '{{ weapon.hit|escapejs }}', '{{ weapon.damage|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten" aria-label="Bearbeiten">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </button>
-                                <button onclick="removeWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen">
+                                <button onclick="removeWeapon({{ forloop.counter0 }}, '{{ weapon.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen" aria-label="Entfernen">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </div>
@@ -541,10 +541,10 @@
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-gray-500 bg-black/30 px-1.5 py-0.5 rounded cursor-pointer" onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})">x{{ item.quantity }}</span>
                         <div class="opacity-0 group-hover:opacity-100 transition-opacity flex">
-                            <button onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten">
+                            <button onclick="editItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}', {{ item.quantity }})" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-400 hover:bg-blue-500/20 active:bg-blue-500/30 active:scale-90 rounded transition-colors" title="Bearbeiten" aria-label="Bearbeiten">
                                 <span class="material-symbols-outlined text-[16px]">edit</span>
                             </button>
-                            <button onclick="removeItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen">
+                            <button onclick="removeItem({{ forloop.counter0 }}, '{{ item.name|escapejs }}')" class="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-red-400 hover:bg-red-500/20 active:bg-red-500/30 active:scale-90 rounded transition-colors" title="Entfernen" aria-label="Entfernen">
                                 <span class="material-symbols-outlined text-[16px]">delete</span>
                             </button>
                         </div>
@@ -675,12 +675,12 @@
             Münze
         </h3>
         <div class="flex items-center justify-center gap-8 mb-8">
-            <button onclick="changeCoin('decrease')"
+            <button onclick="changeCoin('decrease')" aria-label="Münze verringern"
                 class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] cursor-pointer">
                 <span class="material-symbols-outlined text-2xl">remove</span>
             </button>
             <span class="text-5xl font-black text-white" id="editModalCoinValue">0</span>
-            <button onclick="changeCoin('increase')"
+            <button onclick="changeCoin('increase')" aria-label="Münze erhöhen"
                 class="w-12 h-12 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] cursor-pointer">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
@@ -699,12 +699,12 @@
         class="glass-panel p-6 rounded-2xl border border-purple-500/30 shadow-[0_0_10px_#a855f74d,0_0_20px_#a855f71a] w-72 transform transition-all text-center relative max-w-[90vw]">
         <h3 class="text-xl font-bold text-white mb-6 uppercase tracking-widest" id="editModalStatName">STAT</h3>
         <div class="flex items-center justify-center gap-6 mb-8">
-            <button onclick="changeStat('decrease')"
+            <button onclick="changeStat('decrease')" aria-label="Wert verringern"
                 class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] cursor-pointer">
                 <span class="material-symbols-outlined text-2xl">remove</span>
             </button>
             <span class="text-5xl font-black text-white" id="editModalStatValue">10</span>
-            <button onclick="changeStat('increase')"
+            <button onclick="changeStat('increase')" aria-label="Wert erhöhen"
                 class="w-12 h-12 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white flex items-center justify-center transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] cursor-pointer">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
