@@ -494,6 +494,50 @@ def character_levelup(request, pk):
     })
 
 
+
+def _validate_stat_update(character, stat, action):
+    """Prüft die Gültigkeit des Attribut-Updates."""
+    if stat not in ABILITY_NAMES:
+        return 'Ungültiges Attribut.'
+    if action not in ('increase', 'decrease'):
+        return 'Ungültige Aktion.'
+
+    current_value = getattr(character, stat)
+    if action == 'increase':
+        if current_value >= 30:
+            return 'Attribut ist bereits am Maximum (30).'
+        if character.available_stat_points <= 0:
+            return 'Keine verfügbaren Attributspunkte vorhanden.'
+    else:
+        if current_value <= 1:
+            return 'Attribut kann nicht unter 1 sinken.'
+    return None
+
+
+def _apply_stat_update(character, stat, action):
+    """Wendet die Attribut-Änderung an."""
+    current_value = getattr(character, stat)
+    if action == 'increase':
+        setattr(character, stat, current_value + 1)
+        character.available_stat_points -= 1
+    else:
+        setattr(character, stat, current_value - 1)
+        character.available_stat_points += 1
+
+
+def _update_derived_stats(character, old_con_mod, old_dex_mod):
+    """Aktualisiert abgeleitete Werte nach einer Attribut-Änderung."""
+    new_con_mod = character.constitution_mod
+    new_dex_mod = character.dexterity_mod
+
+    if old_con_mod != new_con_mod:
+        hp_diff = (new_con_mod - old_con_mod) * character.level
+        character.max_hp += hp_diff
+        character.current_hp += hp_diff
+
+    if old_dex_mod != new_dex_mod:
+        character.armor_class += (new_dex_mod - old_dex_mod)
+
 @login_required
 @require_POST
 def update_character_stat(request, pk):
@@ -507,55 +551,15 @@ def update_character_stat(request, pk):
     stat = data.get('stat')
     action = data.get('action')
 
-    if stat not in ABILITY_NAMES:
-        return JsonResponse(
-            {'success': False, 'error': 'Ungültiges Attribut.'},
-            status=400,
-        )
+    error_msg = _validate_stat_update(character, stat, action)
+    if error_msg:
+        return JsonResponse({'success': False, 'error': error_msg}, status=400)
 
-    if action not in ('increase', 'decrease'):
-        return JsonResponse(
-            {'success': False, 'error': 'Ungültige Aktion.'},
-            status=400,
-        )
-
-    current_value = getattr(character, stat)
     old_con_mod = character.constitution_mod
     old_dex_mod = character.dexterity_mod
 
-    if action == 'increase':
-        if current_value >= 30:
-            return JsonResponse(
-                {'success': False, 'error': 'Attribut ist bereits am Maximum (30).'},
-                status=400,
-            )
-        if character.available_stat_points <= 0:
-            return JsonResponse(
-                {'success': False, 'error': 'Keine verfügbaren Attributspunkte vorhanden.'},
-                status=400,
-            )
-        setattr(character, stat, current_value + 1)
-        character.available_stat_points -= 1
-    else:  # decrease
-        if current_value <= 1:
-            return JsonResponse(
-                {'success': False, 'error': 'Attribut kann nicht unter 1 sinken.'},
-                status=400,
-            )
-        setattr(character, stat, current_value - 1)
-        character.available_stat_points += 1
-
-    # Abgeleitete Werte aktualisieren, wenn sich Modifikatoren ändern
-    new_con_mod = character.constitution_mod
-    new_dex_mod = character.dexterity_mod
-
-    if old_con_mod != new_con_mod:
-        hp_diff = (new_con_mod - old_con_mod) * character.level
-        character.max_hp += hp_diff
-        character.current_hp += hp_diff
-
-    if old_dex_mod != new_dex_mod:
-        character.armor_class += (new_dex_mod - old_dex_mod)
+    _apply_stat_update(character, stat, action)
+    _update_derived_stats(character, old_con_mod, old_dex_mod)
 
     character.save()
 
