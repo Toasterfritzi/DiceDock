@@ -220,7 +220,7 @@ class CharacterModelTest(TestCase):
         details = char.get_known_spells_detail()
 
         # Unbekannter Zauber should be ignored.
-        # We should have groups for grad 1, 2, and 3.
+        # We should have groups for grad 1, 2, and 3.  # noqa: E800
         self.assertIn(1, details)
         self.assertIn(2, details)
         self.assertIn(3, details)
