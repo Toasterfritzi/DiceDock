@@ -582,10 +582,8 @@ def update_character_stat(request, pk):
 # Charakter-Builder (Wizard)
 # ---------------------------------------------------------------------------
 
-@functools.lru_cache(maxsize=1)
-def _get_builder_json_data():
-    """Cached static JSON data for character builder."""
-    # Klassen-Daten für das Frontend aufbereiten
+def _format_klassen_data():
+    """Format class data for the builder."""
     klassen_json = {}
     empty_dict = {}
     k_beschr_get = KLASSEN_BESCHREIBUNGEN.get
@@ -622,8 +620,11 @@ def _get_builder_json_data():
             },
             'unterklassen': unterklassen,
         }
+    return klassen_json
 
-    # Hintergrund-Daten für das Frontend
+
+def _format_hintergruende_data():
+    """Format background data for the builder."""
     hintergruende_json = {}
     for name, data in HINTERGRUND_DATEN.items():
         beschr = HINTERGRUND_BESCHREIBUNGEN.get(name, {})
@@ -642,8 +643,11 @@ def _get_builder_json_data():
             'fertigkeiten': data.get('fertigkeiten', []),
             'werkzeug': data.get('werkzeug', ''),
         }
+    return hintergruende_json
 
-    # Spezies-Daten für das Frontend
+
+def _format_spezies_data():
+    """Format species data for the builder."""
     spezies_json = {}
     for name, data in SPEZIES_DATEN.items():
         merkmale = [
@@ -663,11 +667,16 @@ def _get_builder_json_data():
             'tp_bonus': data.get('tp_bonus', 0),
             'abstammungen': abstammungen,
         }
+    return spezies_json
 
+
+@functools.lru_cache(maxsize=1)
+def _get_builder_json_data():
+    """Cached static JSON data for character builder."""
     return {
-        'klassen_json': klassen_json,
-        'hintergruende_json': hintergruende_json,
-        'spezies_json': spezies_json,
+        'klassen_json': _format_klassen_data(),
+        'hintergruende_json': _format_hintergruende_data(),
+        'spezies_json': _format_spezies_data(),
     }
 
 @login_required
