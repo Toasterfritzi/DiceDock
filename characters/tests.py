@@ -50,6 +50,70 @@ class CharacterCreationTest(TestCase):
         self.assertEqual(char.gold, 0)
         self.assertTrue("Standard-Ausrüstung" in char.equipment)
 
+    def test_character_creation_get_request(self):
+        response = self.client.get('/create/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/character_form.html')
+        self.assertIn('form', response.context)
+
+    def test_character_creation_invalid_form(self):
+        # Missing required 'character_class'
+        response = self.client.post('/create/', {
+            'level': 1,
+            'name': 'Invalid Character',
+        })
+        # Should render the form again with errors (status code 200)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'characters/character_form.html')
+        self.assertFalse(Character.objects.filter(name='Invalid Character').exists())
+        self.assertTrue(response.context['form'].errors)
+
+    @patch('characters.views.compress_character_image')
+    def test_character_creation_with_image(self, mock_compress):
+        from io import BytesIO
+        from PIL import Image as PILImage
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        img = PILImage.new('RGB', (100, 100), color='blue')
+        buf = BytesIO()
+        img.save(buf, format='PNG')
+        buf.seek(0)
+        upload = SimpleUploadedFile('test.png', buf.read(), content_type='image/png')
+
+        mock_compress.return_value = 'compressed_image_path.webp'
+
+        response = self.client.post('/create/', {
+            'level': 1,
+            'name': 'Image Character',
+            'character_class': 'Kämpfer',
+            'subclass': 'Champion',
+            'race': 'Mensch',
+            'background': 'Soldat',
+            'alignment': 'Neutral Gut',
+            'personality_traits': 'Brave',
+            'ideals': 'Honor',
+            'bonds': 'Kingdom',
+            'flaws': 'Stubborn',
+            'strength': 15,
+            'dexterity': 12,
+            'constitution': 14,
+            'intelligence': 10,
+            'wisdom': 10,
+            'charisma': 12,
+            'equipment_preference': 'equipment',
+            'image': upload,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        mock_compress.assert_called_once()
+        char = Character.objects.get(name='Image Character')
+        self.assertEqual(char.image, 'compressed_image_path.webp')
+
+    def test_character_creation_unauthenticated(self):
+        self.client.logout()
+        response = self.client.get('/create/')
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login/'))
     def test_character_creation_gold_option(self):
         response = self.client.post('/create/', {
             'level': 1,
